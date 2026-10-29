@@ -42,7 +42,6 @@ const MATCHED_BY: Record<string, string> = {
   text_search: "a Channel3 search for the product",
   image_search: "a Channel3 search by image",
 };
-const CONFETTI_COLORS = ["var(--accent)", "#f2c94c", "#6aa9ff", "var(--coral)", "var(--ink)"];
 
 function useCountUp(target: number, run: boolean) {
   const [value, setValue] = useState(run ? 0 : target);
@@ -60,39 +59,6 @@ function useCountUp(target: number, run: boolean) {
     return () => cancelAnimationFrame(raf);
   }, [target, run]);
   return value;
-}
-
-function Confetti() {
-  return (
-    <div className="confetti" aria-hidden="true">
-      {Array.from({ length: 26 }, (_, i) => {
-        const angle = (i / 26) * Math.PI * 2;
-        const dist = 120 + (i % 5) * 34;
-        return (
-          <i
-            key={i}
-            style={{
-              background: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
-              ["--dx" as string]: `${Math.cos(angle) * dist}px`,
-              ["--dy" as string]: `${Math.sin(angle) * dist * 0.7 + 60}px`,
-              ["--rot" as string]: `${(i % 2 ? 1 : -1) * (180 + i * 23)}deg`,
-              ["--d" as string]: `${(i % 6) * 40}ms`,
-            }}
-          />
-        );
-      })}
-    </div>
-  );
-}
-
-function Icon({ kind }: { kind: "ok" | "no" | "wait" | "scan" }) {
-  if (kind === "scan") return <span className="spinner" style={{ width: 20, height: 20 }} />;
-  const d = kind === "ok" ? "M5 12.5l4.5 4.5L19 7.5" : kind === "no" ? "M7 7l10 10M17 7L7 17" : "M12 7v6M12 17h.01";
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d={d} stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
 }
 
 export function ClaimView({ id }: { id: string }) {
@@ -131,6 +97,11 @@ export function ClaimView({ id }: { id: string }) {
   const checks = ev?.decision.checks ?? [];
   const firstProblem = checks.find((c) => c.outcome === "fail") ?? checks.find((c) => c.outcome === "review");
   const isImage = claim?.source === "image";
+  const paidCents = (() => {
+    const detail = checks.find((c) => c.id === "cheaper")?.detail;
+    const m = detail?.match(/vs \$([\d,]+\.\d{2}) paid/);
+    return m ? Math.round(Number(m[1]!.replace(/,/g, "")) * 100) : null;
+  })();
   const host = !claim ? "" : isImage ? (claim.competitorDomain ?? "") : new URL(claim.competitorUrl).hostname.replace(/^www\./, "");
 
   const view =
@@ -150,24 +121,32 @@ export function ClaimView({ id }: { id: string }) {
       </div>
 
       <section className={`verdict ${view.kind}`} aria-live="polite">
-        {refunded && <Confetti />}
-        <div className="verdict-icon"><Icon kind={view.kind} /></div>
-        <p className="eyebrow" style={{ margin: "14px 0 0", color: view.kind === "no" ? "var(--coral)" : view.kind === "ok" ? "var(--accent)" : "var(--amber)" }}>{view.eyebrow}</p>
+        <div className="receipt-head">
+          <strong>Matchback</strong>
+          Price match receipt{claim ? ` · No. ${claim.id.slice(0, 8).toUpperCase()}` : ""}
+        </div>
+        {view.kind !== "scan" && (
+          <span className={`stamp ${view.kind}`} aria-hidden="true">{view.kind === "ok" ? "Matched" : view.kind === "no" ? "Refused" : "For review"}</span>
+        )}
+        <p className="eyebrow" style={{ color: view.kind === "no" ? "var(--stamp)" : view.kind === "ok" ? "var(--ok)" : "var(--wait)" }}>{view.eyebrow}</p>
         <h1>{view.title}</h1>
+        {ev && paidCents !== null && ev.decision.competitorCents !== null && view.kind !== "scan" && (
+          <dl className="kv" style={{ borderTop: "1.5px dashed var(--hair)", paddingTop: 14 }}>
+            <dt>Paid</dt><dd>{usd(paidCents)}</dd>
+            <dt>{host || "Elsewhere"}</dt><dd>{usd(ev.decision.competitorCents)}</dd>
+          </dl>
+        )}
         {refunded && ev && (
           <>
             <div className="amount">{usd(amount)}</div>
-            <p className="muted" style={{ margin: "10px 0 0" }}>
-              refunded to your PayPal account · PayPal refund <span className="mono">{claim?.refundId}</span>
+            <p className="muted" style={{ margin: "10px 0 0", fontSize: 13 }}>
+              back to your PayPal account · refund <span className="mono">{claim?.refundId}</span>
             </p>
           </>
         )}
         {ev?.explanation && view.kind !== "scan" ? (
           <div className="explain">
-            <span className="ai-chip">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z" fill="currentColor" /></svg>
-              {ev.explanation.source === "ai" ? "AI summary of the checks below" : "Summary of the checks below"}
-            </span>
+            <span className="ai-chip">{ev.explanation.source === "ai" ? "Note from the AI" : "Note"}</span>
             <p>{ev.explanation.text}</p>
           </div>
         ) : (
