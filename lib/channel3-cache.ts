@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
-import type { DatabaseSync } from "node:sqlite";
 import { Channel3Error, type Channel3Client } from "@/lib/channel3";
+import type { Db } from "@/lib/db";
 
 // A cache in front of Channel3. Live Channel3 answers vary between calls (an offer's condition can be
 // missing and then present a minute later), so:
@@ -14,7 +14,7 @@ export type CacheMode = "ttl" | "frozen" | "off";
 
 export function cachedChannel3(
   inner: Channel3Client,
-  db: DatabaseSync,
+  db: Db,
   opts: { mode?: CacheMode; ttlMs?: number; now?: () => number; cacheErrors?: boolean } = {},
 ): Channel3Client {
   const mode = opts.mode ?? "ttl";
@@ -23,7 +23,7 @@ export function cachedChannel3(
   if (mode === "off") return inner;
 
   async function through<T>(key: string, fetchFresh: () => Promise<T>): Promise<T> {
-    const row = db.prepare("SELECT json, fetched_at FROM channel3_cache WHERE key = ?").get(key) as { json: string; fetched_at: string } | undefined;
+    const row = await db.get("SELECT json, fetched_at FROM channel3_cache WHERE key = ?", key) as { json: string; fetched_at: string } | undefined;
     if (row && (mode === "frozen" || now() - Date.parse(row.fetched_at) < ttlMs)) {
       const cached = JSON.parse(row.json) as T | { __error: { status: Channel3Error["status"]; message: string } };
       if (cached && typeof cached === "object" && "__error" in cached) throw new Channel3Error(cached.__error.status, cached.__error.message);
@@ -35,13 +35,11 @@ export function cachedChannel3(
     } catch (err) {
       // Only the evaluation freezes failures (so a re-run cannot change its inputs); the app retries them.
       if (opts.cacheErrors && err instanceof Channel3Error) {
-        db.prepare("INSERT INTO channel3_cache (key, json, fetched_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET json = excluded.json, fetched_at = excluded.fetched_at")
-          .run(key, JSON.stringify({ __error: { status: err.status, message: err.message } }), new Date(now()).toISOString());
+        await db.run("INSERT INTO channel3_cache (key, json, fetched_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET json = excluded.json, fetched_at = excluded.fetched_at", key, JSON.stringify({ __error: { status: err.status, message: err.message } }), new Date(now()).toISOString());
       }
       throw err;
     }
-    db.prepare("INSERT INTO channel3_cache (key, json, fetched_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET json = excluded.json, fetched_at = excluded.fetched_at")
-      .run(key, JSON.stringify(value), new Date(now()).toISOString());
+    await db.run("INSERT INTO channel3_cache (key, json, fetched_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET json = excluded.json, fetched_at = excluded.fetched_at", key, JSON.stringify(value), new Date(now()).toISOString());
     return value;
   }
 

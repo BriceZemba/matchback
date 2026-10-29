@@ -5,6 +5,7 @@ import { getOrderRow } from "@/lib/paypal/checkout";
 import { claimsForOrder } from "@/lib/verifier/run";
 import { settingsFromEnv } from "@/lib/verifier/policy";
 import { activeFinding, lastWatched } from "@/lib/watch";
+import { judgeMode, SAMPLE_LINKS } from "@/lib/judge";
 import { SubmitButton } from "../../submit-button";
 import { ClaimForm } from "./claim-form";
 import { requestPrefs } from "@/lib/locale-server";
@@ -28,7 +29,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
   const { notice } = await searchParams;
   const { locale, t: tt } = await requestPrefs();
   const t = tt.order;
-  const order = getOrderRow(id);
+  const order = await getOrderRow(id);
   if (!order) {
     return (
       <main className="shell">
@@ -36,11 +37,11 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
       </main>
     );
   }
-  const product = getCatalogItem(order.product_id);
-  const refunds = getDb().prepare("SELECT claim_id, refund_id, amount_cents, status FROM refunds WHERE order_id = ?").all(id) as {
+  const product = await getCatalogItem(order.product_id);
+  const refunds = await getDb().all("SELECT claim_id, refund_id, amount_cents, status FROM refunds WHERE order_id = ?", id) as {
     claim_id: string; refund_id: string | null; amount_cents: number; status: string;
   }[];
-  const claims = claimsForOrder(id);
+  const claims = await claimsForOrder(id);
   const paid = order.status === "captured";
   const refunded = refunds.find((r) => r.status === "completed");
 
@@ -52,8 +53,8 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
   ];
   const current = steps.findIndex((s) => !s.done);
   const w = tt.watch;
-  const finding = paid && !refunded ? activeFinding(id) : undefined;
-  const watchedAt = lastWatched(id);
+  const finding = paid && !refunded ? await activeFinding(id) : undefined;
+  const watchedAt = await lastWatched(id);
   const ago = (iso: string) => {
     const mins = Math.round((Date.now() - Date.parse(iso)) / 60_000);
     const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
@@ -147,7 +148,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
             <section className="card card-pad claim-card rise" style={{ ["--i" as string]: 3 }}>
               <span className="eyebrow">{t.claimEyebrow}</span>
               <h2 style={{ marginTop: 8 }}>{t.claimTitle}</h2>
-              <ClaimForm orderId={order.id} t={tt.form} />
+              <ClaimForm orderId={order.id} t={tt.form} samples={judgeMode() ? SAMPLE_LINKS[order.product_id] ?? [] : []} />
               <ol className="how">
                 <li><span className="n">1</span>{t.how1}</li>
                 <li><span className="n">2</span>{t.how2}</li>

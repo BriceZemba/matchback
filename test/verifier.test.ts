@@ -244,20 +244,20 @@ describe("evaluateClaim", () => {
 });
 
 describe("verifyClaim", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     resetDbForTests();
-    getDb().prepare("INSERT INTO catalog (product_id, title, price_cents, currency) VALUES ('nLZKmNT', 'MX Master 3S', 11999, 'USD')").run();
+    await getDb().run("INSERT INTO catalog (product_id, title, price_cents, currency) VALUES ('nLZKmNT', 'MX Master 3S', 11999, 'USD')");
   });
-  function capturedOrder() {
-    const o = createOrderRow("nLZKmNT");
-    getDb().prepare("UPDATE orders SET paypal_order_id='PO1', capture_id='CAP1', captured_cents=11999, captured_at='2026-10-29T00:10:00Z', status='captured' WHERE id=?").run(o.id);
+  async function capturedOrder() {
+    const o = await createOrderRow("nLZKmNT");
+    await getDb().run("UPDATE orders SET paypal_order_id='PO1', capture_id='CAP1', captured_cents=11999, captured_at='2026-10-29T00:10:00Z', status='captured' WHERE id=?", o.id);
     return o.id;
   }
 
   it("refunds an approved claim with the verified difference", async () => {
-    const orderId = capturedOrder();
+    const orderId = await capturedOrder();
     const url = "https://www.officedepot.com/a/products/mx-master-3s";
-    const claim = fileClaim(orderId, url);
+    const claim = await fileClaim(orderId, url);
     const refunds: unknown[] = [];
     const done = await verifyClaim(claim.id, deps(fakeChannel3({ [url]: MX }, {}), llmDown, {
       refund: async (r) => {
@@ -271,9 +271,9 @@ describe("verifyClaim", () => {
   });
 
   it("rewrites the explanation when an approved refund does not go through", async () => {
-    const orderId = capturedOrder();
+    const orderId = await capturedOrder();
     const url = "https://www.officedepot.com/a/products/mx-master-3s";
-    const claim = fileClaim(orderId, url);
+    const claim = await fileClaim(orderId, url);
     const done = await verifyClaim(claim.id, deps(fakeChannel3({ [url]: MX }, {}), llmDown, {
       refund: async () => { throw new InvariantError(409, "This order already received a price-match refund."); },
     }));
@@ -283,16 +283,16 @@ describe("verifyClaim", () => {
   });
 
   it("never refunds a refused claim", async () => {
-    const orderId = capturedOrder();
+    const orderId = await capturedOrder();
     const url = "https://www.backmarket.com/en-us/p/logitech-mx-master-3s-mouse-wireless/24c32268";
-    const claim = fileClaim(orderId, url);
+    const claim = await fileClaim(orderId, url);
     const done = await verifyClaim(claim.id, deps(fakeChannel3({ [url]: MX }, {}), llmDown));
     expect(done.status).toBe("refused");
     expect(done.refund_id).toBeNull();
   });
 
-  it("will not file a claim on an unpaid order", () => {
-    const o = createOrderRow("nLZKmNT");
-    expect(() => fileClaim(o.id, "https://www.officedepot.com/x")).toThrow(/paid orders/);
+  it("will not file a claim on an unpaid order", async () => {
+    const o = await createOrderRow("nLZKmNT");
+    await expect(fileClaim(o.id, "https://www.officedepot.com/x")).rejects.toThrow(/paid orders/);
   });
 });

@@ -1,32 +1,113 @@
-import { DatabaseSync } from "node:sqlite";
+import type { DatabaseSync } from "node:sqlite";
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
+import postgres from "postgres";
 
-// One SQLite file this app owns. It holds the catalog, Matchback's own order records, the
-// claim rows that guard every PayPal write (paypal_writes), and refunds.
+// The database this app owns. It holds the catalog, Matchback's own order records, the claim rows that
+// guard every PayPal write (paypal_writes), refunds, price-match claims and the Channel3 cache.
+//
+// Two backends behind one small async interface, with the same SQL ("?" placeholders):
+//   - Postgres when DATABASE_URL is set (the hosted app: Supabase, through its transaction pooler);
+//   - SQLite otherwise (local development: data/matchback.db; tests: in memory).
 
-let db: DatabaseSync | undefined;
+export type Param = string | number | bigint | null | Uint8Array;
 
-export function getDb(): DatabaseSync {
-  if (db) return db;
-  const file = process.env.MATCHBACK_DB ?? "data/matchback.db";
-  if (file !== ":memory:") mkdirSync(dirname(file), { recursive: true });
-  db = new DatabaseSync(file);
-  migrate(db);
-  return db;
+export interface Db {
+  readonly dialect: "sqlite" | "postgres";
+  /** First row, or undefined. */
+  get(sql: string, ...params: Param[]): Promise<unknown>;
+  all(sql: string, ...params: Param[]): Promise<unknown[]>;
+  run(sql: string, ...params: Param[]): Promise<{ changes: number }>;
 }
 
-/** For tests: a fresh in-memory database. */
-export function resetDbForTests(): DatabaseSync {
-  db = new DatabaseSync(":memory:");
-  migrate(db);
-  return db;
+class SqliteDb implements Db {
+  readonly dialect = "sqlite" as const;
+  constructor(private readonly d: DatabaseSync) {
+    migrateSqlite(d);
+  }
+  async get(sql: string, ...params: Param[]) {
+    return this.d.prepare(sql).get(...params);
+  }
+  async all(sql: string, ...params: Param[]) {
+    return this.d.prepare(sql).all(...params);
+  }
+  async run(sql: string, ...params: Param[]) {
+    return { changes: Number(this.d.prepare(sql).run(...params).changes) };
+  }
 }
 
-function migrate(d: DatabaseSync) {
-  d.exec(`
-    PRAGMA journal_mode = WAL;
+class PostgresDb implements Db {
+  readonly dialect = "postgres" as const;
+  private ready: Promise<void> | undefined;
+  constructor(private readonly sql: postgres.Sql) {}
+  private migrated() {
+    // Retried on the next query if it failed (a serverless instance outlives one failed cold start).
+    this.ready ??= migratePostgres(this.sql).catch((err) => {
+      this.ready = undefined;
+      throw err;
+    });
+    return this.ready;
+  }
+  private async query(text: string, params: Param[]) {
+    await this.migrated();
+    // The driver sends a Buffer as bytea; a plain Uint8Array is converted first.
+    const values = params.map((p) => (p instanceof Uint8Array && !Buffer.isBuffer(p) ? Buffer.from(p) : p));
+    return this.sql.unsafe(toPostgresPlaceholders(text), values as never[]);
+  }
+  async get(text: string, ...params: Param[]) {
+    return (await this.query(text, params))[0];
+  }
+  async all(text: string, ...params: Param[]) {
+    return [...(await this.query(text, params))];
+  }
+  async run(text: string, ...params: Param[]) {
+    return { changes: (await this.query(text, params)).count };
+  }
+}
 
+/** "?" placeholders to "$1, $2, ..." (outside quoted literals). */
+export function toPostgresPlaceholders(text: string): string {
+  let n = 0;
+  let quoted = false;
+  let out = "";
+  for (const ch of text) {
+    if (ch === "'") quoted = !quoted;
+    out += ch === "?" && !quoted ? `$${++n}` : ch;
+  }
+  return out;
+}
+
+// Kept on globalThis so a dev-server reload does not open a second pool.
+const holder = globalThis as unknown as { __matchbackDb?: Db };
+
+export function getDb(): Db {
+  if (holder.__matchbackDb) return holder.__matchbackDb;
+  const url = process.env.DATABASE_URL;
+  if (url) {
+    const local = /@(localhost|127\.0\.0\.1)[:/]/.test(url);
+    holder.__matchbackDb = new PostgresDb(postgres(url, { prepare: false, max: 3, idle_timeout: 20, connect_timeout: 10, ssl: local ? false : "require", onnotice: () => {} }));
+  } else {
+    const file = process.env.MATCHBACK_DB ?? "data/matchback.db";
+    if (file !== ":memory:") mkdirSync(dirname(file), { recursive: true });
+    holder.__matchbackDb = new SqliteDb(openSqlite(file));
+  }
+  return holder.__matchbackDb;
+}
+
+/** node:sqlite, loaded only when SQLite is used, so the hosted app never depends on it. */
+function openSqlite(file: string): DatabaseSync {
+  const { DatabaseSync: Sqlite } = process.getBuiltinModule("node:sqlite") as typeof import("node:sqlite");
+  return new Sqlite(file);
+}
+
+/** For tests: a fresh in-memory SQLite database. */
+export function resetDbForTests(): Db {
+  holder.__matchbackDb = new SqliteDb(openSqlite(":memory:"));
+  return holder.__matchbackDb;
+}
+
+function schema(): string {
+  return `
     CREATE TABLE IF NOT EXISTS catalog (
       product_id   TEXT PRIMARY KEY,          -- pinned Channel3 product id
       title        TEXT NOT NULL,
@@ -106,31 +187,64 @@ function migrate(d: DatabaseSync) {
       json        TEXT NOT NULL,
       fetched_at  TEXT NOT NULL
     );
-  `);
-  // Columns added after the first release of the schema.
-  addColumn(d, "orders", "captured_at TEXT");
-  addColumn(d, "catalog", "image_alt TEXT");
-  addColumn(d, "claims", "source TEXT NOT NULL DEFAULT 'link'");
-  addColumn(d, "claims", "image_path TEXT");
-  addColumn(d, "claims", "image_mime TEXT");
-  addColumn(d, "claims", "competitor_domain TEXT");
-  addColumn(d, "claims", "locale TEXT NOT NULL DEFAULT 'en'");
-  addColumn(d, "orders", "watch_checked_at TEXT");
+  `;
 }
 
-function addColumn(d: DatabaseSync, table: string, definition: string) {
-  const column = definition.split(" ")[0]!;
-  const cols = d.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[];
-  if (!cols.some((c) => c.name === column)) d.exec(`ALTER TABLE ${table} ADD COLUMN ${definition}`);
+/** Columns added after the first release of the schema. */
+function addedColumns(blob: "BLOB" | "BYTEA"): [table: string, definition: string][] {
+  return [
+    ["orders", "captured_at TEXT"],
+    ["catalog", "image_alt TEXT"],
+    ["claims", "source TEXT NOT NULL DEFAULT 'link'"],
+    ["claims", "image_path TEXT"],
+    ["claims", "image_mime TEXT"],
+    ["claims", "competitor_domain TEXT"],
+    ["claims", "locale TEXT NOT NULL DEFAULT 'en'"],
+    ["orders", "watch_checked_at TEXT"],
+    // Screenshot bytes live in the database: a serverless host has no lasting disk.
+    ["claims", `image_data ${blob}`],
+  ];
+}
+
+const TABLES = ["catalog", "orders", "paypal_writes", "refunds", "claims", "watch_findings", "channel3_cache"];
+
+function migrateSqlite(d: DatabaseSync) {
+  d.exec("PRAGMA journal_mode = WAL;");
+  d.exec(schema());
+  for (const [table, definition] of addedColumns("BLOB")) {
+    const column = definition.split(" ")[0]!;
+    const cols = d.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[];
+    if (!cols.some((c) => c.name === column)) d.exec(`ALTER TABLE ${table} ADD COLUMN ${definition}`);
+  }
+}
+
+/** The Postgres schema, idempotent: run on the first query of each server instance. */
+export function postgresSchemaSql(): string {
+  return [
+    schema(),
+    ...addedColumns("BYTEA").map(([table, definition]) => `ALTER TABLE ${table} ADD COLUMN IF NOT EXISTS ${definition};`),
+    // The app connects as the table owner, which bypasses RLS. Enabling it closes Supabase's public
+    // REST API to these tables (no policies = no access with the public keys).
+    ...TABLES.map((t) => `ALTER TABLE ${t} ENABLE ROW LEVEL SECURITY;`),
+  ].join("\n");
+}
+
+async function migratePostgres(sql: postgres.Sql) {
+  // Concurrent cold starts would race on CREATE TABLE; a transaction-level advisory lock serialises them.
+  await sql.begin(async (tx) => {
+    await tx.unsafe("SELECT pg_advisory_xact_lock(727274)");
+    await tx.unsafe(postgresSchemaSql()).simple();
+  });
 }
 
 const SQLITE_CONSTRAINT_PRIMARYKEY = 1555;
 const SQLITE_CONSTRAINT_UNIQUE = 2067;
+const PG_UNIQUE_VIOLATION = "23505";
 
-/** True when an insert failed because the row already exists (recognised by errcode, not message). */
+/** True when an insert failed because the row already exists (recognised by error code, not message). */
 export function isDuplicateKey(err: unknown): boolean {
-  const code = (err as { errcode?: unknown } | null)?.errcode;
-  return code === SQLITE_CONSTRAINT_PRIMARYKEY || code === SQLITE_CONSTRAINT_UNIQUE;
+  const e = err as { errcode?: unknown; code?: unknown } | null;
+  return e?.errcode === SQLITE_CONSTRAINT_PRIMARYKEY || e?.errcode === SQLITE_CONSTRAINT_UNIQUE || e?.code === PG_UNIQUE_VIOLATION;
 }
 
 export const now = () => new Date().toISOString();

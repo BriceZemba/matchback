@@ -37,7 +37,7 @@ async function fillImages(items: CatalogItem[]) {
         if (!img) return;
         p.image_url = img.cleaned_url ?? img.url;
         p.image_alt = img.alt_text ?? p.title;
-        db.prepare("UPDATE catalog SET image_url = ?, image_alt = ? WHERE product_id = ?").run(p.image_url, p.image_alt, p.product_id);
+        await db.run("UPDATE catalog SET image_url = ?, image_alt = ? WHERE product_id = ?", p.image_url, p.image_alt, p.product_id);
       } catch {
         // no photo is fine; the card shows a placeholder
       }
@@ -45,15 +45,27 @@ async function fillImages(items: CatalogItem[]) {
   );
 }
 
+let seeded: Promise<void> | undefined;
+
+/** Insert the pinned products once per server instance (one statement; existing rows are kept). */
+export function ensureCatalog(): Promise<void> {
+  seeded ??= getDb()
+    .run(
+      `INSERT INTO catalog (product_id, title, price_cents, currency) VALUES ${SEED.map(() => "(?, ?, ?, 'USD')").join(", ")} ON CONFLICT (product_id) DO NOTHING`,
+      ...SEED.flatMap((p) => [p.product_id, p.title, p.price_cents]),
+    )
+    .then(() => undefined, (err) => { seeded = undefined; throw err; });
+  return seeded;
+}
+
 export async function listCatalog(): Promise<CatalogItem[]> {
   const db = getDb();
-  const insert = db.prepare("INSERT OR IGNORE INTO catalog (product_id, title, price_cents, currency) VALUES (?, ?, ?, 'USD')");
-  for (const p of SEED) insert.run(p.product_id, p.title, p.price_cents);
-  const items = db.prepare("SELECT product_id, title, price_cents, currency, image_url, image_alt FROM catalog ORDER BY price_cents").all() as CatalogItem[];
+  await ensureCatalog();
+  const items = await db.all("SELECT product_id, title, price_cents, currency, image_url, image_alt FROM catalog ORDER BY price_cents") as CatalogItem[];
   await fillImages(items);
   return items;
 }
 
-export function getCatalogItem(productId: string): CatalogItem | undefined {
-  return getDb().prepare("SELECT product_id, title, price_cents, currency, image_url, image_alt FROM catalog WHERE product_id = ?").get(productId) as CatalogItem | undefined;
+export async function getCatalogItem(productId: string): Promise<CatalogItem | undefined> {
+  return await getDb().get("SELECT product_id, title, price_cents, currency, image_url, image_alt FROM catalog WHERE product_id = ?", productId) as CatalogItem | undefined;
 }

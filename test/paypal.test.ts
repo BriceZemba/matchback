@@ -16,7 +16,7 @@ function stubFetch(responder: (url: URL, request: Request) => Response | Promise
     const request = new Request(input, init);
     const body = request.body === null ? undefined : await request.clone().text();
     // Read the store from inside the fake: proves the claim existed when the request left.
-    const claimsAtSend = (getDb().prepare("SELECT claim_key FROM paypal_writes").all() as { claim_key: string }[]).map((r) => r.claim_key);
+    const claimsAtSend = (await getDb().all("SELECT claim_key FROM paypal_writes") as { claim_key: string }[]).map((r) => r.claim_key);
     const call = { url: new URL(request.url), request, body, claimsAtSend };
     calls.push(call);
     return responder(call.url, request);
@@ -51,24 +51,24 @@ function client(ops: Array<(url: URL, req: Request) => Response | Promise<Respon
 
 // ---- fixtures ----
 
-function seedCatalog() {
-  getDb().prepare("INSERT INTO catalog (product_id, title, price_cents, currency) VALUES ('p1', 'Samsung T7 1TB', 27499, 'USD')").run();
+async function seedCatalog() {
+  await getDb().run("INSERT INTO catalog (product_id, title, price_cents, currency) VALUES ('p1', 'Samsung T7 1TB', 27499, 'USD')");
 }
 
-function seedCapturedOrder(): string {
-  const o = createOrderRow("p1");
-  getDb().prepare("UPDATE orders SET paypal_order_id = 'PO1', capture_id = 'CAP1', captured_cents = 27499, status = 'captured' WHERE id = ?").run(o.id);
+async function seedCapturedOrder(): Promise<string> {
+  const o = await createOrderRow("p1");
+  await getDb().run("UPDATE orders SET paypal_order_id = 'PO1', capture_id = 'CAP1', captured_cents = 27499, status = 'captured' WHERE id = ?", o.id);
   return o.id;
 }
 
 const createdOrder: Order = { id: "PO1", status: "PAYER_ACTION_REQUIRED", links: [{ rel: "payer-action", href: "https://sandbox.paypal.com/approve/PO1" }] };
 
-beforeEach(() => {
+beforeEach(async () => {
   process.env.PAYPAL_ENV = "sandbox";
   process.env.PAYPAL_CLIENT_ID = "test-id";
   process.env.PAYPAL_CLIENT_SECRET = "test-secret";
   resetDbForTests();
-  seedCatalog();
+  await seedCatalog();
 });
 
 // ---- createOrder ----
@@ -76,7 +76,7 @@ beforeEach(() => {
 describe("createCheckoutOrder", () => {
   it("takes the claim before the request leaves and sends only the fields the plan requires", async () => {
     const stub = client([() => json(200, orderWire(createdOrder))]);
-    const order = createOrderRow("p1");
+    const order = await createOrderRow("p1");
 
     const out = await createCheckoutOrder(order.id, "http://localhost:3000");
 
@@ -99,7 +99,7 @@ describe("createCheckoutOrder", () => {
       () => { throw new Error("ECONNRESET"); },
       () => json(200, orderWire(createdOrder)),
     ]);
-    const order = createOrderRow("p1");
+    const order = await createOrderRow("p1");
 
     const out = await createCheckoutOrder(order.id, "http://localhost:3000");
 
@@ -111,30 +111,30 @@ describe("createCheckoutOrder", () => {
 
   it("reports unknown, never failed, when the re-send also gets no answer", async () => {
     client([() => { throw new Error("ECONNRESET"); }, () => { throw new Error("ECONNRESET"); }]);
-    const order = createOrderRow("p1");
+    const order = await createOrderRow("p1");
 
     await expect(createCheckoutOrder(order.id, "http://localhost:3000")).rejects.toBeInstanceOf(OutcomeUnknownError);
-    const row = getDb().prepare("SELECT state FROM paypal_writes WHERE claim_key = ?").get(`create:${order.id}`) as { state: string };
+    const row = await getDb().get("SELECT state FROM paypal_writes WHERE claim_key = ?", `create:${order.id}`) as { state: string };
     expect(row.state).toBe("unknown");
   });
 
   it("makes no re-read when the credential could not be obtained (never sent)", async () => {
     const stub = stubFetch(() => json(401, { error: "invalid_client" }));
     setPaypalClientForTests(buildPaypalClient({ fetch: stub.fetch, retry: { maxRetries: 0 } }));
-    const order = createOrderRow("p1");
+    const order = await createOrderRow("p1");
 
     await expect(createCheckoutOrder(order.id, "http://localhost:3000")).rejects.toBeInstanceOf(PaypalIntegrationError);
     expect(stub.ops()).toHaveLength(0);
-    expect(getDb().prepare("SELECT COUNT(*) AS n FROM paypal_writes").get()).toEqual({ n: 0 }); // claim released
+    expect(await getDb().get("SELECT COUNT(*) AS n FROM paypal_writes")).toEqual({ n: 0 }); // claim released
   });
 });
 
 // ---- captureOrder ----
 
 describe("captureCheckoutOrder", () => {
-  function awaitingOrder() {
-    const o = createOrderRow("p1");
-    getDb().prepare("UPDATE orders SET paypal_order_id = 'PO1', status = 'awaiting_approval' WHERE id = ?").run(o.id);
+  async function awaitingOrder() {
+    const o = await createOrderRow("p1");
+    await getDb().run("UPDATE orders SET paypal_order_id = 'PO1', status = 'awaiting_approval' WHERE id = ?", o.id);
     return o.id;
   }
   const captured: Order = {
@@ -145,7 +145,7 @@ describe("captureCheckoutOrder", () => {
 
   it("asks for the full representation and records the capture", async () => {
     const stub = client([() => json(201, orderWire(captured))]);
-    const id = awaitingOrder();
+    const id = await awaitingOrder();
 
     const out = await captureCheckoutOrder(id);
 
@@ -166,7 +166,7 @@ describe("captureCheckoutOrder", () => {
         return json(200, orderWire(captured));
       },
     ]);
-    const id = awaitingOrder();
+    const id = await awaitingOrder();
 
     const out = await captureCheckoutOrder(id);
 
@@ -188,7 +188,7 @@ describe("issuePriceMatchRefund", () => {
 
   it("sends amount, custom_id and note only, with the claim taken first", async () => {
     const stub = client([() => json(201, refundWire(refunded))]);
-    const orderId = seedCapturedOrder();
+    const orderId = await seedCapturedOrder();
 
     const out = await issuePriceMatchRefund({ claimId: "c1", orderId, amountCents: 4500, retailer: "bhphotovideo.com" });
 
@@ -205,7 +205,7 @@ describe("issuePriceMatchRefund", () => {
 
   it("returns the recorded refund for a repeated claim without a second PayPal call", async () => {
     const stub = client([() => json(201, refundWire(refunded))]);
-    const orderId = seedCapturedOrder();
+    const orderId = await seedCapturedOrder();
     await issuePriceMatchRefund({ claimId: "c1", orderId, amountCents: 4500, retailer: "x" });
 
     const again = await issuePriceMatchRefund({ claimId: "c1", orderId, amountCents: 4500, retailer: "x" });
@@ -216,7 +216,7 @@ describe("issuePriceMatchRefund", () => {
 
   it("rejects a second price-match claim on the same order before anything is sent", async () => {
     const stub = client([() => json(201, refundWire(refunded))]);
-    const orderId = seedCapturedOrder();
+    const orderId = await seedCapturedOrder();
     await issuePriceMatchRefund({ claimId: "c1", orderId, amountCents: 4500, retailer: "x" });
 
     await expect(issuePriceMatchRefund({ claimId: "c2", orderId, amountCents: 1000, retailer: "y" })).rejects.toMatchObject({ status: 409 });
@@ -225,18 +225,18 @@ describe("issuePriceMatchRefund", () => {
 
   it("enforces the merchant cap and the remaining amount before the claim or any call", async () => {
     const stub = client([]);
-    const orderId = seedCapturedOrder();
+    const orderId = await seedCapturedOrder();
 
     await expect(issuePriceMatchRefund({ claimId: "c1", orderId, amountCents: 20000, retailer: "x" })).rejects.toBeInstanceOf(InvariantError);
     await expect(issuePriceMatchRefund({ claimId: "c2", orderId, amountCents: 0, retailer: "x" })).rejects.toBeInstanceOf(InvariantError);
     expect(stub.calls).toHaveLength(0);
-    expect(getDb().prepare("SELECT COUNT(*) AS n FROM paypal_writes").get()).toEqual({ n: 0 });
+    expect(await getDb().get("SELECT COUNT(*) AS n FROM paypal_writes")).toEqual({ n: 0 });
   });
 
   it("refuses to refund an order that was never captured, before anything is sent", async () => {
     const stub = client([]);
-    const o = createOrderRow("p1");
-    getDb().prepare("UPDATE orders SET paypal_order_id = 'PO2', status = 'awaiting_approval' WHERE id = ?").run(o.id);
+    const o = await createOrderRow("p1");
+    await getDb().run("UPDATE orders SET paypal_order_id = 'PO2', status = 'awaiting_approval' WHERE id = ?", o.id);
 
     await expect(issuePriceMatchRefund({ claimId: "c1", orderId: o.id, amountCents: 1000, retailer: "x" })).rejects.toMatchObject({ status: 409 });
     expect(stub.calls).toHaveLength(0);
@@ -244,7 +244,7 @@ describe("issuePriceMatchRefund", () => {
 
   it("passes PayPal's reason through on a 422 and releases the claim", async () => {
     client([() => json(422, paypalError("UNPROCESSABLE_ENTITY", "The requested action could not be performed.", "REFUND_AMOUNT_EXCEEDED"))]);
-    const orderId = seedCapturedOrder();
+    const orderId = await seedCapturedOrder();
 
     const err = await issuePriceMatchRefund({ claimId: "c1", orderId, amountCents: 4500, retailer: "x" }).catch((e) => e);
 
@@ -253,12 +253,12 @@ describe("issuePriceMatchRefund", () => {
     expect(http.status).toBe(422);
     expect(http.message).toBe("PayPal won't refund more than what is left on this payment. (REFUND_AMOUNT_EXCEEDED)");
     expect((err as PaypalRefusedError).reason).toContain("REFUND_AMOUNT_EXCEEDED description"); // full reason kept for logs
-    expect(getDb().prepare("SELECT COUNT(*) AS n FROM refunds").get()).toEqual({ n: 0 });
+    expect(await getDb().get("SELECT COUNT(*) AS n FROM refunds")).toEqual({ n: 0 });
   });
 
   it("maps PayPal refusing our credentials to 502 with a fixed message", async () => {
     client([() => json(401, paypalError("AUTHENTICATION_FAILURE", "Authentication failed"))]);
-    const orderId = seedCapturedOrder();
+    const orderId = await seedCapturedOrder();
 
     const err = await issuePriceMatchRefund({ claimId: "c1", orderId, amountCents: 4500, retailer: "x" }).catch((e) => e);
 
@@ -270,7 +270,7 @@ describe("issuePriceMatchRefund", () => {
       () => { throw new Error("ECONNRESET"); },
       () => json(200, orderWire({ id: "PO1", purchaseUnits: [{ payments: { refunds: [{ id: "RF9", status: "COMPLETED", customId: "c1" }] } }] })),
     ]);
-    const orderId = seedCapturedOrder();
+    const orderId = await seedCapturedOrder();
 
     const out = await issuePriceMatchRefund({ claimId: "c1", orderId, amountCents: 4500, retailer: "x" });
 

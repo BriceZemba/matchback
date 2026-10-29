@@ -29,15 +29,15 @@ function deps(product: { current: C3Product }, refunds: { amountCents: number }[
   };
 }
 
-beforeEach(() => {
+beforeEach(async () => {
   process.env.MATCHBACK_DB = "data/test-watch/x.db";
   resetDbForTests();
-  getDb().prepare("INSERT INTO catalog (product_id, title, price_cents, currency) VALUES ('nLZKmNT', 'Logitech MX Master 3S', 11999, 'USD')").run();
+  await getDb().run("INSERT INTO catalog (product_id, title, price_cents, currency) VALUES ('nLZKmNT', 'Logitech MX Master 3S', 11999, 'USD')");
 });
 
-function capturedOrder(capturedAt = "2026-10-29T00:00:00Z") {
-  const o = createOrderRow("nLZKmNT");
-  getDb().prepare("UPDATE orders SET paypal_order_id=?, capture_id=?, captured_cents=11999, captured_at=?, status='captured' WHERE id=?").run(`PO-${o.id}`, `CAP-${o.id}`, capturedAt, o.id);
+async function capturedOrder(capturedAt = "2026-10-29T00:00:00Z") {
+  const o = await createOrderRow("nLZKmNT");
+  await getDb().run("UPDATE orders SET paypal_order_id=?, capture_id=?, captured_cents=11999, captured_at=?, status='captured' WHERE id=?", `PO-${o.id}`, `CAP-${o.id}`, capturedAt, o.id);
   return o.id;
 }
 
@@ -51,33 +51,33 @@ describe("price watch", () => {
       offer("bestbuy.com", 99.99),
       offer("officedepot.com", 104.99),
     ]) };
-    const id = capturedOrder();
+    const id = await capturedOrder();
     const out = await watchOrder(id, deps(product), "suggest");
     expect(out.outcome).toBe("found");
-    const f = activeFinding(id)!;
+    const f = (await activeFinding(id))!;
     expect(f).toMatchObject({ domain: "bestbuy.com", price_cents: 9999, refund_cents: 2000, status: "suggested", claim_id: null });
     expect(JSON.parse(f.evidence_json).decision.status).toBe("approved");
-    expect(getDb().prepare("SELECT COUNT(*) n FROM claims").get()).toEqual({ n: 0 });
+    expect(await getDb().get("SELECT COUNT(*) n FROM claims")).toEqual({ n: 0 });
   });
 
   it("re-verifies on today's offer when the shopper claims, then refunds through PayPal", async () => {
     const product = { current: mouse([offer("bestbuy.com", 99.99)]) };
-    const id = capturedOrder();
+    const id = await capturedOrder();
     await watchOrder(id, deps(product), "suggest");
-    const finding = activeFinding(id)!;
+    const finding = (await activeFinding(id))!;
     product.current = mouse([offer("bestbuy.com", 104.99)]); // price moved back up a little before the claim
     const refunds: { amountCents: number }[] = [];
-    const claim = fileFromFinding(finding.id, "fr");
+    const claim = await fileFromFinding(finding.id, "fr");
     const done = await verifyClaim(claim.id, deps(product, refunds));
     expect(done).toMatchObject({ status: "refunded", source: "watch", competitor_domain: "bestbuy.com", locale: "fr" });
     expect(refunds[0]!.amountCents).toBe(1500);
-    expect(getFinding(finding.id)).toMatchObject({ status: "claimed", claim_id: claim.id });
-    expect(() => fileFromFinding(finding.id, "en")).toThrow(/no longer available/);
+    expect(await getFinding(finding.id)).toMatchObject({ status: "claimed", claim_id: claim.id });
+    await expect(fileFromFinding(finding.id, "en")).rejects.toThrow(/no longer available/);
   });
 
   it("files and refunds on its own in auto mode", async () => {
     const refunds: { amountCents: number }[] = [];
-    const id = capturedOrder();
+    const id = await capturedOrder();
     const out = await watchOrder(id, deps({ current: mouse([offer("bestbuy.com", 99.99)]) }, refunds), "auto");
     expect(out.outcome === "found" && out.claim?.status).toBe("refunded");
     expect(refunds).toHaveLength(1);
@@ -85,21 +85,21 @@ describe("price watch", () => {
 
   it("expires a suggestion once no offer qualifies", async () => {
     const product = { current: mouse([offer("bestbuy.com", 99.99)]) };
-    const id = capturedOrder();
+    const id = await capturedOrder();
     await watchOrder(id, deps(product), "suggest");
     product.current = mouse([offer("bestbuy.com", 119.99)]);
     expect(await watchOrder(id, deps(product), "suggest")).toMatchObject({ outcome: "none" });
-    expect(activeFinding(id)).toBeUndefined();
+    expect(await activeFinding(id)).toBeUndefined();
   });
 
   it("does not watch orders outside the window, already refunded, or unpaid", async () => {
     const product = { current: mouse([offer("bestbuy.com", 99.99)]) };
-    const old = capturedOrder("2026-10-01T00:00:00Z");
+    const old = await capturedOrder("2026-10-01T00:00:00Z");
     expect(await watchOrder(old, deps(product), "suggest")).toMatchObject({ outcome: "skipped", reason: "claim window closed" });
-    const refunded = capturedOrder();
-    getDb().prepare("INSERT INTO refunds (claim_id, order_id, capture_id, kind, amount_cents, currency, status, created_at) VALUES ('c', ?, ?, 'price_match', 500, 'USD', 'completed', 'x')").run(refunded, `CAP-${refunded}`);
+    const refunded = await capturedOrder();
+    await getDb().run("INSERT INTO refunds (claim_id, order_id, capture_id, kind, amount_cents, currency, status, created_at) VALUES ('c', ?, ?, 'price_match', 500, 'USD', 'completed', 'x')", refunded, `CAP-${refunded}`);
     expect(await watchOrder(refunded, deps(product), "suggest")).toMatchObject({ outcome: "skipped", reason: "already refunded" });
-    createOrderRow("nLZKmNT");
+    await createOrderRow("nLZKmNT");
     const all = await watchAll(deps(product), "suggest");
     expect(all.map((r) => r.outcome)).toEqual(["skipped", "skipped"]);
   });

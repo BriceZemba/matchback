@@ -27,11 +27,9 @@ export type RefundResult = { claimId: string; refundId: string; status: string; 
 
 type RefundRow = { claim_id: string; refund_id: string | null; status: string; amount_cents: number; currency: string };
 
-function refundedSoFar(captureId: string): number {
-  const row = getDb()
-    .prepare("SELECT COALESCE(SUM(amount_cents), 0) AS total FROM refunds WHERE capture_id = ? AND status != 'claimed'")
-    .get(captureId) as { total: number };
-  return row.total;
+async function refundedSoFar(captureId: string): Promise<number> {
+  const row = await getDb().get("SELECT COALESCE(SUM(amount_cents), 0) AS total FROM refunds WHERE capture_id = ? AND status != 'claimed'", captureId) as { total: number | string };
+  return Number(row.total); // Postgres returns SUM() as a string
 }
 
 /** refundCapturedPayment for an approved price-match claim, guarded by the claim "refund:<claimId>". */
@@ -40,12 +38,12 @@ export async function issuePriceMatchRefund(input: RefundRequestInput): Promise<
   const { claimId, orderId, amountCents, retailer } = input;
 
   // Invariants (paypal-plan.md 1b.2), checked before any claim exists.
-  const order = getOrderRow(orderId);
+  const order = await getOrderRow(orderId);
   if (!order || order.status !== "captured" || !order.capture_id || order.captured_cents === null || !order.paypal_order_id) {
     throw new InvariantError(409, "Only a captured Matchback order can be refunded.");
   }
   if (!Number.isInteger(amountCents) || amountCents <= 0) throw new InvariantError(400, "Refund amount must be positive.");
-  const remaining = order.captured_cents - refundedSoFar(order.capture_id);
+  const remaining = order.captured_cents - (await refundedSoFar(order.capture_id));
   if (amountCents > remaining) throw new InvariantError(400, "Refund exceeds what is left on this payment.");
   if (amountCents > Math.floor(order.captured_cents * maxRefundShare())) {
     throw new InvariantError(400, "Refund exceeds the merchant's price-match cap.");
@@ -56,32 +54,30 @@ export async function issuePriceMatchRefund(input: RefundRequestInput): Promise<
   const paypalOrderId = order.paypal_order_id;
   const currency = order.currency;
 
-  const existing = takeClaim(claimKey, "refundCapturedPayment");
+  const existing = await takeClaim(claimKey, "refundCapturedPayment");
   if (existing?.state === "done") return JSON.parse(existing.result_json!) as RefundResult;
 
   if (!existing) {
     try {
-      db.prepare(
-        "INSERT INTO refunds (claim_id, order_id, capture_id, kind, amount_cents, currency, status, created_at) VALUES (?, ?, ?, 'price_match', ?, ?, 'claimed', ?)",
-      ).run(claimId, orderId, captureId, amountCents, currency, now());
+      await db.run("INSERT INTO refunds (claim_id, order_id, capture_id, kind, amount_cents, currency, status, created_at) VALUES (?, ?, ?, 'price_match', ?, ?, 'claimed', ?)", claimId, orderId, captureId, amountCents, currency, now());
     } catch (err) {
-      releaseClaim(claimKey);
+      await releaseClaim(claimKey);
       if (isDuplicateKey(err)) throw new InvariantError(409, "This order already received a price-match refund.");
       throw err;
     }
   }
 
   const client = getPaypalClient();
-  const record = (r: Refund): RefundResult => {
+  const record = async (r: Refund): Promise<RefundResult> => {
     if (!r.id || !r.status) throw new OutcomeUnknownError(claimKey);
     const result = { claimId, refundId: r.id, status: r.status, amountCents, currency };
-    db.prepare("UPDATE refunds SET refund_id = ?, status = ? WHERE claim_id = ?").run(r.id, r.status.toLowerCase(), claimId);
-    finishClaim(claimKey, result);
+    await db.run("UPDATE refunds SET refund_id = ?, status = ? WHERE claim_id = ?", r.id, r.status.toLowerCase(), claimId);
+    await finishClaim(claimKey, result);
     return result;
   };
-  const release = () => {
-    db.prepare("DELETE FROM refunds WHERE claim_id = ?").run(claimId);
-    releaseClaim(claimKey);
+  const release = async () => {
+    await db.run("DELETE FROM refunds WHERE claim_id = ?", claimId);
+    await releaseClaim(claimKey);
   };
 
   // Settle an unknown outcome: look for a refund carrying our custom_id on the order.
@@ -89,12 +85,12 @@ export async function issuePriceMatchRefund(input: RefundRequestInput): Promise<
     try {
       const read = await client.orders.getOrder({ id: paypalOrderId });
       const found = read.purchaseUnits?.flatMap((pu) => pu.payments?.refunds ?? []).find((r) => r.customId === claimId);
-      if (found) return record(found);
+      if (found) return await record(found);
     } catch {
       // fall through: still unknown
     }
-    markUnknown(claimKey);
-    db.prepare("UPDATE refunds SET status = 'unknown' WHERE claim_id = ?").run(claimId);
+    await markUnknown(claimKey);
+    await db.run("UPDATE refunds SET status = 'unknown' WHERE claim_id = ?", claimId);
     throw new OutcomeUnknownError(claimKey, { cause });
   };
 
@@ -112,19 +108,19 @@ export async function issuePriceMatchRefund(input: RefundRequestInput): Promise<
         },
       })
       .asApiResult();
-    if (result.ok) return record(result.value);
+    if (result.ok) return await record(result.value);
     if (result.status >= 500) return settle(new Error(`refundCapturedPayment answered ${result.status}`));
-    release();
+    await release();
     const body = "body" in result.payload ? result.payload.body : undefined;
     throw new PaypalRefusedError(result.status, reasonFrom(body), body?.debugId, issueFrom(body));
   } catch (err) {
     if (err instanceof PaypalRefusedError || err instanceof OutcomeUnknownError) throw err;
     if (wasNeverSent(err)) {
-      release();
+      await release();
       throw new PaypalIntegrationError("refundCapturedPayment was not sent", { cause: err });
     }
     if (isUnknownOutcome(err)) return settle(err);
-    release();
+    await release();
     throw err;
   }
 }
@@ -141,7 +137,7 @@ export type RefundReadBack = {
 /** Independent read-back through different calls than the one that wrote: getRefund + getCapturedPayment. */
 export async function readBackRefund(claimId: string): Promise<RefundReadBack> {
   const db = getDb();
-  const row = db.prepare("SELECT r.*, o.capture_id AS cap FROM refunds r JOIN orders o ON o.id = r.order_id WHERE r.claim_id = ?").get(claimId) as
+  const row = await db.get("SELECT r.*, o.capture_id AS cap FROM refunds r JOIN orders o ON o.id = r.order_id WHERE r.claim_id = ?", claimId) as
     | (RefundRow & { cap: string })
     | undefined;
   if (!row?.refund_id) throw new InvariantError(404, "No refund recorded for this claim.");

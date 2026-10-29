@@ -32,23 +32,23 @@ export function watchModeFromEnv(env: NodeJS.ProcessEnv = process.env): WatchMod
 }
 
 /** The finding the shopper can act on now, if any. */
-export function activeFinding(orderId: string): FindingRow | undefined {
-  return getDb().prepare("SELECT * FROM watch_findings WHERE order_id = ? AND status = 'suggested' ORDER BY found_at DESC LIMIT 1").get(orderId) as FindingRow | undefined;
+export async function activeFinding(orderId: string): Promise<FindingRow | undefined> {
+  return await getDb().get("SELECT * FROM watch_findings WHERE order_id = ? AND status = 'suggested' ORDER BY found_at DESC LIMIT 1", orderId) as FindingRow | undefined;
 }
 
-export function lastWatched(orderId: string): string | null {
-  const row = getDb().prepare("SELECT watch_checked_at FROM orders WHERE id = ?").get(orderId) as { watch_checked_at: string | null } | undefined;
+export async function lastWatched(orderId: string): Promise<string | null> {
+  const row = await getDb().get("SELECT watch_checked_at FROM orders WHERE id = ?", orderId) as { watch_checked_at: string | null } | undefined;
   return row?.watch_checked_at ?? null;
 }
 
 const cents = (o: C3Offer) => Math.round(o.price.price * 100);
 
 /** Why an order is not watched right now, or null when it is. */
-function notWatchable(order: OrderRow | undefined, deps: Pick<VerifyDeps, "settings" | "now">): string | null {
+async function notWatchable(order: OrderRow | undefined, deps: Pick<VerifyDeps, "settings" | "now">): Promise<string | null> {
   if (!order || order.status !== "captured" || !order.capture_id) return "not paid";
   const db = getDb();
-  if (db.prepare("SELECT 1 FROM refunds WHERE order_id = ? AND kind = 'price_match'").get(order.id)) return "already refunded";
-  if (db.prepare("SELECT 1 FROM claims WHERE order_id = ? AND status IN ('verifying', 'approved', 'refund_unknown')").get(order.id)) return "claim in progress";
+  if (await db.get("SELECT 1 FROM refunds WHERE order_id = ? AND kind = 'price_match'", order.id)) return "already refunded";
+  if (await db.get("SELECT 1 FROM claims WHERE order_id = ? AND status IN ('verifying', 'approved', 'refund_unknown')", order.id)) return "claim in progress";
   const paidAt = Date.parse(order.captured_at ?? order.created_at);
   if (deps.now().getTime() - paidAt > deps.settings.windowDays * 86_400_000) return "claim window closed";
   return null;
@@ -62,14 +62,14 @@ export type WatchResult =
 /** Look for a cheaper qualifying offer for one order and verify it. */
 export async function watchOrder(orderId: string, deps: VerifyDeps = defaultDeps(), mode: WatchMode = watchModeFromEnv()): Promise<WatchResult> {
   const db = getDb();
-  const order = getOrderRow(orderId);
-  const skip = notWatchable(order, deps);
+  const order = await getOrderRow(orderId);
+  const skip = await notWatchable(order, deps);
   if (skip) return { order: orderId, outcome: "skipped", reason: skip };
   const paidCents = order!.captured_cents ?? order!.amount_cents;
-  const title = (db.prepare("SELECT title FROM catalog WHERE product_id = ?").get(order!.product_id) as { title: string }).title;
+  const title = (await db.get("SELECT title FROM catalog WHERE product_id = ?", order!.product_id) as { title: string }).title;
 
   const product = await deps.channel3.product(order!.product_id);
-  db.prepare("UPDATE orders SET watch_checked_at = ? WHERE id = ?").run(now(), orderId);
+  await db.run("UPDATE orders SET watch_checked_at = ? WHERE id = ?", now(), orderId);
   // Cheap pre-filter so the verifier only runs on offers that could qualify; the verifier re-checks all of it.
   const candidates = (product.offers ?? [])
     .filter((o) => !isResaleDomain(o.domain) && o.condition === "new" && o.availability === "InStock" && o.price.currency === order!.currency)
@@ -92,39 +92,38 @@ export async function watchOrder(orderId: string, deps: VerifyDeps = defaultDeps
     );
     if (evidence.decision.status !== "approved") continue;
 
-    const current = activeFinding(orderId);
+    const current = await activeFinding(orderId);
     if (current && current.domain === offer.domain && current.price_cents === cents(offer)) return { order: orderId, outcome: "found", finding: current };
-    if (current) db.prepare("UPDATE watch_findings SET status = 'expired' WHERE id = ?").run(current.id);
+    if (current) await db.run("UPDATE watch_findings SET status = 'expired' WHERE id = ?", current.id);
     const id = randomUUID();
-    db.prepare("INSERT INTO watch_findings (id, order_id, domain, offer_url, price_cents, refund_cents, status, evidence_json, found_at) VALUES (?, ?, ?, ?, ?, ?, 'suggested', ?, ?)")
-      .run(id, orderId, offer.domain, offerUrl, cents(offer), evidence.decision.refundCents, JSON.stringify(evidence), now());
+    await db.run("INSERT INTO watch_findings (id, order_id, domain, offer_url, price_cents, refund_cents, status, evidence_json, found_at) VALUES (?, ?, ?, ?, ?, ?, 'suggested', ?, ?)", id, orderId, offer.domain, offerUrl, cents(offer), evidence.decision.refundCents, JSON.stringify(evidence), now());
     if (mode === "auto") {
-      const claim = await verifyClaim(fileFromFinding(id, "en").id, deps);
-      return { order: orderId, outcome: "found", finding: getFinding(id)!, claim };
+      const claim = await verifyClaim((await fileFromFinding(id, "en")).id, deps);
+      return { order: orderId, outcome: "found", finding: (await getFinding(id))!, claim };
     }
-    return { order: orderId, outcome: "found", finding: getFinding(id)! };
+    return { order: orderId, outcome: "found", finding: (await getFinding(id))! };
   }
   // Nothing qualifies any more: an older suggestion is no longer true.
-  db.prepare("UPDATE watch_findings SET status = 'expired' WHERE order_id = ? AND status = 'suggested'").run(orderId);
+  await db.run("UPDATE watch_findings SET status = 'expired' WHERE order_id = ? AND status = 'suggested'", orderId);
   return { order: orderId, outcome: "none", checked: candidates.length };
 }
 
-export function getFinding(id: string): FindingRow | undefined {
-  return getDb().prepare("SELECT * FROM watch_findings WHERE id = ?").get(id) as FindingRow | undefined;
+export async function getFinding(id: string): Promise<FindingRow | undefined> {
+  return await getDb().get("SELECT * FROM watch_findings WHERE id = ?", id) as FindingRow | undefined;
 }
 
 /** Turn a finding into a claim. verifyClaim then runs the verifier again on fresh data before any refund. */
-export function fileFromFinding(findingId: string, locale: Locale): ClaimRow {
-  const finding = getFinding(findingId);
+export async function fileFromFinding(findingId: string, locale: Locale): Promise<ClaimRow> {
+  const finding = await getFinding(findingId);
   if (!finding || finding.status !== "suggested") throw new InvariantError(409, "This price drop is no longer available.");
-  const claim = fileWatchClaim(finding.order_id, finding.offer_url, finding.domain, locale);
-  getDb().prepare("UPDATE watch_findings SET status = 'claimed', claim_id = ? WHERE id = ?").run(claim.id, findingId);
+  const claim = await fileWatchClaim(finding.order_id, finding.offer_url, finding.domain, locale);
+  await getDb().run("UPDATE watch_findings SET status = 'claimed', claim_id = ? WHERE id = ?", claim.id, findingId);
   return claim;
 }
 
 /** Watch every paid order still inside the claim window, one at a time. */
 export async function watchAll(deps: VerifyDeps = defaultDeps(), mode: WatchMode = watchModeFromEnv()): Promise<WatchResult[]> {
-  const ids = (getDb().prepare("SELECT id FROM orders WHERE status = 'captured' ORDER BY created_at").all() as { id: string }[]).map((r) => r.id);
+  const ids = (await getDb().all("SELECT id FROM orders WHERE status = 'captured' ORDER BY created_at") as { id: string }[]).map((r) => r.id);
   const out: WatchResult[] = [];
   for (const id of ids) {
     try {

@@ -23,3 +23,6 @@ STRATEGY-REVIEW.md
 .claude/
 eval/tmp/
 data/
+
+# Vercel CLI link
+.vercel/

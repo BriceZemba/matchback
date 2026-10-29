@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const claim = getClaim(id);
+  const claim = await getClaim(id);
   if (!claim) return NextResponse.json({ error: "not found" }, { status: 404 });
   return NextResponse.json({
     id: claim.id,

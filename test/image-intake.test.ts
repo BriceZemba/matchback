@@ -113,21 +113,21 @@ describe("screenshot claims end to end (fake vision, Channel3, PayPal)", () => {
     now: () => new Date("2026-10-29T12:00:00Z"),
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     process.env.MATCHBACK_DB = "data/test-uploads/x.db"; // uploads go to data/test-uploads/uploads
     resetDbForTests();
-    getDb().prepare("INSERT INTO catalog (product_id, title, price_cents, currency) VALUES ('e2dXeQi', 'Samsung T7 Portable SSD 1TB', 27499, 'USD')").run();
+    await getDb().run("INSERT INTO catalog (product_id, title, price_cents, currency) VALUES ('e2dXeQi', 'Samsung T7 Portable SSD 1TB', 27499, 'USD')");
   });
-  function capturedOrder() {
-    const o = createOrderRow("e2dXeQi");
-    getDb().prepare("UPDATE orders SET paypal_order_id='PO1', capture_id='CAP1', captured_cents=27499, captured_at='2026-10-29T00:00:00Z', status='captured' WHERE id=?").run(o.id);
+  async function capturedOrder() {
+    const o = await createOrderRow("e2dXeQi");
+    await getDb().run("UPDATE orders SET paypal_order_id='PO1', capture_id='CAP1', captured_cents=27499, captured_at='2026-10-29T00:00:00Z', status='captured' WHERE id=?", o.id);
     return o.id;
   }
   const image = { bytes: new Uint8Array(readFileSync("test/fixtures/bestbuy-t7-screenshot.jpg")), mime: "image/jpeg" };
 
   it("refunds from the store's live price, not the price in the image", async () => {
     const refunds: { amountCents: number }[] = [];
-    const claim = fileImageClaim(capturedOrder(), image);
+    const claim = await fileImageClaim(await capturedOrder(), image);
     // The image claims $199.99; Best Buy's live price for the T7 is $259.99.
     const done = await verifyClaim(claim.id, deps(llm({ product: "Samsung External SSD", store: "Best Buy", store_domain: "bestbuy.com", price: 199.99, condition_words: [], confidence: "high" }), refunds));
     expect(done.status).toBe("refunded");
@@ -139,14 +139,14 @@ describe("screenshot claims end to end (fake vision, Channel3, PayPal)", () => {
 
   it("refuses when the image itself says open box", async () => {
     const refunds: unknown[] = [];
-    const claim = fileImageClaim(capturedOrder(), image);
+    const claim = await fileImageClaim(await capturedOrder(), image);
     const done = await verifyClaim(claim.id, deps(llm({ product: "Samsung T7", store: "Best Buy", store_domain: "bestbuy.com", price: 229.99, condition_words: ["Open-Box Excellent"], confidence: "high" }), refunds));
     expect(done.status).toBe("refused");
     expect(refunds).toHaveLength(0);
   });
 
   it("sends the claim to a person when the store can't be read from the image", async () => {
-    const claim = fileImageClaim(capturedOrder(), image);
+    const claim = await fileImageClaim(await capturedOrder(), image);
     const done = await verifyClaim(claim.id, deps(llm({ product: "SSD", store: null, store_domain: null, price: 199.99, condition_words: [], confidence: "low" }), []));
     expect(done.status).toBe("needs_review");
   });
@@ -154,7 +154,7 @@ describe("screenshot claims end to end (fake vision, Channel3, PayPal)", () => {
   it("sends a search-matched listing that is a different product to a person, not a refusal", async () => {
     const shield: C3Product = { id: "SHxxxx", title: "Samsung T7 Shield Portable SSD 2TB", offers: [offer("bestbuy.com", 347.83)] };
     const own: C3Product = { ...T7, offers: [offer("bhphotovideo.com", 230.01)] };
-    const claim = fileImageClaim(capturedOrder(), image);
+    const claim = await fileImageClaim(await capturedOrder(), image);
     const d = deps(async (_u, init) => {
       const body = JSON.parse(String(init?.body));
       const tool = body.tools[0].function.name as string;
@@ -169,9 +169,9 @@ describe("screenshot claims end to end (fake vision, Channel3, PayPal)", () => {
     expect(ev.decision.checks.map((c: { id: string }) => c.id)).toEqual(["image_read", "listing"]);
   });
 
-  it("rejects an unsupported file type and an empty file", () => {
-    const id = capturedOrder();
-    expect(() => fileImageClaim(id, { bytes: new Uint8Array([1, 2]), mime: "application/pdf" })).toThrow(/PNG, JPEG or WebP/);
-    expect(() => fileImageClaim(id, { bytes: new Uint8Array(), mime: "image/png" })).toThrow(/5 MB/);
+  it("rejects an unsupported file type and an empty file", async () => {
+    const id = await capturedOrder();
+    await expect(fileImageClaim(id, { bytes: new Uint8Array([1, 2]), mime: "application/pdf" })).rejects.toThrow(/PNG, JPEG or WebP/);
+    await expect(fileImageClaim(id, { bytes: new Uint8Array(), mime: "image/png" })).rejects.toThrow(/5 MB/);
   });
 });

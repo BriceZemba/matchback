@@ -56,14 +56,14 @@ describe.skipIf(process.env.EVAL !== "1")("evaluation", () => {
     const { providersFromEnv } = await import("@/lib/llm");
 
     const db = getDb();
-    db.exec("CREATE TABLE IF NOT EXISTS llm_cache (key TEXT PRIMARY KEY, body TEXT NOT NULL, status INTEGER NOT NULL)");
+    await db.run("CREATE TABLE IF NOT EXISTS llm_cache (key TEXT PRIMARY KEY, body TEXT NOT NULL, status INTEGER NOT NULL)");
     const mode = (process.env.EVAL_CACHE as "frozen" | "ttl" | "off" | undefined) ?? "frozen";
     const channel3 = cachedChannel3(createChannel3Client(), db, { mode, cacheErrors: true });
 
     // Cache AI answers by request body, so the same prompt always gets the same recorded answer.
     const llmFetch: typeof fetch = async (input, init) => {
       const key = createHash("sha256").update(String(init?.body ?? "")).digest("hex");
-      const hit = db.prepare("SELECT body, status FROM llm_cache WHERE key = ?").get(key) as { body: string; status: number } | undefined;
+      const hit = await db.get("SELECT body, status FROM llm_cache WHERE key = ?", key) as { body: string; status: number } | undefined;
       if (hit) return new Response(hit.body, { status: hit.status });
       // Groq's free tier allows 8,000 tokens a minute (about 5 identity checks): wait for the reset it
       // reports and retry, so a rate limit never turns into "AI unavailable" inside the evaluation.
@@ -75,7 +75,7 @@ describe.skipIf(process.env.EVAL !== "1")("evaluation", () => {
           await new Promise((r) => setTimeout(r, Math.min(Math.max(Number.isFinite(reset) ? reset : 15, 2), 60) * 1000 + 500));
           continue;
         }
-        if (res.ok) db.prepare("INSERT OR REPLACE INTO llm_cache (key, body, status) VALUES (?, ?, ?)").run(key, body, res.status);
+        if (res.ok) await db.run("INSERT OR REPLACE INTO llm_cache (key, body, status) VALUES (?, ?, ?)", key, body, res.status);
         return new Response(body, { status: res.status });
       }
     };

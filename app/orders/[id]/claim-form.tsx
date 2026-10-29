@@ -3,14 +3,16 @@
 import { useRef, useState } from "react";
 import { SubmitButton } from "../../submit-button";
 import type { Dict } from "@/lib/i18n";
+import type { SampleLink } from "@/lib/judge";
 
 /** Two ways to claim: paste the competitor's link, or upload a screenshot / photo of the offer. */
-export function ClaimForm({ orderId, t }: { orderId: string; t: Dict["form"] }) {
+export function ClaimForm({ orderId, t, samples = [] }: { orderId: string; t: Dict["form"]; samples?: SampleLink[] }) {
   const [mode, setMode] = useState<"link" | "image">("link");
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [drag, setDrag] = useState(false);
   const input = useRef<HTMLInputElement>(null);
+  const link = useRef<HTMLInputElement>(null);
 
   const pick = (file: File | undefined) => {
     if (!file) return;
@@ -33,7 +35,17 @@ export function ClaimForm({ orderId, t }: { orderId: string; t: Dict["form"] }) 
           <input type="hidden" name="orderId" value={orderId} />
           <div className="field">
             <label htmlFor="competitorUrl">{t.linkLabel}</label>
-            <input className="input" id="competitorUrl" name="competitorUrl" type="url" required placeholder="https://www.bestbuy.com/site/…" />
+            <input ref={link} className="input" id="competitorUrl" name="competitorUrl" type="url" required placeholder="https://www.bestbuy.com/site/…" />
+            {samples.length > 0 && (
+              <div className="samples" aria-label="Sample links">
+                <span className="subtle mono">Judges: try a real link</span>
+                {samples.map((s) => (
+                  <button key={s.url} type="button" className={`sample ${s.expect}`} title={s.why} onClick={() => { if (link.current) link.current.value = s.url; }}>
+                    {s.label} <span>{s.expect === "refund" ? "→ refund" : "→ refused"}</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           <div className="form-row">
             <SubmitButton pendingLabel={t.starting} className="btn btn-accent">{t.submit}</SubmitButton>
