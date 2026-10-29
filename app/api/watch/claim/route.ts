@@ -17,6 +17,7 @@ export async function POST(req: Request) {
     void verifyClaim(claim.id).catch((err) => console.error("verification failed", claim.id, err));
     return NextResponse.redirect(`${origin}/claims/${claim.id}`, 303);
   } catch (err) {
+    console.error("watch claim failed", findingId, err);
     return NextResponse.redirect(`${origin}/orders/${encodeURIComponent(orderId)}?notice=${encodeURIComponent(toHttp(err).message)}`, 303);
   }
 }

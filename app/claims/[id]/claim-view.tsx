@@ -9,7 +9,7 @@ type ClaimJson = {
   orderId: string;
   competitorUrl: string;
   status: string;
-  source?: "link" | "image";
+  source?: "link" | "image" | "watch";
   competitorDomain?: string | null;
   refundId: string | null;
   error: string | null;
@@ -91,7 +91,7 @@ export function ClaimView({ id, locale, t }: { id: string; locale: Locale; t: Cl
     const m = detail?.match(/vs \$([\d,]+\.\d{2}) paid/);
     return m ? Math.round(Number(m[1]!.replace(/,/g, "")) * 100) : null;
   })();
-  const host = !claim ? "" : isImage ? (claim.competitorDomain ?? "") : new URL(claim.competitorUrl).hostname.replace(/^www\./, "");
+  const host = !claim ? "" : isImage || claim.source === "watch" ? (claim.competitorDomain ?? "") : new URL(claim.competitorUrl).hostname.replace(/^www\./, "");
 
   const view =
     !claim ? { kind: "scan" as const, eyebrow: t.loadingEyebrow, title: t.loadingTitle }
