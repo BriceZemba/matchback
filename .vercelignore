@@ -1,0 +1,21 @@
+# Never upload secrets, local data or private notes to Vercel.
+.env
+.env.*
+!.env.example
+data/
+*.db
+*.db-wal
+*.db-shm
+COMPETITION.md
+STRATEGY-REVIEW.md
+.claude/
+.next/
+node_modules/
+# Not needed to build or run the app.
+eval/
+test/
+spikes/
+evidence/
+docs/
+scripts/
+paypal-plan.md
