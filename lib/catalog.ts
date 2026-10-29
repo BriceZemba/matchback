@@ -9,6 +9,16 @@ const SEED = [
   { product_id: "nLZKmNT", title: "Logitech MX Master 3S Performance Wireless Mouse", price_cents: 11999 },
   { product_id: "cTyUOkU", title: "Amazon Kindle Paperwhite", price_cents: 19999 },
   { product_id: "muLXXMd", title: "KitchenAid Artisan Series 5-Quart Tilt-Head Stand Mixer", price_cents: 44999 },
+  // Added 2026-10-29: each has several retailers on its Channel3 record (checked that day), so the store
+  // shows verified claims, price-watch drops and traps (resale sites, used or out-of-stock offers).
+  { product_id: "dgVgimm", title: "Garmin Forerunner 265 GPS Running Smartwatch", price_cents: 44999 },
+  { product_id: "m7BdhGq", title: "GoPro HERO12 Black Action Camera", price_cents: 34999 },
+  { product_id: "CBwmyTM", title: "Bose QuietComfort Ultra Wireless Noise Cancelling Earbuds", price_cents: 29900 },
+  { product_id: "puD6dGn", title: "Vitamix Explorian Series E310 Blender", price_cents: 37995 },
+  { product_id: "12pv9iN", title: "Sonos Era 100 Smart Speaker", price_cents: 22900 },
+  { product_id: "F5Smbri", title: "Fitbit Charge 6 Fitness & Health Tracker", price_cents: 16995 },
+  { product_id: "dSyfEh6", title: "Instant Pot Duo Plus V4 Pressure Cooker", price_cents: 15499 },
+  { product_id: "D9iEwzZ", title: "JBL Flip 6 Portable Bluetooth Speaker", price_cents: 13999 },
 ];
 
 export type CatalogItem = { product_id: string; title: string; price_cents: number; currency: string; image_url: string | null; image_alt: string | null };
