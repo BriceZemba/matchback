@@ -9,7 +9,7 @@ import { InvariantError, OutcomeUnknownError, PaypalRefusedError, friendlyRefusa
 import { issuePriceMatchRefund } from "@/lib/paypal/refunds";
 import { explainDecision, refundProblemText, type Explanation } from "./explain";
 import type { Locale } from "@/lib/i18n";
-import { readOfferImage, resolveListing, type Extraction } from "./image-intake";
+import { imageMatchesPurchase, readOfferImage, resolveListing, type Extraction } from "./image-intake";
 import { checkIdentity, type IdentityMode, type IdentityVerdict } from "./identity";
 import { decide, isResaleDomain, settingsFromEnv, type Check, type ConditionSource, type Decision, type PolicySettings } from "./policy";
 
@@ -295,7 +295,19 @@ async function evaluateImageClaim(
   } else {
     evidence.decision.checks.unshift(...imageChecks(ex, evidence.decision.competitorCents));
   }
+  // The listing may be the purchased product's own (matched by store); the image itself must show
+  // that product too, or a screenshot of anything at that store would qualify.
+  const shows = imageMatchesPurchase(ex, claimInput.purchasedTitle);
+  if (!shows.ok) {
+    evidence.decision.checks.push({
+      id: "image_product",
+      label: "Same product in your image",
+      outcome: "review",
+      detail: `Your image shows "${shows.shown || "an unreadable product"}", which does not look like the ${claimInput.purchasedTitle} you bought. A person will check it.`,
+    });
+  }
   evidence.decision.status = statusFrom(evidence.decision.checks);
+  if (evidence.decision.status !== "approved") evidence.decision.refundCents = 0;
   evidence.image = { extraction: ex, provider: reading.provider, matchedBy: resolution.matchedBy };
   return evidence;
 }

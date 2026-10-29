@@ -149,6 +149,23 @@ export function similarity(purchasedTitle: string, candidateTitle: string): numb
 }
 
 /**
+ * Does the image show the product that was bought? The listing found afterwards can be the purchased
+ * product's own (matched by store alone), so without this a screenshot of ANY product at a store that
+ * sells the purchased one cheaper would pass (found live 2026-10-29: a Samsung SSD screenshot on a
+ * GoPro order). The brand read from the image must appear in the purchased title, and the product
+ * words must share at least one word with it.
+ */
+export function imageMatchesPurchase(ex: Extraction, purchasedTitle: string): { ok: boolean; shown: string } {
+  const shown = [ex.brand, ex.product, ex.model].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
+  const title = titleTokens(purchasedTitle);
+  const brandTokens = ex.brand ? [...titleTokens(ex.brand)] : [];
+  const brandOk = brandTokens.length === 0 || brandTokens.some((w) => title.has(w));
+  const productWords = [...titleTokens([ex.product, ex.model].filter(Boolean).join(" "))].filter((w) => !brandTokens.includes(w));
+  const productOk = productWords.some((w) => title.has(w));
+  return { ok: brandOk && productOk, shown };
+}
+
+/**
  * How well a store listing fits the claim: title closeness to the purchased product, minus a penalty
  * for an edition word in only one title, plus a strong bonus when the store's price matches the price
  * in the image (that price identifies WHICH listing the screenshot shows; the refund still uses the

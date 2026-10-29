@@ -182,7 +182,7 @@ const en = {
     checkLabels: {
       window: "Within the claim window", retailer: "Qualifying retailer", offer: "Competitor offer found", condition: "Sold new",
       stock: "In stock", currency: "Same currency", cheaper: "Lower price", floor: "Plausible price", identity: "Same product",
-      lookup: "Competitor page readable", image_read: "Read from your image", image_condition: "Sold new", image_price: "Live price confirmed",
+      lookup: "Competitor page readable", image_read: "Read from your image", image_condition: "Sold new", image_price: "Live price confirmed", image_product: "Same product in your image",
       listing: "Store's live listing found",
     } as Record<string, string>,
   },
@@ -347,7 +347,7 @@ const fr: Dict = {
     checkLabels: {
       window: "Dans le délai de la garantie", retailer: "Boutique éligible", offer: "Offre concurrente trouvée", condition: "Vendu neuf",
       stock: "En stock", currency: "Même devise", cheaper: "Prix plus bas", floor: "Prix plausible", identity: "Même produit",
-      lookup: "Page concurrente lisible", image_read: "Lu sur votre image", image_condition: "Vendu neuf", image_price: "Prix réel confirmé",
+      lookup: "Page concurrente lisible", image_read: "Lu sur votre image", image_condition: "Vendu neuf", image_price: "Prix réel confirmé", image_product: "Même produit sur votre image",
       listing: "Annonce de la boutique trouvée",
     },
   },
@@ -510,7 +510,7 @@ const es: Dict = {
     checkLabels: {
       window: "Dentro del plazo", retailer: "Tienda válida", offer: "Oferta encontrada", condition: "Vendido nuevo",
       stock: "En stock", currency: "Misma moneda", cheaper: "Precio más bajo", floor: "Precio plausible", identity: "Mismo producto",
-      lookup: "Página legible", image_read: "Leído de tu imagen", image_condition: "Vendido nuevo", image_price: "Precio real confirmado",
+      lookup: "Página legible", image_read: "Leído de tu imagen", image_condition: "Vendido nuevo", image_price: "Precio real confirmado", image_product: "Mismo producto en tu imagen",
       listing: "Anuncio de la tienda encontrado",
     },
   },

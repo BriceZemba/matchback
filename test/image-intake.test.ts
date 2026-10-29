@@ -4,7 +4,7 @@ import type { C3Offer, C3Product, Channel3Client } from "@/lib/channel3";
 import { getDb, resetDbForTests } from "@/lib/db";
 import type { LlmProvider } from "@/lib/llm";
 import { createOrderRow } from "@/lib/paypal/checkout";
-import { normalizeDomain, parseExtraction, readOfferImage, resolveListing, storeDomainFor, type Extraction } from "@/lib/verifier/image-intake";
+import { imageMatchesPurchase, normalizeDomain, parseExtraction, readOfferImage, resolveListing, storeDomainFor, type Extraction } from "@/lib/verifier/image-intake";
 import { fileImageClaim, verifyClaim, type VerifyDeps } from "@/lib/verifier/run";
 
 const offer = (domain: string, price: number, condition: string | null = "new"): C3Offer => ({ domain, price: { price, currency: "USD" }, availability: "InStock", condition, url: `https://buy.example/${domain}` });
@@ -173,5 +173,53 @@ describe("screenshot claims end to end (fake vision, Channel3, PayPal)", () => {
     const id = await capturedOrder();
     await expect(fileImageClaim(id, { bytes: new Uint8Array([1, 2]), mime: "application/pdf" })).rejects.toThrow(/PNG, JPEG or WebP/);
     await expect(fileImageClaim(id, { bytes: new Uint8Array(), mime: "image/png" })).rejects.toThrow(/5 MB/);
+  });
+});
+
+describe("imageMatchesPurchase", () => {
+  const ex = (over: Partial<Extraction>) => extraction({ brand: null, model: null, ...over });
+  it("accepts an image of the purchased product", () => {
+    expect(imageMatchesPurchase(ex({ brand: "GoPro", product: "HERO12 Black" }), "GoPro HERO12 Black Action Camera").ok).toBe(true);
+    expect(imageMatchesPurchase(ex({ product: "Samsung External SSD" }), "Samsung T7 Portable SSD 1TB").ok).toBe(true);
+    expect(imageMatchesPurchase(ex({ brand: "Instant Brands", product: "Duo Plus pressure cooker" }), "Instant Pot Duo Plus V4 Pressure Cooker").ok).toBe(true);
+  });
+  it("rejects an image of another product (live case 2026-10-29: Samsung SSD on a GoPro order)", () => {
+    expect(imageMatchesPurchase(ex({ brand: "Samsung", product: "Samsung External SSD" }), "GoPro HERO12 Black Action Camera")).toEqual({ ok: false, shown: "Samsung Samsung External SSD" });
+    expect(imageMatchesPurchase(ex({ brand: "Sony", product: "Action Camera" }), "GoPro HERO12 Black Action Camera").ok).toBe(false);
+  });
+});
+
+describe("screenshot of another product at a store that sells ours cheaper", () => {
+  const GOPRO: C3Product = { id: "m7BdhGq", title: "GoPro HERO12 Black Action Camera", offers: [offer("bestbuy.com", 295.99)] };
+  beforeEach(async () => {
+    resetDbForTests();
+    await getDb().run("INSERT INTO catalog (product_id, title, price_cents, currency) VALUES ('m7BdhGq', 'GoPro HERO12 Black Action Camera', 34999, 'USD')");
+  });
+  it("goes to a person instead of refunding", async () => {
+    const o = await createOrderRow("m7BdhGq");
+    await getDb().run("UPDATE orders SET paypal_order_id='PO9', capture_id='CAP9', captured_cents=34999, captured_at='2026-10-29T00:00:00Z', status='captured' WHERE id=?", o.id);
+    const claim = await fileImageClaim(o.id, { bytes: new Uint8Array(readFileSync("test/fixtures/bestbuy-t7-screenshot.jpg")), mime: "image/jpeg" });
+    const refunds: unknown[] = [];
+    const llm: typeof fetch = async (_u, init) => {
+      const tool = JSON.parse(String(init?.body)).tools[0].function.name as string;
+      const args = tool === "report_offer"
+        ? { product: "Samsung External SSD", brand: "Samsung", store: "Best Buy", store_domain: "bestbuy.com", price: 259.99, condition_words: [], confidence: "high" }
+        : { text: "A person will look at this claim." };
+      return new Response(JSON.stringify({ choices: [{ message: { tool_calls: [{ function: { name: tool, arguments: JSON.stringify(args) } }] } }] }), { status: 200 });
+    };
+    const done = await verifyClaim(claim.id, {
+      channel3: fakeChannel3({ byId: { m7BdhGq: GOPRO } }),
+      settings: { windowDays: 14, minDiffCents: 100, floorShare: 0.6, allowColorVariants: true },
+      identityMode: "ai",
+      providers: [{ name: "groq", baseUrl: "https://llm.test/v1", apiKey: "k", model: "m" }],
+      llmFetch: llm,
+      refund: async (r) => { refunds.push(r); return { claimId: r.claimId, refundId: "RF", status: "COMPLETED", amountCents: r.amountCents, currency: "USD" }; },
+      now: () => new Date("2026-10-29T12:00:00Z"),
+    });
+    expect(done.status).toBe("needs_review");
+    expect(refunds).toHaveLength(0);
+    const ev = JSON.parse(done.decision_json!);
+    expect(ev.decision.refundCents).toBe(0);
+    expect(ev.decision.checks.find((c: { id: string }) => c.id === "image_product").outcome).toBe("review");
   });
 });
