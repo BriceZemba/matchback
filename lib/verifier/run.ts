@@ -8,7 +8,8 @@ import type { LlmProvider } from "@/lib/llm";
 import { getOrderRow } from "@/lib/paypal/checkout";
 import { InvariantError, OutcomeUnknownError, PaypalRefusedError, friendlyRefusal } from "@/lib/paypal/errors";
 import { issuePriceMatchRefund } from "@/lib/paypal/refunds";
-import { explainDecision, type Explanation } from "./explain";
+import { explainDecision, refundProblemText, type Explanation } from "./explain";
+import type { Locale } from "@/lib/i18n";
 import { readOfferImage, resolveListing, type Extraction } from "./image-intake";
 import { checkIdentity, type IdentityMode, type IdentityVerdict } from "./identity";
 import { decide, isResaleDomain, settingsFromEnv, type Check, type ConditionSource, type Decision, type PolicySettings } from "./policy";
@@ -29,6 +30,8 @@ export type ClaimRow = {
   image_path: string | null;
   image_mime: string | null;
   competitor_domain: string | null;
+  /** The shopper's language when they filed; the explanation is written in it. */
+  locale: Locale;
 };
 
 export type ClaimEvidence = {
@@ -52,7 +55,7 @@ export function claimsForOrder(orderId: string): ClaimRow[] {
 }
 
 /** File a claim. Checks run before anything is stored or any provider is called. */
-export function fileClaim(orderId: string, competitorUrl: string): ClaimRow {
+export function fileClaim(orderId: string, competitorUrl: string, locale: Locale = "en"): ClaimRow {
   const order = getOrderRow(orderId);
   if (!order || order.status !== "captured") throw new InvariantError(409, "Price-match claims are for paid orders only.");
   let url: URL;
@@ -63,8 +66,8 @@ export function fileClaim(orderId: string, competitorUrl: string): ClaimRow {
   }
   if (url.protocol !== "https:" && url.protocol !== "http:") throw new InvariantError(400, "Only web links are accepted.");
   const id = randomUUID();
-  getDb().prepare("INSERT INTO claims (id, order_id, competitor_url, status, created_at) VALUES (?, ?, ?, 'verifying', ?)")
-    .run(id, orderId, url.toString(), now());
+  getDb().prepare("INSERT INTO claims (id, order_id, competitor_url, status, created_at, locale) VALUES (?, ?, ?, 'verifying', ?, ?)")
+    .run(id, orderId, url.toString(), now(), locale);
   return getClaim(id)!;
 }
 
@@ -72,7 +75,7 @@ export const IMAGE_TYPES: Record<string, string> = { "image/png": "png", "image/
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
 /** File a claim from a screenshot or photo of the cheaper offer. */
-export function fileImageClaim(orderId: string, image: { bytes: Uint8Array; mime: string }): ClaimRow {
+export function fileImageClaim(orderId: string, image: { bytes: Uint8Array; mime: string }, locale: Locale = "en"): ClaimRow {
   const order = getOrderRow(orderId);
   if (!order || order.status !== "captured") throw new InvariantError(409, "Price-match claims are for paid orders only.");
   const ext = IMAGE_TYPES[image.mime];
@@ -84,8 +87,8 @@ export function fileImageClaim(orderId: string, image: { bytes: Uint8Array; mime
   const path = join(dir, `${id}.${ext}`);
   writeFileSync(path, image.bytes);
   getDb()
-    .prepare("INSERT INTO claims (id, order_id, competitor_url, status, created_at, source, image_path, image_mime) VALUES (?, ?, ?, 'verifying', ?, 'image', ?, ?)")
-    .run(id, orderId, `upload:${id}`, now(), path, image.mime);
+    .prepare("INSERT INTO claims (id, order_id, competitor_url, status, created_at, source, image_path, image_mime, locale) VALUES (?, ?, ?, 'verifying', ?, 'image', ?, ?, ?)")
+    .run(id, orderId, `upload:${id}`, now(), path, image.mime, locale);
   return getClaim(id)!;
 }
 
@@ -296,6 +299,7 @@ export async function verifyClaim(claimId: string, deps: VerifyDeps = defaultDep
       purchasedTitle: product.title,
       paidCents: order.captured_cents ?? order.amount_cents,
       competitor: evidence.competitor,
+      locale: claim.locale,
     },
     { ...(deps.providers ? { providers: deps.providers } : {}), ...(deps.llmFetch ? { fetch: deps.llmFetch } : {}) },
   );
@@ -321,12 +325,14 @@ export async function verifyClaim(claimId: string, deps: VerifyDeps = defaultDep
     save("refunded", { refund_id: refund.refundId });
   } catch (err) {
     // The explanation was written expecting a refund; when the refund does not go through, say so.
-    const approvedFor = `$${(evidence.decision.refundCents / 100).toFixed(2)}`;
     evidence.explanation = {
       source: "template",
-      text: err instanceof OutcomeUnknownError
-        ? `Your claim was approved for ${approvedFor}. We are confirming the refund with PayPal and will update this page.`
-        : `Your claim was approved for ${approvedFor}, but the refund could not be completed: ${err instanceof PaypalRefusedError ? friendlyRefusal(err.issue) : err instanceof InvariantError ? err.message : "please contact the store."}`,
+      text: refundProblemText(
+        claim.locale,
+        evidence.decision.refundCents,
+        err instanceof OutcomeUnknownError ? "unknown"
+          : { reason: err instanceof PaypalRefusedError ? friendlyRefusal(err.issue) : err instanceof InvariantError ? err.message : "please contact the store." },
+      ),
     };
     if (err instanceof OutcomeUnknownError) save("refund_unknown", { error: "Refund outcome unknown; checking with PayPal." });
     else if (err instanceof PaypalRefusedError) save("refund_failed", { error: friendlyRefusal(err.issue) });

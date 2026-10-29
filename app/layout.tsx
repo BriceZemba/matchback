@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { requestPrefs } from "@/lib/locale-server";
+import { LanguageSwitch, ThemeToggle } from "./header-controls";
 import "./globals.css";
 
 const serif = Fraunces({ subsets: ["latin"], variable: "--font-fraunces", axes: ["opsz"], style: ["normal", "italic"] });
@@ -21,9 +23,10 @@ function TagMark() {
   );
 }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const { locale, t, theme } = await requestPrefs();
   return (
-    <html lang="en" className={`${serif.variable} ${sans.variable} ${mono.variable}`}>
+    <html lang={t.htmlLang} className={`${serif.variable} ${sans.variable} ${mono.variable}`} {...(theme ? { "data-theme": theme } : {})}>
       <body>
         <header className="site-header">
           <div className="shell">
@@ -31,16 +34,20 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <span className="brand-mark"><TagMark /></span>
               Matchback
             </a>
-            <span className="pill" title="PayPal sandbox: no real money moves">
-              <span className="dot" /> Sandbox · test money
-            </span>
+            <div className="header-tools">
+              <span className="pill" title={t.sandboxTitle}>
+                <span className="dot" /> {t.sandbox}
+              </span>
+              <LanguageSwitch current={locale} label={t.language} />
+              <ThemeToggle initial={theme} labels={{ toDark: t.toDark, toLight: t.toLight }} />
+            </div>
           </div>
         </header>
         {children}
         <footer className="site-footer">
           <div className="shell">
-            <span>Demo store on the PayPal sandbox. No real money moves.</span>
-            <span>Offers checked with Channel3 · Payments and refunds by PayPal</span>
+            <span>{t.footerLeft}</span>
+            <span>{t.footerRight}</span>
           </div>
         </footer>
       </body>

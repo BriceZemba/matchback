@@ -99,6 +99,7 @@ function migrate(d: DatabaseSync) {
   addColumn(d, "claims", "image_path TEXT");
   addColumn(d, "claims", "image_mime TEXT");
   addColumn(d, "claims", "competitor_domain TEXT");
+  addColumn(d, "claims", "locale TEXT NOT NULL DEFAULT 'en'");
 }
 
 function addColumn(d: DatabaseSync, table: string, definition: string) {

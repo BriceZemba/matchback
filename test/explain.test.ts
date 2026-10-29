@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { LlmProvider } from "@/lib/llm";
-import { explainDecision, rejectExplanation, templateExplanation, type ExplainInput } from "@/lib/verifier/explain";
+import { amountsIn, explainDecision, rejectExplanation, templateExplanation, type ExplainInput } from "@/lib/verifier/explain";
 
 const approved: ExplainInput = {
   decision: {
@@ -63,5 +63,29 @@ describe("explainDecision", () => {
     const out = await explainDecision(refused, { providers: [provider], fetch: down });
     expect(out.source).toBe("template");
     expect(out.text).toContain("doesn't qualify");
+  });
+});
+
+describe("explanations in the shopper's language", () => {
+  const fr: ExplainInput = { ...approved, locale: "fr" };
+  it("reads French and Spanish amount formats", () => {
+    expect(amountsIn("La différence de 44,98 $ vous est remboursée ; payé 274,99 $.")).toEqual([4498, 27499]);
+    expect(amountsIn("Pagaste US$ 1.234,50 y 44.98 USD")).toEqual([123450, 4498]);
+  });
+  it("accepts a faithful French text and rejects an invented amount or euros", () => {
+    expect(rejectExplanation("B&H vend le même SSD neuf à 230,01 $ : la différence de 44,98 $ vous est remboursée sur PayPal.", fr)).toBeNull();
+    expect(rejectExplanation("La différence de 50,00 $ vous est remboursée sur votre compte PayPal.", fr)).toMatch(/not in the data/);
+    expect(rejectExplanation("La différence de 44,98 € vous est remboursée sur votre compte PayPal.", fr)).toMatch(/currency/);
+  });
+  it("rejects a refund promise on a refused claim in French and Spanish", () => {
+    expect(rejectExplanation("C'est l'édition Signature, mais votre remboursement est en route.", { ...refused, locale: "fr" })).toMatch(/promises a refund/);
+    expect(rejectExplanation("Es la edición Signature, pero tu reembolso ya está en camino.", { ...refused, locale: "es" })).toMatch(/promises a refund/);
+  });
+  it("falls back to a template in the shopper's language", async () => {
+    const out = await explainDecision(fr, { providers: [provider], fetch: llm("Nous avons remboursé 99,00 $.") });
+    expect(out.source).toBe("template");
+    expect(out.text).toContain("$44.98");
+    expect(out.text).toMatch(/remboursée sur votre compte PayPal/);
+    expect(templateExplanation({ ...refused, locale: "es" })).toBe("Esta oferta no da derecho a la igualación de precio. Motivo: Mismo producto.");
   });
 });

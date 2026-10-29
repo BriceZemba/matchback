@@ -222,3 +222,17 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.02e
 .read-grid { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-family: var(--mono); font-size: 13.5px; margin: 12px 0 0; }
 .read-grid dt { color: var(--ink-3); }
 .read-grid dd { margin: 0; }
+
+/* ---------- header tools: language + theme ---------- */
+.header-tools { display: flex; align-items: center; gap: 10px; }
+.lang { display: inline-flex; border: 1.5px solid var(--rule); }
+.lang button { appearance: none; border: 0; background: var(--card); color: var(--ink-2); font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em; min-width: 36px; min-height: 32px; cursor: pointer; }
+.lang button + button { border-left: 1.5px solid var(--rule); }
+.lang button.active { background: var(--ink); color: var(--paper); }
+.lang button:hover:not(.active) { background: var(--tag); color: var(--tag-ink); }
+.icon-btn { appearance: none; display: inline-grid; place-items: center; width: 35px; height: 35px; border: 1.5px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; transition: transform 0.12s var(--ease), background 0.15s; }
+.icon-btn:hover { background: var(--tag); color: var(--tag-ink); }
+.icon-btn:active { transform: scale(0.94); }
+.icon-btn svg { transition: transform 0.4s var(--ease); }
+.icon-btn:hover svg { transform: rotate(25deg); }
+@media (max-width: 600px) { .site-header .pill { display: none; } }
