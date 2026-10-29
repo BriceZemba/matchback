@@ -1,0 +1,61 @@
+{
+  "ranAt": "2026-10-29T00:57:16.360Z",
+  "results": [
+    {
+      "case": "T7 vs T7 Shield",
+      "expected": "different_model",
+      "got": "different_model",
+      "method": "llm",
+      "provider": "groq",
+      "evidence": [
+        "Purchased title: \"Samsung T7 Portable SSD 1TB\"",
+        "Competitor title: \"T7 Shield Portable SSD\"",
+        "Competitor features include \"IP65 rating\" and \"Rugged design\""
+      ],
+      "competitorId": "J4Kgrsx",
+      "decision": "refused",
+      "notPassed": [
+        "identity: fail — AI comparison (groq): different model. Purchased title: \"Samsung T7 Portable SSD 1TB\" Competitor title: \"T7 Shield Portable SSD\" Competitor features include \"IP65 rating\" and \"Rugged design\""
+      ],
+      "lookupError": null,
+      "ms": 2717
+    },
+    {
+      "case": "Kindle Paperwhite vs Signature Edition",
+      "expected": "different_model",
+      "got": "different_model",
+      "method": "llm",
+      "provider": "groq",
+      "evidence": [
+        "Purchased: 16GB Memory",
+        "Competitor: 32 GB storage",
+        "Competitor title: Signature Edition"
+      ],
+      "competitorId": "q1SnUDU",
+      "decision": "refused",
+      "notPassed": [
+        "cheaper: fail — $249.99 there vs $199.99 paid (difference $0.00).",
+        "identity: fail — AI comparison (groq): different model. Purchased: 16GB Memory Competitor: 32 GB storage Competitor title: Signature Edition"
+      ],
+      "lookupError": null,
+      "ms": 1541
+    },
+    {
+      "case": "KitchenAid Artisan red vs black matte",
+      "expected": "same_product_other_color",
+      "got": "same_product_other_color",
+      "method": "llm",
+      "provider": "groq",
+      "evidence": [
+        "title: KitchenAid Artisan Series 5-Quart Tilt-Head Stand Mixer",
+        "features: 5 Quart Capacity | Tilt-Head Design | 10 Speeds",
+        "selected variant: Color=Empire Red vs Color=Black Matte"
+      ],
+      "competitorId": "nHjGjHW",
+      "decision": "approved",
+      "notPassed": [],
+      "lookupError": null,
+      "ms": 1679
+    }
+  ]
+}

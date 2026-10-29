@@ -1,0 +1,87 @@
+{
+  "groups": [
+    {
+      "title": "Environment",
+      "checks": [
+        {
+          "status": "ok",
+          "label": "Node.js",
+          "detail": "v22.16.0"
+        },
+        {
+          "status": "ok",
+          "label": "git",
+          "detail": "git version 2.49.0.windows.1"
+        }
+      ]
+    },
+    {
+      "title": "Editors",
+      "checks": [
+        {
+          "status": "ok",
+          "label": "Claude Code",
+          "detail": "claude on PATH"
+        },
+        {
+          "status": "ok",
+          "label": "Cursor",
+          "detail": "~\\.cursor"
+        },
+        {
+          "status": "ok",
+          "label": "VS Code",
+          "detail": "~\\AppData\\Roaming\\Code\\User"
+        },
+        {
+          "status": "warn",
+          "label": "Codex",
+          "detail": "not installed (looked in codex on PATH)"
+        }
+      ]
+    },
+    {
+      "title": "Marketplace",
+      "checks": [
+        {
+          "status": "ok",
+          "label": "Reachable",
+          "detail": "raw.githubusercontent.com"
+        },
+        {
+          "status": "ok",
+          "label": "Registry",
+          "detail": "context-plugins, 43 plugins"
+        },
+        {
+          "status": "ok",
+          "label": "API budget",
+          "detail": "60 of 60 requests left"
+        }
+      ]
+    },
+    {
+      "title": "Local state",
+      "checks": [
+        {
+          "status": "ok",
+          "label": "State directory",
+          "detail": "~\\.context-plugins (writable)"
+        },
+        {
+          "status": "ok",
+          "label": "Installed",
+          "detail": "1 plugin"
+        },
+        {
+          "status": "ok",
+          "label": "Telemetry",
+          "detail": "disabled (DO_NOT_TRACK)"
+        }
+      ]
+    }
+  ],
+  "failures": 0,
+  "warnings": 1,
+  "ok": true
+}

@@ -1,0 +1,727 @@
+{
+  "about": "Labelled price-match claims built from real retailer product pages found by web search on 2026-10-29. `legit` answers one question from what the listing IS (same product or same model in another colour, sold new by a qualifying retailer): should a price match be paid at all? Price and stock are facts read from Channel3 at run time and reported separately. split=heldout cases were not looked at while tuning. Added 2026-10-29: 15 development cases on editions/generations and 11 cases in a second held-out set (split=heldout2) collected before the identity prompt was revised and not looked at while revising it.",
+  "products": {
+    "T7": {
+      "title": "Samsung T7 Portable SSD 1TB (Titan Gray)",
+      "productId": "e2dXeQi",
+      "paidCents": 27499
+    },
+    "KINDLE": {
+      "title": "Amazon Kindle Paperwhite (2024), Black",
+      "refUrl": "https://www.target.com/p/amazon-kindle-paperwhite-2024-black/-/A-91563138",
+      "paidCents": 21999
+    },
+    "MX3S": {
+      "title": "Logitech MX Master 3S Performance Wireless Mouse",
+      "productId": "nLZKmNT",
+      "paidCents": 12999
+    },
+    "ARTISAN": {
+      "title": "KitchenAid Artisan Series 5-Quart Tilt-Head Stand Mixer (Empire Red)",
+      "productId": "muLXXMd",
+      "paidCents": 44999
+    },
+    "XM5": {
+      "title": "Sony WH-1000XM5 Wireless Noise Canceling Headphones (Silver)",
+      "refUrl": "https://www.bestbuy.com/site/reviews/sony-wh-1000xm5-wireless-noise-canceling-over-the-ear-headphones-silver/6505728",
+      "paidCents": 39999
+    },
+    "APP2": {
+      "title": "Apple AirPods Pro 2 with MagSafe Case (USB-C)",
+      "refUrl": "https://www.bestbuy.com/site/apple-airpods-pro-2nd-generation-with-magsafe-case-usbc-white/6447382.p?skuId=6447382",
+      "paidCents": 24999
+    },
+    "SWOLED": {
+      "title": "Nintendo Switch OLED Model, White Joy-Con",
+      "refUrl": "https://www.walmart.com/ip/Nintendo-Switch-OLED-Sw-Oled-Model-white/294658530",
+      "paidCents": 34999
+    },
+    "QCUE2": {
+      "title": "Bose QuietComfort Ultra Earbuds (2nd Gen), Black",
+      "refUrl": "https://www.bestbuy.com/product/bose-quietcomfort-ultra-2nd-gen-true-wireless-noise-cancelling-in-ear-earbuds-black/J7C5V6WCKZ/sku/6628900",
+      "paidCents": 29999
+    },
+    "IPDUO6": {
+      "title": "Instant Pot Duo 7-in-1, 6 Quart",
+      "productId": "Bq9SknX",
+      "paidCents": 12999
+    }
+  },
+  "cases": [
+    {
+      "id": "t7-01",
+      "product": "T7",
+      "split": "dev",
+      "url": "https://www.bhphotovideo.com/c/product/1559836-REG/samsung_mu_pc1t0t_am_1tb_t7_portable_ssd.html",
+      "legit": true,
+      "kind": "same",
+      "why": "Same model and capacity, new, B&H"
+    },
+    {
+      "id": "t7-02",
+      "product": "T7",
+      "split": "dev",
+      "url": "https://www.bhphotovideo.com/c/product/1691588-REG/samsung_mu_pe1t0s_am_1tb_t7_shield_portable.html",
+      "legit": false,
+      "kind": "different_model",
+      "why": "T7 Shield is a different, rugged model"
+    },
+    {
+      "id": "t7-03",
+      "product": "T7",
+      "split": "dev",
+      "url": "https://www.bhphotovideo.com/c/product/1851331-REG/samsung_1tb_t7_portable_ssd.html",
+      "legit": false,
+      "kind": "bundle",
+      "why": "Kit: T7 plus a MagSafe/cold-shoe holder"
+    },
+    {
+      "id": "t7-04",
+      "product": "T7",
+      "split": "dev",
+      "url": "https://www.bhphotovideo.com/c/product/1559839-REG/samsung_mu_pc2t0t_am_2tb_t7_portable_ssd.html",
+      "legit": false,
+      "kind": "different_model",
+      "why": "2TB capacity, not 1TB"
+    },
+    {
+      "id": "t7-05",
+      "product": "T7",
+      "split": "heldout",
+      "url": "https://bestbuy.com/product/samsung-t7-2tb-external-usb-3-2-gen-2-portable-ssd-with-hardware-encryption-titan-gray/J3ZYGCQGGG/sku/11526952",
+      "legit": false,
+      "kind": "different_model",
+      "why": "2TB capacity, not 1TB"
+    },
+    {
+      "id": "kin-01",
+      "product": "KINDLE",
+      "split": "dev",
+      "url": "https://www.target.com/p/amazon-kindle-paperwhite-2024-black/-/A-91563138",
+      "legit": true,
+      "kind": "same",
+      "why": "Same model and colour, new, Target"
+    },
+    {
+      "id": "kin-02",
+      "product": "KINDLE",
+      "split": "dev",
+      "url": "https://www.target.com/p/amazon-kindle-paperwhite-2024-jade/-/A-93320269",
+      "legit": true,
+      "kind": "color",
+      "why": "Same model, Jade colour"
+    },
+    {
+      "id": "kin-03",
+      "product": "KINDLE",
+      "split": "heldout",
+      "url": "https://www.target.com/p/amazon-kindle-paperwhite-2024-raspberry/-/A-93320267",
+      "legit": true,
+      "kind": "color",
+      "why": "Same model, Raspberry colour"
+    },
+    {
+      "id": "kin-04",
+      "product": "KINDLE",
+      "split": "dev",
+      "url": "https://www.target.com/p/amazon-kindle-paperwhite-signature-edition-2024-metallic-black/-/A-93320263",
+      "legit": false,
+      "kind": "different_model",
+      "why": "Signature Edition: more storage, wireless charging"
+    },
+    {
+      "id": "kin-05",
+      "product": "KINDLE",
+      "split": "dev",
+      "url": "https://www.bestbuy.com/product/amazon-kindle-paperwhite-colorsoft-case-water-safe-fabric-foldable-lightweight-cover-black/J39HW6S586",
+      "legit": false,
+      "kind": "accessory",
+      "why": "A case for the Kindle, not the Kindle"
+    },
+    {
+      "id": "kin-06",
+      "product": "KINDLE",
+      "split": "heldout",
+      "url": "https://www.bestbuy.com/product/fintie-clear-case-for-7-kindle-paperwhite-12th-gen-2024-kindle-colorsoft-soft-lightweight-tpu-cover-transparent-back-shell-green/J2V7YRLGLY",
+      "legit": false,
+      "kind": "accessory",
+      "why": "Third-party case"
+    },
+    {
+      "id": "mx-01",
+      "product": "MX3S",
+      "split": "dev",
+      "url": "https://www.backmarket.com/en-us/p/logitech-mx-master-3s-mouse-wireless/24c32268-7ef8-477f-819f-864825ed84ad",
+      "legit": false,
+      "kind": "refurbished",
+      "why": "Back Market refurbished marketplace"
+    },
+    {
+      "id": "mx-02",
+      "product": "MX3S",
+      "split": "dev",
+      "url": "https://www.bestbuy.com/product/logitech-mx-master-3s-performance-wireless-mouse-darkfield-wireless-32-81-ft-bluetooth-radio-frequency-2-40-wireless-gray/J7H7ZY8XHR/sku/12173582",
+      "legit": true,
+      "kind": "same",
+      "why": "Same mouse, new, Best Buy"
+    },
+    {
+      "id": "mx-03",
+      "product": "MX3S",
+      "split": "heldout",
+      "url": "https://www.bestbuy.com/site/logitech-mx-master-3s-wireless-laser-mouse-with-ultrafast-scrolling-pale-gray/6502578.p?skuId=6502578",
+      "legit": true,
+      "kind": "color",
+      "why": "Same mouse, Pale Gray"
+    },
+    {
+      "id": "mx-04",
+      "product": "MX3S",
+      "split": "dev",
+      "url": "https://www.bestbuy.com/product/logitech-mx-master-3s-for-mac-wireless-bluetooth-laser-mouse-with-ultrafast-scrolling-wireless-space-gray/J7H7ZY8XWJ/sku/11068536",
+      "legit": false,
+      "kind": "different_model",
+      "why": "MX Master 3S for Mac: different model (no receiver, Mac layout)"
+    },
+    {
+      "id": "mx-05",
+      "product": "MX3S",
+      "split": "heldout",
+      "url": "https://www.bestbuy.com/product/logitech-mx-master-3s-bluetooth-edition-for-business-performance-wireless-mouse-wireless-graphite/J7H7ZY8G3K/sku/12566845",
+      "legit": false,
+      "kind": "different_model",
+      "why": "For Business edition (910-006581), different SKU/model"
+    },
+    {
+      "id": "mx-06",
+      "product": "MX3S",
+      "split": "dev",
+      "url": "https://www.backmarket.com/en-us/p/logitech-mx-master-3-mouse-wireless/d57ab9ff-5f14-41c3-92d9-bc78706c9e37",
+      "legit": false,
+      "kind": "different_model",
+      "why": "MX Master 3 (older model), refurbished marketplace"
+    },
+    {
+      "id": "art-01",
+      "product": "ARTISAN",
+      "split": "dev",
+      "url": "https://www.kitchenaid.com/countertop-appliances/stand-mixers/tilt-head-stand-mixers/p.artisan-series-5-quart-tilt-head-stand-mixer.KSM150PSBM.html",
+      "legit": true,
+      "kind": "color",
+      "why": "Same mixer, Black Matte"
+    },
+    {
+      "id": "art-02",
+      "product": "ARTISAN",
+      "split": "heldout",
+      "url": "https://www.kitchenaid.com/countertop-appliances/stand-mixers/tilt-head-stand-mixers/p.artisan-series-5-quart-tilt-head-stand-mixer.KSM150PSWH.html",
+      "legit": true,
+      "kind": "color",
+      "why": "Same mixer, White"
+    },
+    {
+      "id": "art-03",
+      "product": "ARTISAN",
+      "split": "dev",
+      "url": "https://www.kitchenaid.com/countertop-appliances/stand-mixers/tilt-head-stand-mixers/p.artisan-series-5-quart-tilt-head-stand-mixer.KSM150PSMJ.html",
+      "legit": true,
+      "kind": "color",
+      "why": "Same mixer, Mint Julep"
+    },
+    {
+      "id": "art-04",
+      "product": "ARTISAN",
+      "split": "dev",
+      "url": "https://www.kitchenaid.com/p.KSM3316XWH.html",
+      "legit": false,
+      "kind": "different_model",
+      "why": "Artisan Mini 3.5 quart, not 5 quart"
+    },
+    {
+      "id": "art-05",
+      "product": "ARTISAN",
+      "split": "dev",
+      "url": "https://www.kitchenaid.com/countertop-appliances/refurbished/stand-mixers/p.refurbished-artisan-mini-3-5-quart-tilt-head-stand-mixer.RKSM33XXWH.html",
+      "legit": false,
+      "kind": "refurbished",
+      "why": "Refurbished Artisan Mini, sold by the brand itself"
+    },
+    {
+      "id": "art-06",
+      "product": "ARTISAN",
+      "split": "heldout",
+      "url": "https://www.kitchenaid.com/p.KSM3316XBM.html",
+      "legit": false,
+      "kind": "different_model",
+      "why": "Artisan Mini 3.5 quart"
+    },
+    {
+      "id": "xm5-01",
+      "product": "XM5",
+      "split": "dev",
+      "url": "https://www.bestbuy.com/product/sony-wh-1000xm5-wireless-noise-canceling-headphones-black-wood-headphone-stand/JJG3SJJ7J4/sku/12326508",
+      "legit": false,
+      "kind": "bundle",
+      "why": "Headphones plus a wood stand"
+    },
+    {
+      "id": "xm5-02",
+      "product": "XM5",
+      "split": "dev",
+      "url": "https://www.bestbuy.com/product/sony-wh-1000xm6-best-wireless-noise-canceling-headphones-black/J7XSRH5RCF",
+      "legit": false,
+      "kind": "different_model",
+      "why": "WH-1000XM6, newer model"
+    },
+    {
+      "id": "xm5-03",
+      "product": "XM5",
+      "split": "heldout",
+      "url": "https://www.bestbuy.com/product/sony-wh-1000xm6-best-wireless-noise-cancelling-headphones-midnight-blue/J7XSRH5R2S",
+      "legit": false,
+      "kind": "different_model",
+      "why": "WH-1000XM6"
+    },
+    {
+      "id": "xm5-04",
+      "product": "XM5",
+      "split": "dev",
+      "url": "https://www.walmart.com/ip/Sony-WH1000XM6-Noise-Canceling-Wireless-Over-Ear-Headphones/16504921979",
+      "legit": false,
+      "kind": "different_model",
+      "why": "WH-1000XM6"
+    },
+    {
+      "id": "xm5-05",
+      "product": "XM5",
+      "split": "dev",
+      "url": "https://www.target.com/p/sony-wh-1000xm5-bluetooth-wireless-noise-canceling-over-the-ear-headphones-black-target-certified-refurbished/-/A-88821098",
+      "legit": false,
+      "kind": "refurbished",
+      "why": "Target Certified Refurbished"
+    },
+    {
+      "id": "xm5-06",
+      "product": "XM5",
+      "split": "heldout",
+      "url": "https://www.walmart.com/ip/Sony-WH-1000XM5-The-Best-Wireless-Noise-Canceling-Headphones-Black/386006068?conditionGroupCode=2",
+      "legit": false,
+      "kind": "refurbished",
+      "why": "Walmart Restored listing"
+    },
+    {
+      "id": "xm5-07",
+      "product": "XM5",
+      "split": "dev",
+      "url": "https://www.target.com/p/sony-wh-1000xm4-noise-canceling-overhead-bluetooth-wireless-headphones-black-target-certified-refurbished/-/A-87881706",
+      "legit": false,
+      "kind": "refurbished",
+      "why": "Refurbished WH-1000XM4 (older model)"
+    },
+    {
+      "id": "xm5-08",
+      "product": "XM5",
+      "split": "dev",
+      "url": "https://www.bestbuy.com/site/reviews/sony-wh-1000xm5-wireless-noise-cancelling-over-the-ear-headphones-black/6505727",
+      "legit": true,
+      "kind": "color",
+      "why": "Same headphones, Black, Best Buy"
+    },
+    {
+      "id": "app-01",
+      "product": "APP2",
+      "split": "dev",
+      "url": "https://www.bestbuy.com/site/apple-airpods-pro-2nd-generation-with-magsafe-case-usbc-white/6447382.p?skuId=6447382",
+      "legit": true,
+      "kind": "same",
+      "why": "Same product, new, Best Buy"
+    },
+    {
+      "id": "app-02",
+      "product": "APP2",
+      "split": "dev",
+      "url": "https://www.bestbuy.com/product/apple-airpods-pro-2nd-gen-with-magsafe-case-usb-c-active-noise-cancelling-white/JX36Q46F47",
+      "legit": false,
+      "kind": "refurbished",
+      "why": "Apple Refurbished Excellent, sold by Best Buy"
+    },
+    {
+      "id": "app-03",
+      "product": "APP2",
+      "split": "heldout",
+      "url": "https://www.target.com/p/refurbished-airpods-pro-2nd-generation-with-magsafe-case-usb-c-2023-2nd-generation-target-certified-refurbished/-/A-89999869",
+      "legit": false,
+      "kind": "refurbished",
+      "why": "Target Certified Refurbished"
+    },
+    {
+      "id": "app-04",
+      "product": "APP2",
+      "split": "dev",
+      "url": "https://www.walmart.com/ip/Restored-Apple-AirPods-Pro-2-White-With-USB-C-Charging-Case-In-Ear-Headphones-MTJV3AM-A-Refurbished/5198217434",
+      "legit": false,
+      "kind": "refurbished",
+      "why": "Walmart Restored"
+    },
+    {
+      "id": "app-05",
+      "product": "APP2",
+      "split": "dev",
+      "url": "https://www.bestbuy.com/product/apple-airpods-4-with-active-noise-cancellation-white/JJGCQ832YX/sku/10190061",
+      "legit": false,
+      "kind": "different_model",
+      "why": "AirPods 4 with ANC, not AirPods Pro 2"
+    },
+    {
+      "id": "app-06",
+      "product": "APP2",
+      "split": "heldout",
+      "url": "https://www.bestbuy.com/site/apple-geek-squad-certified-refurbished-airpods-pro-2nd-generation-with-magsafe-case-usbc-white/6562127.p?skuId=6562127",
+      "legit": false,
+      "kind": "refurbished",
+      "why": "Geek Squad Certified Refurbished"
+    },
+    {
+      "id": "sw-01",
+      "product": "SWOLED",
+      "split": "dev",
+      "url": "https://www.walmart.com/ip/Nintendo-Switch-OLED-Model-with-White-Joy-Con/910582148",
+      "legit": true,
+      "kind": "same",
+      "why": "Same console, new, Walmart"
+    },
+    {
+      "id": "sw-02",
+      "product": "SWOLED",
+      "split": "dev",
+      "url": "https://www.walmart.com/ip/Nintendo-Switch-OLED-Model-W-White-Joy-Con-Console-with-Mario-Kart-8-Deluxe-Game-Limited-Bundle/692568631",
+      "legit": false,
+      "kind": "bundle",
+      "why": "Console bundled with a game"
+    },
+    {
+      "id": "sw-03",
+      "product": "SWOLED",
+      "split": "heldout",
+      "url": "https://www.walmart.com/ip/Nintendo-Switch-OLED-Model-w-White-Joy-Con-Console-International-Spec-Functional-in-US-NEW/5206397016",
+      "legit": false,
+      "kind": "different_model",
+      "why": "International-spec import, not the US retail product"
+    },
+    {
+      "id": "sw-04",
+      "product": "SWOLED",
+      "split": "dev",
+      "url": "https://www.bestbuy.com/product/geek-squad-certified-refurbished-switch-lite-nintendo-switch-lite/JCQ6H68Y98",
+      "legit": false,
+      "kind": "refurbished",
+      "why": "Refurbished Switch Lite (different model)"
+    },
+    {
+      "id": "qc-01",
+      "product": "QCUE2",
+      "split": "dev",
+      "url": "https://www.bose.com/p/earbuds/bose-quietcomfort-ultra-earbuds-2nd-gen/QCUE2-HEADPHONEIN.html",
+      "legit": true,
+      "kind": "same",
+      "why": "Same earbuds from the brand store"
+    },
+    {
+      "id": "qc-02",
+      "product": "QCUE2",
+      "split": "dev",
+      "url": "https://www.bose.com/p/refurbished/bose-quietcomfort-ultra-earbuds-2nd-gen/QCUE2-HEADPHONEIN-FR.html",
+      "legit": false,
+      "kind": "refurbished",
+      "why": "Bose refurbished store"
+    },
+    {
+      "id": "qc-03",
+      "product": "QCUE2",
+      "split": "heldout",
+      "url": "https://www.target.com/p/bose-quietcomfort-ultra-earbuds-2nd-gen/-/A-95009971",
+      "legit": true,
+      "kind": "color",
+      "why": "Same earbuds at Target (Midnight Violet listing)"
+    },
+    {
+      "id": "qc-04",
+      "product": "QCUE2",
+      "split": "dev",
+      "url": "https://www.bose.com/p/product-sets/SET-QCUE2-AFP2.html",
+      "legit": false,
+      "kind": "bundle",
+      "why": "Earbuds + AirFly Pro 2 set"
+    },
+    {
+      "id": "qc-05",
+      "product": "QCUE2",
+      "split": "heldout",
+      "url": "https://www.bose.com/p/product-sets/SET-QCUE2-SILCN-COVERCASE.html",
+      "legit": false,
+      "kind": "bundle",
+      "why": "Earbuds + silicone case set"
+    },
+    {
+      "id": "ip-01",
+      "product": "IPDUO6",
+      "split": "dev",
+      "url": "https://www.walmart.com/ip/Instant-Pot-Duo-6-Qt-Electric-Pressure-Cooker-7-in-1-with-Easy-Release-Steam-Switch-Slow-Cooker-Rice-Cooker-Steamer-and-More/575389962",
+      "legit": true,
+      "kind": "same",
+      "why": "Instant Pot Duo 6 qt, new, Walmart"
+    },
+    {
+      "id": "ip-02",
+      "product": "IPDUO6",
+      "split": "dev",
+      "url": "https://www.walmart.com/ip/Instant-Pot-Duo-Nova-6-Quart-7-in-1-One-Touch-Multi-Cooker-Silver-112-0079-0-Refurbished/851820967",
+      "legit": false,
+      "kind": "refurbished",
+      "why": "Restored Duo Nova (refurbished, different model)"
+    },
+    {
+      "id": "ip-03",
+      "product": "IPDUO6",
+      "split": "heldout",
+      "url": "https://www.walmart.com/ip/Instant-Pot-6-Quart-Duo-Electric-Pressure-Cooker-7-in-1-Yogurt-Maker-Food-Steamer-Slow-Cooker-Rice-Cooker-More-Disney-Mickey-Mouse-Red/958708083",
+      "legit": true,
+      "kind": "color",
+      "why": "Same Duo 6 qt in a Disney Mickey design"
+    },
+    {
+      "id": "mx-07",
+      "product": "MX3S",
+      "split": "dev",
+      "url": "https://www.bestbuy.com/site/logitech-mx-master-3s-for-mac-bluetooth-laser-mouse-with-ultrafast-scrolling-pale-gray/6516288.p?skuId=6516288",
+      "legit": false,
+      "kind": "different_model",
+      "why": "MX Master 3S for Mac (910-006570)"
+    },
+    {
+      "id": "mx-08",
+      "product": "MX3S",
+      "split": "dev",
+      "url": "https://www.staples.com/logitech-mx-master-3s-wireless-usb-mouse-graphite-910-006581/product_IM102PP56",
+      "legit": false,
+      "kind": "different_model",
+      "why": "MX Master 3S for Business (910-006581)"
+    },
+    {
+      "id": "mx-12",
+      "product": "MX3S",
+      "split": "dev",
+      "url": "https://www.walmart.com/ip/Restored-Logitech-MX-Master-3S-Graphite-Like-New-Refurbished/5340980649",
+      "legit": false,
+      "kind": "refurbished",
+      "why": "Walmart Restored"
+    },
+    {
+      "id": "app-07",
+      "product": "APP2",
+      "split": "dev",
+      "url": "https://www.walmart.com/ip/Apple-AirPods-Pro-with-MagSafe-Charging-Case-1st-Generation/975690481",
+      "legit": false,
+      "kind": "different_model",
+      "why": "AirPods Pro 1st generation (Lightning)"
+    },
+    {
+      "id": "qc-06",
+      "product": "QCUE2",
+      "split": "dev",
+      "url": "https://bestbuy.com/product/bose-quietcomfort-ultra-true-wireless-noise-cancelling-in-ear-earbuds-white-smoke/J7C5V6T83W/sku/11936725",
+      "legit": false,
+      "kind": "different_model",
+      "why": "QC Ultra Earbuds 1st generation (882826-0020)"
+    },
+    {
+      "id": "qc-08",
+      "product": "QCUE2",
+      "split": "dev",
+      "url": "https://www.walmart.com/ip/Bose-QuietComfort-Ultra-Headphones-Noise-Cancelling-Over-Ear-Wireless-Bluetooth-Headphones-White-Smoke/1861910938",
+      "legit": false,
+      "kind": "different_model",
+      "why": "QC Ultra over-ear headphones, not earbuds"
+    },
+    {
+      "id": "kin-07",
+      "product": "KINDLE",
+      "split": "dev",
+      "url": "https://www.bestbuy.com/product/amazon-kindle-paperwhite-kids-16-gb-2024-starfish/J39HW697T2",
+      "legit": false,
+      "kind": "different_model",
+      "why": "Paperwhite Kids edition (cover, Kids+ bundle)"
+    },
+    {
+      "id": "kin-09",
+      "product": "KINDLE",
+      "split": "dev",
+      "url": "https://www.bestbuy.com/product/amazon-kindle-colorsoft-16-gb-with-color-display-and-adjustable-warm-light-2025-black/J39HW69C9C",
+      "legit": false,
+      "kind": "different_model",
+      "why": "Kindle Colorsoft (colour display)"
+    },
+    {
+      "id": "ip-04",
+      "product": "IPDUO6",
+      "split": "dev",
+      "url": "https://www.walmart.com/ip/Instant-Pot-DUO-Plus-6qt-9-in-1-Multi-Use-Programmable-Slow-Cooker/647517523",
+      "legit": false,
+      "kind": "different_model",
+      "why": "Duo Plus, not Duo"
+    },
+    {
+      "id": "t7-06",
+      "product": "T7",
+      "split": "dev",
+      "url": "https://www.walmart.com/ip/SAMSUNG-T7-Portable-SSD-1TB-Titan-Gray-Up-to-1-050MB-s-USB-3-2-Gen2-MU-PC1T0T-AM/953015472",
+      "legit": true,
+      "kind": "same",
+      "why": "Same T7 1TB (MU-PC1T0T/AM), Walmart"
+    },
+    {
+      "id": "t7-07",
+      "product": "T7",
+      "split": "dev",
+      "url": "https://www.bestbuy.com/product/samsung-t7-1tb-external-usb-3-2-gen-2-portable-ssd-with-hardware-encryption-titan-gray/J3ZYGCQG8H",
+      "legit": true,
+      "kind": "same",
+      "why": "Same T7 1TB, Best Buy"
+    },
+    {
+      "id": "sw-05",
+      "product": "SWOLED",
+      "split": "dev",
+      "url": "https://www.walmart.com/ip/Nintendo-Switch-OLED-Model-White-Joy-Con-64GB-Console-Improved-HD-Screen-LAN-Port-Dock-Minecraft-Mytrix-Wireless-Switch-Pro-Controller-Accessories-JP/770133235",
+      "legit": false,
+      "kind": "bundle",
+      "why": "Japanese version, bundled with game and controller"
+    },
+    {
+      "id": "art-07",
+      "product": "ARTISAN",
+      "split": "dev",
+      "url": "https://www.kitchenaid.com/countertop-appliances/stand-mixers/tilt-head-stand-mixers/p.artisan-series-5-quart-tilt-head-stand-mixer.KSM150PSDC.html",
+      "legit": true,
+      "kind": "color",
+      "why": "Same mixer, Cardamom"
+    },
+    {
+      "id": "art-11",
+      "product": "ARTISAN",
+      "split": "dev",
+      "url": "https://www.kitchenaid.com/p.KSM3316XER.html",
+      "legit": false,
+      "kind": "different_model",
+      "why": "Artisan Mini 3.5 quart, Empire Red (same colour, different model)"
+    },
+    {
+      "id": "art-12",
+      "product": "ARTISAN",
+      "split": "dev",
+      "url": "https://www.kitchenaid.com/countertop-appliances/stand-mixers/tilt-head-stand-mixers/p.artisan-series-5-quart-tilt-head-stand-mixer.KSM150PSMH.html",
+      "legit": true,
+      "kind": "color",
+      "why": "Same mixer, Milkshake"
+    },
+    {
+      "id": "mx-10",
+      "product": "MX3S",
+      "split": "heldout2",
+      "url": "https://www.walmart.com/ip/Logitech-MX-MASTER-3S-Performance-Wireless-Mouse/2055320482",
+      "legit": true,
+      "kind": "same",
+      "why": "Same mouse, Graphite, Walmart"
+    },
+    {
+      "id": "mx-11",
+      "product": "MX3S",
+      "split": "heldout2",
+      "url": "https://www.walmart.com/ip/Logitech-MX-Master-3S-Business-Full-size-Mouse-Darkfield-Wireless-Bluetooth-Yes-Graphite-USB-Type-A-8000-dpi-Scroll-Wheel-7-Button-s-Right-handed-Onl/1554277076",
+      "legit": false,
+      "kind": "different_model",
+      "why": "MX Master 3S Business edition"
+    },
+    {
+      "id": "app-08",
+      "product": "APP2",
+      "split": "heldout2",
+      "url": "https://www.bestbuy.com/product/apple-airpods-pro-1st-generation-with-magsafe-charging-case-white/JJ8ZHSV2V5",
+      "legit": false,
+      "kind": "refurbished",
+      "why": "Refurbished AirPods Pro 1st generation"
+    },
+    {
+      "id": "qc-07",
+      "product": "QCUE2",
+      "split": "heldout2",
+      "url": "https://www.walmart.com/ip/Bose-QuietComfort-Ultra-Wireless-Earbuds-Noise-Cancelling-Bluetooth-Headphones-Black/2655908227",
+      "legit": false,
+      "kind": "different_model",
+      "why": "QC Ultra Earbuds 1st generation (882826-0010)"
+    },
+    {
+      "id": "kin-08",
+      "product": "KINDLE",
+      "split": "heldout2",
+      "url": "https://www.bestbuy.com/product/amazon-kindle-paperwhite-kids-16-gb-2024-cyber-city/J39HW69TJ2",
+      "legit": false,
+      "kind": "different_model",
+      "why": "Paperwhite Kids edition"
+    },
+    {
+      "id": "ip-05",
+      "product": "IPDUO6",
+      "split": "heldout2",
+      "url": "https://www.walmart.com/ip/Instant-Pot-8-qt-Duo-Plus-Stainless-Steel-Pressure-Cooker-Black-Silver/1926479178",
+      "legit": false,
+      "kind": "different_model",
+      "why": "Duo Plus 8 quart"
+    },
+    {
+      "id": "t7-08",
+      "product": "T7",
+      "split": "heldout2",
+      "url": "https://www.walmart.com/ip/Samsung-MU-PC1T0T-AM-Portable-SSD-T7-USB-3-2-1TB-Gray-Bundle-with-Converter-Adapter-Type-C-Adapter-Vivitar-Hard-Shell-Case-White/7213953043",
+      "legit": false,
+      "kind": "bundle",
+      "why": "T7 bundled with adapter and case"
+    },
+    {
+      "id": "t7-09",
+      "product": "T7",
+      "split": "heldout2",
+      "url": "https://www.bestbuy.com/site/reviews/samsung-geek-squad-certified-refurbished-t7-1tb-external-usb-3-2-gen-2-portable-ssd-with-hardware-encryption-titan-gray/6415699",
+      "legit": false,
+      "kind": "refurbished",
+      "why": "Geek Squad Certified Refurbished T7"
+    },
+    {
+      "id": "art-08",
+      "product": "ARTISAN",
+      "split": "heldout2",
+      "url": "https://www.kitchenaid.com/countertop-appliances/stand-mixers/tilt-head-stand-mixers/p.artisan-series-5-quart-tilt-head-stand-mixer.KSM150PSVB.html",
+      "legit": true,
+      "kind": "color",
+      "why": "Same mixer, Blue Velvet"
+    },
+    {
+      "id": "art-09",
+      "product": "ARTISAN",
+      "split": "heldout2",
+      "url": "https://www.kitchenaid.com/countertop-appliances/stand-mixers/tilt-head-stand-mixers/p.artisan-series-5-quart-tilt-head-stand-mixer.KSM150PSBT.html",
+      "legit": true,
+      "kind": "color",
+      "why": "Same mixer, Butter"
+    },
+    {
+      "id": "art-10",
+      "product": "ARTISAN",
+      "split": "heldout2",
+      "url": "https://www.kitchenaid.com/countertop-appliances/refurbished/stand-mixers/p.refurbished-artisan-mini-3-5-quart-tilt-head-stand-mixer.RKSM33XXBM.html",
+      "legit": false,
+      "kind": "refurbished",
+      "why": "Refurbished Artisan Mini, brand store"
+    }
+  ]
+}

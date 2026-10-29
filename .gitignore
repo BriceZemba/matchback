@@ -1,0 +1,25 @@
+node_modules/
+.env
+.env.*
+!.env.example
+.next/
+dist/
+*.log
+
+.next/
+data/
+next-env.d.ts
+*.tsbuildinfo
+
+# Private planning notes, not part of the submission
+COMPETITION.md
+STRATEGY-REVIEW.md
+
+# SQLite side files
+*.db-wal
+*.db-shm
+
+# Local tooling
+.claude/
+eval/tmp/
+data/

@@ -1,0 +1,41 @@
+{
+  "ranAt": "2026-10-29T01:20:07.143Z",
+  "url": "https://www.bhphotovideo.com/c/product/1559836-REG/samsung_mu_pc1t0t_am_1tb_t7_portable_ssd.html",
+  "runs": [
+    {
+      "run": 1,
+      "decision": "approved",
+      "condition": "new",
+      "conditionSource": "page_lookup",
+      "refundCents": 4498
+    },
+    {
+      "run": 2,
+      "decision": "approved",
+      "condition": "new",
+      "conditionSource": "page_lookup",
+      "refundCents": 4498
+    },
+    {
+      "run": 3,
+      "decision": "approved",
+      "condition": "new",
+      "conditionSource": "page_lookup",
+      "refundCents": 4498
+    },
+    {
+      "run": 4,
+      "decision": "approved",
+      "condition": "new",
+      "conditionSource": "page_lookup",
+      "refundCents": 4498
+    },
+    {
+      "run": 5,
+      "decision": "approved",
+      "condition": "new",
+      "conditionSource": "page_lookup",
+      "refundCents": 4498
+    }
+  ]
+}

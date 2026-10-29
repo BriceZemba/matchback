@@ -1,0 +1,2381 @@
+{
+  "stamp": "2026-10-28T20:07:48.188Z",
+  "rows": [
+    {
+      "group": "sony-xm5",
+      "note": "black",
+      "url": "https://www.bestbuy.com/site/reviews/sony-wh-1000xm5-wireless-noise-cancelling-over-the-ear-headphones-black/6505727",
+      "ms": 41289,
+      "resolved": true,
+      "product_id": "PECKtcJ",
+      "title": "Sony - WH-1000XM5 Wireless Noise Cancelling Over-the-Ear Headphones - Black",
+      "offers": 1,
+      "own_offer": {
+        "price": 228,
+        "availability": "InStock",
+        "condition": null
+      },
+      "variants_selected": null,
+      "unresolved": null,
+      "raw": {
+        "id": "PECKtcJ",
+        "title": "Sony - WH-1000XM5 Wireless Noise Cancelling Over-the-Ear Headphones - Black",
+        "description": null,
+        "brands": [],
+        "images": [],
+        "category": null,
+        "gender": null,
+        "age": null,
+        "materials": null,
+        "key_features": null,
+        "colors": [],
+        "offers": [
+          {
+            "url": "https://buy.trychannel3.com/PECKtcJ-lookup-S666bu",
+            "domain": "bestbuy.com",
+            "price": {
+              "price": 228,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": null,
+            "dimensions": null
+          }
+        ],
+        "variants": null,
+        "structured_attributes": {},
+        "ratings": null
+      }
+    },
+    {
+      "group": "sony-xm5",
+      "note": "silver (colour variant)",
+      "url": "https://www.bestbuy.com/site/reviews/sony-wh-1000xm5-wireless-noise-canceling-over-the-ear-headphones-silver/6505728",
+      "ms": 17920,
+      "resolved": true,
+      "product_id": "umvVvzK",
+      "title": "Sony - WH-1000XM5 Wireless Noise Cancelling Over-the-Ear Headphones - Silver",
+      "offers": 1,
+      "own_offer": {
+        "price": 228,
+        "availability": "InStock",
+        "condition": null
+      },
+      "variants_selected": null,
+      "unresolved": null,
+      "raw": {
+        "id": "umvVvzK",
+        "title": "Sony - WH-1000XM5 Wireless Noise Cancelling Over-the-Ear Headphones - Silver",
+        "description": null,
+        "brands": [],
+        "images": [],
+        "category": null,
+        "gender": null,
+        "age": null,
+        "materials": null,
+        "key_features": null,
+        "colors": [],
+        "offers": [
+          {
+            "url": "https://buy.trychannel3.com/umvVvzK-lookup-S666bu",
+            "domain": "bestbuy.com",
+            "price": {
+              "price": 228,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": null,
+            "dimensions": null
+          }
+        ],
+        "variants": null,
+        "structured_attributes": {},
+        "ratings": null
+      }
+    },
+    {
+      "group": "sony-xm5-bundle",
+      "note": "bundle with stand",
+      "trap": "bundle",
+      "url": "https://www.bestbuy.com/product/sony-wh-1000xm5-wireless-noise-canceling-headphones-black-wood-headphone-stand/JJG3SJJ7J4/sku/12326508",
+      "ms": 756,
+      "resolved": true,
+      "product_id": "fUIFDuU",
+      "title": "Sony WH-1000XM5 Wireless Noise Canceling Headphones, Black + Wood Headphone Stand",
+      "offers": 3,
+      "own_offer": {
+        "price": 309.99,
+        "availability": "InStock",
+        "condition": "new"
+      },
+      "variants_selected": null,
+      "unresolved": null,
+      "raw": {
+        "id": "fUIFDuU",
+        "title": "Sony WH-1000XM5 Wireless Noise Canceling Headphones, Black + Wood Headphone Stand",
+        "description": "The Sony WH-1000XM5 is a pair of industry-leading wireless noise-canceling headphones in black, bundled with a Deco Gear wood headphone display stand. These headphones feature two processors controlling eight microphones for superior noise cancellation and call quality. They offer up to 30 hours of battery life with quick charging, a lightweight design with soft fit leather, and support for High-Resolution Audio. The bundle includes a carrying case, headphone cable, and a USB charging cable, along with a secure wooden tabletop holder for storage.",
+        "brands": [
+          {
+            "id": "PURH",
+            "name": "Sony"
+          },
+          {
+            "id": "gAfD",
+            "name": "Deco Gear"
+          }
+        ],
+        "images": [
+          {
+            "url": "https://cdn.trychannel3.com/3486cb62-8b59-438e-a643-612bd8ae193a?mid=K6RA",
+            "cleaned_url": null,
+            "is_main_image": true,
+            "shot_type": "packaging",
+            "alt_text": "Set of black Sony headphones and a wooden headphone stand in packaging."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/2f77d186-b493-46e6-893f-b5ffa43046ac?mid=K6RA",
+            "cleaned_url": "https://cdn.trychannel3.com/cleaned/v1/2f77d186-b493-46e6-893f-b5ffa43046ac?mid=K6RA",
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Black Sony WH-1000XM5 headphones shown from the side on a white background."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/8e1bd033-a258-43e8-b148-58cb82620611?mid=K6RA",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Black Sony WH-1000XM5 headphones shown from the front/side on a white background."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/4ed8453c-56b5-4045-ab93-66ccef3bbb00?mid=K6RA",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Black Sony WH-1000XM5 headphones shown from the front on a white background."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/99df7a91-5a20-4768-b53a-d00e6857ee78?mid=K6RA",
+            "cleaned_url": "https://cdn.trychannel3.com/cleaned/v1/99df7a91-5a20-4768-b53a-d00e6857ee78?mid=K6RA",
+            "is_main_image": false,
+            "shot_type": "packaging",
+            "alt_text": "Black carrying case for Sony WH-1000XM5 headphones."
+          }
+        ],
+        "category": {
+          "slug": "over-ear-headphones",
+          "title": "Over-Ear Headphones",
+          "path": [
+            {
+              "slug": "electronics",
+              "title": "Electronics"
+            },
+            {
+              "slug": "audio",
+              "title": "Audio"
+            },
+            {
+              "slug": "audio-components",
+              "title": "Audio Components"
+            },
+            {
+              "slug": "headphones-headsets",
+              "title": "Headphones & Headsets"
+            },
+            {
+              "slug": "headphones",
+              "title": "Headphones"
+            },
+            {
+              "slug": "over-ear-headphones",
+              "title": "Over-Ear Headphones"
+            }
+          ],
+          "has_children": false
+        },
+        "gender": null,
+        "age": null,
+        "materials": [
+          "wood"
+        ],
+        "key_features": [
+          "Industry-leading noise cancellation optimized to the user",
+          "Up to 30-hour battery life with quick charging",
+          "Crystal clear hands-free calling with AI machine learning",
+          "Ultra-comfortable, lightweight design with soft fit leather",
+          "Multipoint connection for switching between devices",
+          "High-Resolution Audio support via LDAC",
+          "Includes Deco Gear Wood Headphone Display Stand",
+          "Bluetooth connectivity",
+          "Built-in microphones with four beamforming microphones and Precise Voice Pickup technology",
+          "Auto NC Optimizer"
+        ],
+        "colors": [
+          {
+            "hex": "#444647",
+            "percentage": 0.3009
+          },
+          {
+            "hex": "#2b2d2c",
+            "percentage": 0.2661
+          },
+          {
+            "hex": "#141414",
+            "percentage": 0.235
+          },
+          {
+            "hex": "#ffffff",
+            "percentage": 0.1688
+          }
+        ],
+        "offers": [
+          {
+            "url": "https://buy.trychannel3.com/fUIFDuU-K6RA-S666bu?o=01M5SS0VDNGZ8CVQRXHN5NNR83",
+            "domain": "macys.com",
+            "price": {
+              "price": 309.99,
+              "compare_at_price": 447.99,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": null
+          },
+          {
+            "url": "https://buy.trychannel3.com/fUIFDuU-RnUy-S666bu?o=01M31R7E265NQVPCKKK12PHRGV",
+            "domain": "beachcamera.com",
+            "price": {
+              "price": 309.99,
+              "compare_at_price": 447.99,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": {
+              "length": null,
+              "width": null,
+              "height": null,
+              "weight": {
+                "number": 8.82,
+                "unit": "oz"
+              }
+            }
+          },
+          {
+            "url": "https://buy.trychannel3.com/fUIFDuU-p1PB-S666bu?o=01M61ZZ0NHDNSNB8684YNC1GMY",
+            "domain": "bestbuy.com",
+            "price": {
+              "price": 309.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": null
+          }
+        ],
+        "variants": null,
+        "structured_attributes": {
+          "earphone-features": [
+            "Built-in microphone",
+            "Noise cancellation",
+            "Volume control"
+          ],
+          "charging-interface-type": [
+            "USB type-C"
+          ],
+          "noise-cancellation-technology": [
+            "Active noise cancellation (ANC)"
+          ],
+          "connectivity-technology": [
+            "Bluetooth",
+            "Wired",
+            "Wireless",
+            "USB"
+          ],
+          "microphone-type": [
+            "Built-in",
+            "Omnidirectional"
+          ],
+          "audio-connectivity": [
+            "Bluetooth",
+            "USB",
+            "3.5 mm"
+          ],
+          "material": [
+            "Wood",
+            "Leather",
+            "Thermoplastic polyurethane (TPU)"
+          ],
+          "device-interface": [
+            "USB",
+            "3.5 mm",
+            "Bluetooth"
+          ],
+          "headphone-style": [
+            "Closed-back"
+          ],
+          "power-source": [
+            "Battery-powered",
+            "Rechargeable",
+            "USB"
+          ],
+          "pattern": [
+            "Solid"
+          ],
+          "battery-type": [
+            "Contained-undetachable",
+            "Rechargeable"
+          ],
+          "battery-size": [
+            "Built-in battery"
+          ],
+          "headphone-driver-technology": [
+            "Dynamic"
+          ],
+          "driver-technology": [
+            "Dynamic driver"
+          ]
+        },
+        "ratings": {
+          "value": 4.5,
+          "count": 4,
+          "source_count": 1
+        }
+      }
+    },
+    {
+      "group": "kindle-pw",
+      "note": "black",
+      "url": "https://www.target.com/p/amazon-kindle-paperwhite-2024-black/-/A-91563138",
+      "ms": 627,
+      "resolved": true,
+      "product_id": "cTyUOkU",
+      "title": "Amazon Kindle Paperwhite",
+      "offers": 4,
+      "own_offer": {
+        "price": 199.99,
+        "availability": "InStock",
+        "condition": "new"
+      },
+      "variants_selected": [
+        {
+          "name": "Color",
+          "label": "Black"
+        }
+      ],
+      "unresolved": null,
+      "raw": {
+        "id": "cTyUOkU",
+        "title": "Amazon Kindle Paperwhite",
+        "description": "Experience superior reading with the Amazon Kindle Paperwhite. This 12th Generation device boasts a faster processor for 20% improved performance and 25% faster page turns. Its glare-free 7-inch display offers a higher contrast ratio for crisp, clear text, and can be adjusted from white to amber to suit any lighting condition, from bright sunlight to the dark. Personalize your reading by adjusting text size and boldness. Designed for focused reading, it lacks distracting apps and notifications. The battery lasts up to 12 weeks on a single USB-C charge, and the device is waterproof for worry-free use anywhere. Access over 15 million titles from the Kindle Store, with options for Kindle Unlimited and Amazon Kids+.",
+        "brands": [
+          {
+            "id": "AyeP",
+            "name": "Amazon"
+          }
+        ],
+        "images": [
+          {
+            "url": "https://cdn.trychannel3.com/66ad5164-6306-45a0-9ad6-a5f8c92fdb0d?mid=wnEw",
+            "cleaned_url": null,
+            "is_main_image": true,
+            "shot_type": "hero",
+            "alt_text": "Front view of the Kindle Paperwhite device displaying text."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/6196e861-c4d8-43a4-9f30-7c5c229f4b14?mid=wnEw",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Back view of the black Kindle Paperwhite device."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/966e6003-01bb-409b-a510-8489bc83ad38?mid=wnEw",
+            "cleaned_url": "https://cdn.trychannel3.com/cleaned/v1/966e6003-01bb-409b-a510-8489bc83ad38?mid=wnEw",
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Kindle Paperwhite device resting on striped fabric."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/265d8074-b2d4-4cf2-881d-2d7cf984b6c2?mid=wnEw",
+            "cleaned_url": "https://cdn.trychannel3.com/cleaned/v1/265d8074-b2d4-4cf2-881d-2d7cf984b6c2?mid=wnEw",
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Kindle Paperwhite screen displaying promotional text."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/aa247ca6-23b2-4221-b224-ae7e5891a978?mid=wnEw",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "lifestyle",
+            "alt_text": "Man reading on Kindle while relaxing in bed."
+          }
+        ],
+        "category": {
+          "slug": "e-book-readers",
+          "title": "E-Book Readers",
+          "path": [
+            {
+              "slug": "electronics",
+              "title": "Electronics"
+            },
+            {
+              "slug": "computers",
+              "title": "Computers"
+            },
+            {
+              "slug": "handheld-devices",
+              "title": "Handheld Devices"
+            },
+            {
+              "slug": "e-book-readers",
+              "title": "E-Book Readers"
+            }
+          ],
+          "has_children": false
+        },
+        "gender": null,
+        "age": null,
+        "materials": [],
+        "key_features": [
+          "Next-generation 7\" Paperwhite display with higher contrast and 25% faster page turns",
+          "16GB Memory",
+          "Battery life up to 13 weeks",
+          "Adjustable warm light",
+          "Glare-free display",
+          "USB-C charging",
+          "Touch Screen",
+          "Grayscale color depth",
+          "IPX8 waterproof rating",
+          "15 million+ titles available in Kindle store"
+        ],
+        "colors": [
+          {
+            "hex": "#bec2bc",
+            "percentage": 0.6748
+          },
+          {
+            "hex": "#0f0505",
+            "percentage": 0.2818
+          }
+        ],
+        "offers": [
+          {
+            "url": "https://buy.trychannel3.com/cTyUOkU-wnEw-S666bu?o=01M1EXFM7F1JX3BH79QQWP4XNB",
+            "domain": "bjs.com",
+            "price": {
+              "price": 149.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": {
+              "length": null,
+              "width": null,
+              "height": null,
+              "weight": {
+                "number": 0.47,
+                "unit": "lb"
+              }
+            }
+          },
+          {
+            "url": "https://buy.trychannel3.com/cTyUOkU-DO3T-S666bu?o=01KRMQEJTGR7ZCWWMBSFVYD655",
+            "domain": "abt.com",
+            "price": {
+              "price": 199.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": {
+              "length": {
+                "number": 5,
+                "unit": "in"
+              },
+              "width": {
+                "number": 7,
+                "unit": "in"
+              },
+              "height": {
+                "number": 0.3,
+                "unit": "in"
+              },
+              "weight": {
+                "number": 0.46,
+                "unit": "lb"
+              }
+            }
+          },
+          {
+            "url": "https://buy.trychannel3.com/cTyUOkU-QnTm-S666bu?o=01M14E1D12DSTZVTHB347191YM",
+            "domain": "target.com",
+            "price": {
+              "price": 199.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": null
+          },
+          {
+            "url": "https://buy.trychannel3.com/cTyUOkU-p1PB-S666bu?o=01KXQ5Z6VKWZQHB7T7BSV5KQ35",
+            "domain": "bestbuy.com",
+            "price": {
+              "price": 229.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": null
+          }
+        ],
+        "variants": {
+          "options": [
+            {
+              "name": "Color",
+              "values": [
+                {
+                  "label": "Black",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/66ad5164-6306-45a0-9ad6-a5f8c92fdb0d",
+                  "product_id": "cTyUOkU"
+                },
+                {
+                  "label": "Jade",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/5e9ad686-de32-4898-a13f-dea42b447c7d",
+                  "product_id": "cazeFOX"
+                }
+              ]
+            }
+          ],
+          "selected": [
+            {
+              "name": "Color",
+              "label": "Black"
+            }
+          ]
+        },
+        "structured_attributes": {
+          "battery-size": [
+            "Large cell (appliance/tool/ride-on toy)",
+            "Built-in battery"
+          ],
+          "e-book-formats-supported": [
+            "PDF",
+            "EPUB",
+            "TXT",
+            "HTML",
+            "MOBI"
+          ],
+          "power-source": [
+            "Battery-powered",
+            "Rechargeable",
+            "USB"
+          ],
+          "display-color-mode": [
+            "Color",
+            "Black & white"
+          ],
+          "display-technology": [
+            "LCD",
+            "E-ink"
+          ],
+          "e-reader-display-technology": [
+            "E-ink"
+          ],
+          "stylus-support": [
+            "Not supported"
+          ],
+          "graphics-card-type": [
+            "None",
+            "Integrated"
+          ],
+          "charging-interface-type": [
+            "USB type-C"
+          ],
+          "storage-drive-type-installed": [
+            "Solid-state drive (SSD)"
+          ],
+          "battery-type": [
+            "Disposable",
+            "Contained-undetachable",
+            "Rechargeable"
+          ],
+          "ingress-protection-ip-rating": [
+            "IP67",
+            "IPX8"
+          ],
+          "compatible-memory-cards": [
+            "Not supported"
+          ],
+          "pattern": [
+            "Solid"
+          ],
+          "touchscreen-technology": [
+            "Capacitive"
+          ],
+          "computer-form": [
+            "Notebook"
+          ],
+          "wi-fi-standard": [
+            "802.11a",
+            "802.11ac",
+            "802.11g",
+            "802.11n"
+          ],
+          "processor-family": [
+            "MediaTek helio"
+          ]
+        },
+        "ratings": {
+          "value": 4.62,
+          "count": 494,
+          "source_count": 5
+        }
+      }
+    },
+    {
+      "group": "kindle-pw-sig",
+      "note": "Signature Edition",
+      "trap": "different model",
+      "url": "https://www.target.com/p/amazon-kindle-paperwhite-signature-edition-2024-metallic-black/-/A-93320263",
+      "ms": 343,
+      "resolved": true,
+      "product_id": "q1SnUDU",
+      "title": "Amazon Kindle Paperwhite Signature Edition (2024)",
+      "offers": 1,
+      "own_offer": {
+        "price": 249.99,
+        "availability": "InStock",
+        "condition": "new"
+      },
+      "variants_selected": null,
+      "unresolved": null,
+      "raw": {
+        "id": "q1SnUDU",
+        "title": "Amazon Kindle Paperwhite Signature Edition (2024)",
+        "description": "The Amazon Kindle Paperwhite Signature Edition (2024) is a high-performance e-reader featuring a next-generation 7” glare-free display. Designed for an immersive reading experience, it includes an auto-adjusting front light for versatility in any lighting condition and a distraction-free interface. This edition offers 32 GB of storage, wireless charging capabilities, and is waterproof, making it ideal for travel or reading by the pool. With 20% faster performance and a battery life lasting up to 12 weeks via USB-C, it provides a seamless and long-lasting reading experience.",
+        "brands": [
+          {
+            "id": "AyeP",
+            "name": "Amazon"
+          }
+        ],
+        "images": [
+          {
+            "url": "https://cdn.trychannel3.com/2623928f-987f-495d-bf5e-a428cbc18fb2?mid=QnTm",
+            "cleaned_url": "https://cdn.trychannel3.com/cleaned/v1/2623928f-987f-495d-bf5e-a428cbc18fb2?mid=QnTm",
+            "is_main_image": true,
+            "shot_type": "hero",
+            "alt_text": "Black Kindle Paperwhite e-reader on a dark grey background."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/c2134d54-f4fd-4fce-82bc-5c8745823690?mid=QnTm",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Black Kindle Paperwhite Signature Edition held in hand outdoors."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/4ea48f6b-bf02-40b3-ba23-ee33f0a979a5?mid=QnTm",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Person reading a book on a Kindle Paperwhite e-reader."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/39c7ea1a-92da-414f-9a64-4b447fb9dabb?mid=QnTm",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Close-up of Kindle Paperwhite screen displaying text content."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/a5c56957-8497-411d-9c80-cecb3291e422?mid=QnTm",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "lifestyle",
+            "alt_text": "Kindle Paperwhite e-reader with charging cable and decorative items."
+          }
+        ],
+        "category": {
+          "slug": "e-book-readers",
+          "title": "E-Book Readers",
+          "path": [
+            {
+              "slug": "electronics",
+              "title": "Electronics"
+            },
+            {
+              "slug": "computers",
+              "title": "Computers"
+            },
+            {
+              "slug": "handheld-devices",
+              "title": "Handheld Devices"
+            },
+            {
+              "slug": "e-book-readers",
+              "title": "E-Book Readers"
+            }
+          ],
+          "has_children": false
+        },
+        "gender": null,
+        "age": null,
+        "materials": [],
+        "key_features": [
+          "7” Paperwhite display",
+          "Auto-adjusting front light",
+          "32 GB storage",
+          "Wireless charging support",
+          "Waterproof",
+          "USB-C charging",
+          "Up to 12 weeks battery life",
+          "20% faster performance"
+        ],
+        "colors": [
+          {
+            "hex": "#f1f1f1",
+            "percentage": 0.6466
+          },
+          {
+            "hex": "#1e1e1e",
+            "percentage": 0.16
+          },
+          {
+            "hex": "#3b3c3c",
+            "percentage": 0.1345
+          },
+          {
+            "hex": "#8e8e8e",
+            "percentage": 0.0589
+          }
+        ],
+        "offers": [
+          {
+            "url": "https://buy.trychannel3.com/q1SnUDU-QnTm-S666bu?o=01M6200RV8TJ414WX82NAZ1WZK",
+            "domain": "target.com",
+            "price": {
+              "price": 249.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": null
+          }
+        ],
+        "variants": null,
+        "structured_attributes": {
+          "battery-size": [
+            "Built-in battery"
+          ],
+          "display-color-mode": [
+            "Black & white"
+          ],
+          "compatible-memory-cards": [
+            "Not supported"
+          ],
+          "display-technology": [
+            "E-ink"
+          ],
+          "charging-interface-type": [
+            "USB type-C",
+            "Wireless charging"
+          ],
+          "battery-type": [
+            "Contained-undetachable",
+            "Rechargeable"
+          ],
+          "power-source": [
+            "Rechargeable",
+            "USB"
+          ],
+          "e-reader-display-technology": [
+            "E-ink"
+          ],
+          "pattern": [
+            "Solid"
+          ],
+          "storage-drive-type-installed": [
+            "Solid-state drive (SSD)"
+          ],
+          "wi-fi-standard": [
+            "802.11ac"
+          ],
+          "operating-system": [
+            "Raspberry Pi OS"
+          ],
+          "ingress-protection-ip-rating": [
+            "IPX8"
+          ]
+        },
+        "ratings": {
+          "value": 4.73,
+          "count": 246,
+          "source_count": 3
+        }
+      }
+    },
+    {
+      "group": "instant-pot-duo6",
+      "note": "walmart",
+      "url": "https://www.walmart.com/ip/Instant-Pot-DUO60-6-Qt-7-in-1-Multi-Use-Programmable-Pressure-Cooker/45918917",
+      "ms": 113873,
+      "resolved": false,
+      "product_id": null,
+      "title": null,
+      "offers": 0,
+      "own_offer": null,
+      "variants_selected": null,
+      "unresolved": null,
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: InternalServerError\nStatus code: 500\nBody: {\n  \"detail\": \"Product extraction failed\"\n}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    {
+      "group": "instant-pot-nova-refurb",
+      "note": "restored Duo Nova",
+      "trap": "refurbished + different model",
+      "url": "https://www.walmart.com/ip/Instant-Pot-Duo-Nova-6-Quart-7-in-1-One-Touch-Multi-Cooker-Silver-112-0079-0-Refurbished/851820967",
+      "ms": 1953,
+      "resolved": false,
+      "product_id": null,
+      "title": null,
+      "offers": 0,
+      "own_offer": null,
+      "variants_selected": null,
+      "unresolved": null,
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error: NotFoundError\nStatus code: 404\nBody: {\n  \"detail\": \"Product not found\"\n}"
+          }
+        ],
+        "isError": true
+      }
+    },
+    {
+      "group": "samsung-t7-1tb",
+      "note": "titan gray",
+      "url": "https://www.bhphotovideo.com/c/product/1559836-REG/samsung_mu_pc1t0t_am_1tb_t7_portable_ssd.html",
+      "ms": 416,
+      "resolved": true,
+      "product_id": "e2dXeQi",
+      "title": "Samsung T7 Portable SSD 1TB USB 3.2 Gen 2 External Solid State Drive",
+      "offers": 4,
+      "own_offer": {
+        "price": 230.01,
+        "availability": "InStock",
+        "condition": "new"
+      },
+      "variants_selected": null,
+      "unresolved": null,
+      "raw": {
+        "id": "e2dXeQi",
+        "title": "Samsung T7 Portable SSD 1TB USB 3.2 Gen 2 External Solid State Drive",
+        "description": "The Samsung T7 is a compact and secure portable SSD offering 1TB of storage in a sleek Titan Gray aluminum unibody. Designed for high performance, it utilizes PCIe NVMe technology to deliver read speeds up to 1050 MB/s and write speeds up to 1000 MB/s via a USB 3.2 Gen 2 interface. It ensures data security with 256-bit AES hardware encryption and password protection. The drive is highly compatible with Windows, Mac, Android, and gaming consoles, and specifically supports Apple iPhone 15 series for ProRes video recording. Its durable, lightweight design is drop-resistant up to 6.6 feet and includes Dynamic Thermal Guard technology to prevent overheating.",
+        "brands": [
+          {
+            "id": "Mbqx",
+            "name": "Samsung"
+          }
+        ],
+        "images": [
+          {
+            "url": "https://cdn.trychannel3.com/5dfeaca0-6f0d-4326-b32a-c72f5dbd0bae?mid=oHaU",
+            "cleaned_url": "https://cdn.trychannel3.com/cleaned/v1/5dfeaca0-6f0d-4326-b32a-c72f5dbd0bae?mid=oHaU",
+            "is_main_image": true,
+            "shot_type": "hero",
+            "alt_text": "Close-up of the Samsung SSD surface with the brand name."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/2f682e7b-1469-4a09-841e-87b55cc0cab0?mid=oHaU",
+            "cleaned_url": "https://cdn.trychannel3.com/cleaned/v1/2f682e7b-1469-4a09-841e-87b55cc0cab0?mid=oHaU",
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Top view of the Samsung Portable SSD in black."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/bbabefcc-028a-48fb-a0fb-dd5cebdc1e44?mid=oHaU",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Side view of the Samsung Portable SSD showing a port."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/1dd70e76-2179-4d69-9365-55736414b48d?mid=oHaU",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Back view of the Samsung Portable SSD."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/372b3485-c864-4ed1-9b8a-6a8f0c327db5?mid=oHaU",
+            "cleaned_url": "https://cdn.trychannel3.com/cleaned/v1/372b3485-c864-4ed1-9b8a-6a8f0c327db5?mid=oHaU",
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Top view of the Samsung Portable SSD with a USB port."
+          }
+        ],
+        "category": {
+          "slug": "solid-state-drives",
+          "title": "Solid State Drives",
+          "path": [
+            {
+              "slug": "electronics",
+              "title": "Electronics"
+            },
+            {
+              "slug": "electronics-accessories",
+              "title": "Electronics Accessories"
+            },
+            {
+              "slug": "computer-components",
+              "title": "Computer Components"
+            },
+            {
+              "slug": "storage-devices",
+              "title": "Storage Devices"
+            },
+            {
+              "slug": "solid-state-drives",
+              "title": "Solid State Drives"
+            }
+          ],
+          "has_children": false
+        },
+        "gender": null,
+        "age": null,
+        "materials": [
+          "Aluminum"
+        ],
+        "key_features": [
+          "1TB Capacity",
+          "USB 3.2 Gen 2 Interface",
+          "PCIe NVMe Technology",
+          "Read Speeds up to 1050 MB/s",
+          "Write Speeds up to 1000 MB/s",
+          "256-Bit AES Hardware Encryption",
+          "Aluminum unibody construction",
+          "Dynamic Thermal Guard technology",
+          "Drop-resistant up to 6.6'",
+          "Dynamic Thermal Guard with ePCM technology"
+        ],
+        "colors": [
+          {
+            "hex": "#8f8e93",
+            "percentage": 0.7584
+          },
+          {
+            "hex": "#c2c1c6",
+            "percentage": 0.2416
+          }
+        ],
+        "offers": [
+          {
+            "url": "https://buy.trychannel3.com/e2dXeQi-oHaU-S666bu?o=01M33787P74Q0M37KFNVQMR020",
+            "domain": "bhphotovideo.com",
+            "price": {
+              "price": 230.01,
+              "compare_at_price": 245.01,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": {
+              "length": {
+                "number": 3.3,
+                "unit": "in"
+              },
+              "width": {
+                "number": 2.2,
+                "unit": "in"
+              },
+              "height": {
+                "number": 0.3,
+                "unit": "in"
+              },
+              "weight": {
+                "number": 0.13,
+                "unit": "lb"
+              }
+            }
+          },
+          {
+            "url": "https://buy.trychannel3.com/e2dXeQi-Bteb-S666bu?o=01M5YX36EW92S4TM5HXP5H4TC3",
+            "domain": "dell.com",
+            "price": {
+              "price": 296.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": {
+              "length": {
+                "number": 3.3,
+                "unit": "in"
+              },
+              "width": {
+                "number": 0.3,
+                "unit": "in"
+              },
+              "height": {
+                "number": 2.2,
+                "unit": "in"
+              },
+              "weight": {
+                "number": 2.05,
+                "unit": "oz"
+              }
+            }
+          },
+          {
+            "url": "https://buy.trychannel3.com/e2dXeQi-yqJJ-S666bu?o=01M2DCKA5VBZ468YBB9KNK8QGW",
+            "domain": "microcenter.com",
+            "price": {
+              "price": 259.99,
+              "compare_at_price": 274.99,
+              "currency": "USD"
+            },
+            "availability": "OutOfStock",
+            "condition": "new",
+            "dimensions": null
+          },
+          {
+            "url": "https://buy.trychannel3.com/e2dXeQi-6Uzl-S666bu?o=01M2QSCVZ1GGEV36STWF5504K5",
+            "domain": "officedepot.com",
+            "price": {
+              "price": 274.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "OutOfStock",
+            "condition": "new",
+            "dimensions": {
+              "length": {
+                "number": 3.5625,
+                "unit": "in"
+              },
+              "width": {
+                "number": 0.3125,
+                "unit": "in"
+              },
+              "height": {
+                "number": 2.25,
+                "unit": "in"
+              },
+              "weight": {
+                "number": 2,
+                "unit": "oz"
+              }
+            }
+          }
+        ],
+        "variants": null,
+        "structured_attributes": {
+          "storage-media-type": [
+            "SSD"
+          ],
+          "material": [
+            "Metal",
+            "Aluminum"
+          ],
+          "power-source": [
+            "USB"
+          ],
+          "device-interface": [
+            "USB"
+          ],
+          "pattern": [
+            "Solid"
+          ],
+          "storage-drive-interface-type": [
+            "SATA",
+            "NVMe"
+          ]
+        },
+        "ratings": {
+          "value": 4.81,
+          "count": 2153,
+          "source_count": 2
+        }
+      }
+    },
+    {
+      "group": "samsung-t7-shield-1tb",
+      "note": "T7 Shield",
+      "trap": "different model",
+      "url": "https://www.bhphotovideo.com/c/product/1691588-REG/samsung_mu_pe1t0s_am_1tb_t7_shield_portable.html",
+      "ms": 662,
+      "resolved": true,
+      "product_id": "J4Kgrsx",
+      "title": "T7 Shield Portable SSD",
+      "offers": 5,
+      "own_offer": {
+        "price": 271.3,
+        "availability": "InStock",
+        "condition": "new"
+      },
+      "variants_selected": null,
+      "unresolved": null,
+      "raw": {
+        "id": "J4Kgrsx",
+        "title": "T7 Shield Portable SSD",
+        "description": "The Samsung T7 Shield (MU-PE1T0S/AM) is a rugged, portable external solid-state drive (SSD) featuring 1 TB of storage. Designed for high performance and durability, it offers fast data transfer speeds via a USB 3.2 Gen 2 interface with a USB-C connector, reaching maximum data transfer rates of 1050 MB/s. The drive is built to withstand harsh environments with an IP65 rating for water and dust resistance, a shock-resistant design, and a Dynamic Thermal Guard to manage heat. For security, it includes 256-bit AES hardware encryption. The drive comes in black and includes both USB-C to USB-C and USB-C to USB-A cables for versatile connectivity across PCs, Macs, and mobile devices.",
+        "brands": [
+          {
+            "id": "Mbqx",
+            "name": "Samsung"
+          }
+        ],
+        "images": [
+          {
+            "url": "https://cdn.trychannel3.com/daec128e-5c25-4185-b7ac-e4a3d0dad915?mid=oHaU",
+            "cleaned_url": null,
+            "is_main_image": true,
+            "shot_type": "hero",
+            "alt_text": "Close-up of the textured black surface of the Samsung T7 Shield."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/2612a26f-96c3-4531-853d-bcac83a34238?mid=oHaU",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Front view of the black Samsung T7 Shield portable SSD."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/086521ca-c497-478d-9a14-5f867b31b4d3?mid=oHaU",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Close-up of the ribbed texture on the Samsung T7 Shield."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/870dae7f-0a40-4375-bf19-61b4cc60d2c6?mid=oHaU",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Side view of the Samsung T7 Shield SSD."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/02664602-f4bf-4816-9cd1-bb603c532d82?mid=oHaU",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "packaging",
+            "alt_text": "Product packaging showing the SSD, guide, and cables."
+          }
+        ],
+        "category": {
+          "slug": "solid-state-drives",
+          "title": "Solid State Drives",
+          "path": [
+            {
+              "slug": "electronics",
+              "title": "Electronics"
+            },
+            {
+              "slug": "electronics-accessories",
+              "title": "Electronics Accessories"
+            },
+            {
+              "slug": "computer-components",
+              "title": "Computer Components"
+            },
+            {
+              "slug": "storage-devices",
+              "title": "Storage Devices"
+            },
+            {
+              "slug": "solid-state-drives",
+              "title": "Solid State Drives"
+            }
+          ],
+          "has_children": false
+        },
+        "gender": null,
+        "age": "adult",
+        "materials": [
+          "Rubber",
+          "Aluminum"
+        ],
+        "key_features": [
+          "USB 3.2 (Gen 2 Type-C)",
+          "Read Speed up to 1,050MBps",
+          "Write Speed up to 1,000MBps",
+          "IP65 rating for dust and water resistance",
+          "Rugged design protects from up to a 9.8 foot drop",
+          "1TB Storage Capacity",
+          "PCIe NVMe Technology",
+          "256-Bit AES Hardware Encryption",
+          "Dynamic Thermal Guard for heat control",
+          "Compatible with PC, Mac, Android devices, and gaming consoles"
+        ],
+        "colors": [
+          {
+            "hex": "#2b2a2f",
+            "percentage": 0.7124
+          },
+          {
+            "hex": "#131215",
+            "percentage": 0.2123
+          },
+          {
+            "hex": "#4e4e53",
+            "percentage": 0.0753
+          }
+        ],
+        "offers": [
+          {
+            "url": "https://buy.trychannel3.com/J4Kgrsx-oHaU-S666bu?o=01M39MYT9VC93GZBPK47J6K5DC",
+            "domain": "bhphotovideo.com",
+            "price": {
+              "price": 271.3,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": {
+              "length": {
+                "number": 3.5,
+                "unit": "in"
+              },
+              "width": {
+                "number": 2.3,
+                "unit": "in"
+              },
+              "height": {
+                "number": 0.5,
+                "unit": "in"
+              },
+              "weight": {
+                "number": 3.5,
+                "unit": "oz"
+              }
+            }
+          },
+          {
+            "url": "https://buy.trychannel3.com/J4Kgrsx-LPzf-S666bu?o=01M20S8SS68GY0SZ77WD5B2ZWH",
+            "domain": "newegg.com",
+            "price": {
+              "price": 279,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": {
+              "length": {
+                "number": 3.5,
+                "unit": "in"
+              },
+              "width": {
+                "number": 2.3,
+                "unit": "in"
+              },
+              "height": {
+                "number": 0.5,
+                "unit": "in"
+              },
+              "weight": {
+                "number": 3.5,
+                "unit": "oz"
+              }
+            }
+          },
+          {
+            "url": "https://buy.trychannel3.com/J4Kgrsx-Bteb-S666bu?o=01KNWZAJ5WJT3NPESJN8YX9NEA",
+            "domain": "dell.com",
+            "price": {
+              "price": 287.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": {
+              "length": null,
+              "width": {
+                "number": 2.3,
+                "unit": "in"
+              },
+              "height": {
+                "number": 0.5,
+                "unit": "in"
+              },
+              "weight": {
+                "number": 3.46,
+                "unit": "oz"
+              }
+            }
+          },
+          {
+            "url": "https://buy.trychannel3.com/J4Kgrsx-yqJJ-S666bu?o=01M36AW0Q1Q7B52XV50MDYPZXM",
+            "domain": "microcenter.com",
+            "price": {
+              "price": 287.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": {
+              "length": {
+                "number": 0.5,
+                "unit": "in"
+              },
+              "width": {
+                "number": 2.3,
+                "unit": "in"
+              },
+              "height": {
+                "number": 3.5,
+                "unit": "in"
+              },
+              "weight": {
+                "number": 0.22,
+                "unit": "lb"
+              }
+            }
+          },
+          {
+            "url": "https://buy.trychannel3.com/J4Kgrsx-TgS4-S666bu?o=01M47N4BQY0FBACT8CJ1B7H0P9",
+            "domain": "cdw.com",
+            "price": {
+              "price": 323.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": {
+              "length": {
+                "number": 3.5,
+                "unit": "in"
+              },
+              "width": {
+                "number": 0.5,
+                "unit": "in"
+              },
+              "height": {
+                "number": 2.3,
+                "unit": "in"
+              },
+              "weight": {
+                "number": 3.46,
+                "unit": "oz"
+              }
+            }
+          }
+        ],
+        "variants": null,
+        "structured_attributes": {
+          "power-source": [
+            "USB",
+            "Batteries"
+          ],
+          "storage-media-type": [
+            "SSD"
+          ],
+          "device-interface": [
+            "USB"
+          ],
+          "storage-drive-interface-type": [
+            "NVMe",
+            "SATA"
+          ],
+          "material": [
+            "Rubber",
+            "Plastic",
+            "Aluminum"
+          ],
+          "pattern": [
+            "Solid"
+          ]
+        },
+        "ratings": {
+          "value": 4.81,
+          "count": 3183,
+          "source_count": 3
+        }
+      }
+    },
+    {
+      "group": "mx-master-3s",
+      "note": "Back Market",
+      "trap": "refurbished marketplace",
+      "url": "https://www.backmarket.com/en-us/p/logitech-mx-master-3s-mouse-wireless/24c32268-7ef8-477f-819f-864825ed84ad",
+      "ms": 545,
+      "resolved": true,
+      "product_id": "nLZKmNT",
+      "title": "Logitech MX Master 3S Performance Wireless Mouse",
+      "offers": 4,
+      "own_offer": {
+        "price": 123,
+        "availability": "InStock",
+        "condition": null
+      },
+      "variants_selected": null,
+      "unresolved": null,
+      "raw": {
+        "id": "nLZKmNT",
+        "title": "Logitech MX Master 3S Performance Wireless Mouse",
+        "description": "This is an ergonomic, wireless mouse from Logitech, model MX Master 3S, in black. It features ultra-fast scrolling with its MagSpeed electromagnetic scroll wheel, which is 90% faster, 87% more precise, and ultra-quiet. The mouse has quiet click buttons that provide a satisfying tactile feel with 90% less noise. It also boasts an 8K DPI optical sensor for next-gen responsiveness on any surface, including glass. The ergonomic design supports natural wrist posture, and the thumb controls are optimally placed. Users can customize buttons and optimize workflows with app-specific profiles using the Logi Options+ app. The mouse supports Flow cross-computer control, allowing seamless transfer of text, images, and files between Windows and macOS. It can connect to up to 3 devices via Bluetooth across Windows, macOS, Chrome OS, and Linux. The mouse stays powered for up to 70 days on a full charge and provides 3 hours of use from a one-minute quick charge.",
+        "brands": [
+          {
+            "id": "BJcR",
+            "name": "Logitech"
+          }
+        ],
+        "images": [
+          {
+            "url": "https://cdn.trychannel3.com/efe879b3-5743-4ba2-b016-a49b5c43812c?mid=6Uzl",
+            "cleaned_url": "https://cdn.trychannel3.com/0128947c-2858-4085-aa35-35c8ac51a7fa?mid=6Uzl",
+            "is_main_image": true,
+            "shot_type": "hero",
+            "alt_text": "Black Logitech MX Master 3S mouse from above."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/344b1e8c-8c88-4b08-8a08-bb498e0de35a?mid=6Uzl",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "lifestyle",
+            "alt_text": "Man working at a desk using a computer and mouse."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/635d8ee2-fbb9-4dce-95f6-cba94363c77c?mid=6Uzl",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "detail",
+            "alt_text": "Close-up of the Logitech mouse scroll wheel and scroll feature."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/30aa57a9-4110-4cc4-be06-940f8e05d0e9?mid=6Uzl",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "product_information",
+            "alt_text": "Features of the Logitech MX Master 3S, made with recycled plastic."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/7aafaccc-718e-40ee-98eb-54abc47c16f9?mid=6Uzl",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "product_information",
+            "alt_text": "Features listed for the Logitech MX Master 3S mouse."
+          }
+        ],
+        "category": {
+          "slug": "mice-trackballs",
+          "title": "Mice & Trackballs",
+          "path": [
+            {
+              "slug": "electronics",
+              "title": "Electronics"
+            },
+            {
+              "slug": "electronics-accessories",
+              "title": "Electronics Accessories"
+            },
+            {
+              "slug": "computer-components",
+              "title": "Computer Components"
+            },
+            {
+              "slug": "input-devices",
+              "title": "Input Devices"
+            },
+            {
+              "slug": "mice-trackballs",
+              "title": "Mice & Trackballs"
+            }
+          ],
+          "has_children": false
+        },
+        "gender": null,
+        "age": "adult",
+        "materials": [],
+        "key_features": [
+          "Quiet Clicks",
+          "8K DPI any-surface tracking",
+          "7 programmable buttons",
+          "Thumbwheel",
+          "Gesture button",
+          "Rechargeable Li-Po (500 mAh) battery",
+          "Darkfield high precision sensor technology",
+          "MagSpeed scrolling",
+          "Ergonomic design",
+          "FLOW cross-computer control"
+        ],
+        "colors": [
+          {
+            "hex": "#252628",
+            "percentage": 0.4982
+          },
+          {
+            "hex": "#3b3d3f",
+            "percentage": 0.4299
+          },
+          {
+            "hex": "#7b7d7d",
+            "percentage": 0.0719
+          }
+        ],
+        "offers": [
+          {
+            "url": "https://buy.trychannel3.com/nLZKmNT-6Uzl-S666bu?o=01KR7K9PCWG45EWWZBZ5EJHYW0",
+            "domain": "officedepot.com",
+            "price": {
+              "price": 99.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": null
+          },
+          {
+            "url": "https://buy.trychannel3.com/nLZKmNT-p1PB-S666bu?o=01KXSVQ87QJKGP5HAF7WPRSNK9",
+            "domain": "bestbuy.com",
+            "price": {
+              "price": 110.88,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": null
+          },
+          {
+            "url": "https://buy.trychannel3.com/nLZKmNT-hFQq-S666bu?o=01M3730RZ789SGXH8GKEKENYCP",
+            "domain": "6ave.com",
+            "price": {
+              "price": 113.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": {
+              "length": {
+                "number": 4.9,
+                "unit": "in"
+              },
+              "width": {
+                "number": 3.3,
+                "unit": "in"
+              },
+              "height": {
+                "number": 2,
+                "unit": "in"
+              },
+              "weight": {
+                "number": 141,
+                "unit": "g"
+              }
+            }
+          },
+          {
+            "url": "https://buy.trychannel3.com/nLZKmNT-n0yg-S666bu?o=01M37NJGK9SPZ8T1B80NM5VDWV",
+            "domain": "backmarket.com",
+            "price": {
+              "price": 123,
+              "compare_at_price": 191.92,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": null,
+            "dimensions": {
+              "length": null,
+              "width": null,
+              "height": null,
+              "weight": {
+                "number": 5,
+                "unit": "oz"
+              }
+            }
+          }
+        ],
+        "variants": null,
+        "structured_attributes": {
+          "mouse-technology": [
+            "Optical",
+            "Wireless",
+            "Bluetooth"
+          ],
+          "hand-side": [
+            "Right"
+          ],
+          "material": [
+            "Plastic"
+          ],
+          "operating-system": [
+            "Android",
+            "Chrome OS",
+            "Linux",
+            "macOS",
+            "Windows"
+          ],
+          "mouse-trackball-features": [
+            "Ergonomic design",
+            "Scroll wheel",
+            "Thumb rest",
+            "Noiseless clicks",
+            "Optical sensor",
+            "Tilt wheel",
+            "Low latency",
+            "Hyper fast scrolling",
+            "Tactile feedback"
+          ],
+          "power-source": [
+            "Rechargeable",
+            "USB",
+            "Battery-powered"
+          ],
+          "battery-type": [
+            "Rechargeable"
+          ],
+          "pattern": [
+            "Solid"
+          ],
+          "battery-size": [
+            "Built-in battery"
+          ]
+        },
+        "ratings": {
+          "value": 4.7,
+          "count": 462,
+          "source_count": 3
+        }
+      }
+    },
+    {
+      "group": "kitchenaid-artisan",
+      "note": "empire red",
+      "url": "https://www.kitchenaid.com/countertop-appliances/stand-mixers/tilt-head-stand-mixers/p.artisan-series-5-quart-tilt-head-stand-mixer.KSM150PSER.html",
+      "ms": 416,
+      "resolved": true,
+      "product_id": "muLXXMd",
+      "title": "Artisan Series Tilt-head Stand Mixer",
+      "offers": 5,
+      "own_offer": {
+        "price": 379.99,
+        "availability": "InStock",
+        "condition": "new"
+      },
+      "variants_selected": [
+        {
+          "name": "Color",
+          "label": "Empire Red"
+        }
+      ],
+      "unresolved": null,
+      "raw": {
+        "id": "muLXXMd",
+        "title": "Artisan Series Tilt-head Stand Mixer",
+        "description": "This KitchenAid Artisan Series stand mixer is designed for durability and performance, featuring a 5-quart stainless steel bowl with a comfortable handle, capable of mixing up to 9 dozen cookies in a single batch. Its tilt-head design allows for easy ingredient addition and accessory attachment, while 10 speeds cater to a wide range of tasks from gentle stirring to whipping. The mixer boasts a glossy, deep red finish and a sturdy, stable base. It is also compatible with over 10 optional hub-powered attachments, expanding its versatility for making pasta, burgers, ice cream, and more. The product is suitable for adult users and is a physical product. The materials include metal construction and a stainless steel bowl, and it comes in a vibrant Empire Red color.",
+        "brands": [
+          {
+            "id": "gFHk",
+            "name": "KitchenAid"
+          }
+        ],
+        "images": [
+          {
+            "url": "https://cdn.trychannel3.com/f94c5371-4be5-4598-ba3f-79b681017eea?mid=jw51",
+            "cleaned_url": "https://cdn.trychannel3.com/cleaned/v1/f94c5371-4be5-4598-ba3f-79b681017eea?mid=jw51",
+            "is_main_image": true,
+            "shot_type": "hero",
+            "alt_text": "Red Artisan Series 5 Quart Tilt-head Stand Mixer on a white background."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/6265b1cd-320e-407b-936f-95b06bf6dca9?mid=jw51",
+            "cleaned_url": "https://cdn.trychannel3.com/cleaned/v1/6265b1cd-320e-407b-936f-95b06bf6dca9?mid=jw51",
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Red Artisan Series 5 Quart Tilt-head Stand Mixer with stainless steel bowl."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/ca0acab6-8f57-487b-83fe-08f6dccf9bf8?mid=jw51",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "in_use",
+            "alt_text": "Red stand mixer mixing ingredients with a whisk attachment."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/f66c2589-b36a-4a82-8563-fd946f310244?mid=jw51",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "lifestyle",
+            "alt_text": "Red stand mixer in a kitchen setting with strawberries and baking ingredients."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/648bb48c-f25d-4bda-a6ac-cccf36eb6f28?mid=jw51",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "lifestyle",
+            "alt_text": "Red stand mixer mixing batter on a kitchen countertop."
+          }
+        ],
+        "category": {
+          "slug": "stand-mixers",
+          "title": "Stand Mixers",
+          "path": [
+            {
+              "slug": "home-garden",
+              "title": "Home & Garden"
+            },
+            {
+              "slug": "kitchen-dining",
+              "title": "Kitchen & Dining"
+            },
+            {
+              "slug": "kitchen-appliances",
+              "title": "Kitchen Appliances"
+            },
+            {
+              "slug": "food-mixers-blenders",
+              "title": "Food Mixers & Blenders"
+            },
+            {
+              "slug": "food-mixers",
+              "title": "Food Mixers"
+            },
+            {
+              "slug": "stand-mixers",
+              "title": "Stand Mixers"
+            }
+          ],
+          "has_children": false
+        },
+        "gender": null,
+        "age": null,
+        "materials": [
+          "metal",
+          "stainless steel"
+        ],
+        "key_features": [
+          "5 Quart Capacity for Small or Large Batches",
+          "Easily add Ingredients with the Tilt-Head Design",
+          "10 Speeds for Nearly any Task or Recipe",
+          "10+ Attachments Available to Make More with your Mixer",
+          "Durable and built-to-last metal construction",
+          "59 touchpoints around the mixer bowl for great mixing results",
+          "5 Quart Stainless Steel Bowl with comfortable handle to mix up to 9 dozen cookies in a single batch",
+          "Dishwasher-safe",
+          "Tilt-Head Design for easy ingredient addition and accessory attachment",
+          "Powerful 325-Watt Motor for consistent performance from light batters to heavy doughs"
+        ],
+        "colors": [
+          {
+            "hex": "#83222a",
+            "percentage": 0.3245
+          },
+          {
+            "hex": "#e5e5e5",
+            "percentage": 0.2684
+          },
+          {
+            "hex": "#3f292a",
+            "percentage": 0.1436
+          },
+          {
+            "hex": "#c0bfbf",
+            "percentage": 0.1303
+          },
+          {
+            "hex": "#888081",
+            "percentage": 0.0796
+          },
+          {
+            "hex": "#5a1219",
+            "percentage": 0.0536
+          }
+        ],
+        "offers": [
+          {
+            "url": "https://buy.trychannel3.com/muLXXMd-jw51-S666bu?o=01KXGKNTPZR8E0RABRT8WEJYF9",
+            "domain": "kitchenaid.com",
+            "price": {
+              "price": 379.99,
+              "compare_at_price": 499.99,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": null
+          },
+          {
+            "url": "https://buy.trychannel3.com/muLXXMd-cZlC-S666bu?o=01M4CKDWV8Q68PMF4RCVQQT8F1",
+            "domain": "farmandfleet.com",
+            "price": {
+              "price": 379.99,
+              "compare_at_price": 499.99,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": {
+              "length": {
+                "number": 6,
+                "unit": "in"
+              },
+              "width": {
+                "number": 8.66,
+                "unit": "in"
+              },
+              "height": {
+                "number": 13.91,
+                "unit": "in"
+              },
+              "weight": {
+                "number": 22,
+                "unit": "lb"
+              }
+            }
+          },
+          {
+            "url": "https://buy.trychannel3.com/muLXXMd-QnTm-S666bu?o=01M14G7WWJ28NBSHV86PZR719B",
+            "domain": "target.com",
+            "price": {
+              "price": 399.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": null
+          },
+          {
+            "url": "https://buy.trychannel3.com/muLXXMd-K6RA-S666bu?o=01M3GT50D4NJEC2E7847JC0B8Z",
+            "domain": "macys.com",
+            "price": {
+              "price": 499.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": {
+              "length": {
+                "number": 13.9,
+                "unit": "in"
+              },
+              "width": {
+                "number": 8.7,
+                "unit": "in"
+              },
+              "height": {
+                "number": 14.1,
+                "unit": "in"
+              },
+              "weight": null
+            }
+          },
+          {
+            "url": "https://buy.trychannel3.com/muLXXMd-Pu5r-S666bu?o=01M524RZMB3JNQK4XAE5NXXYK5",
+            "domain": "pcrichard.com",
+            "price": {
+              "price": 499.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": {
+              "length": {
+                "number": 14.1,
+                "unit": "in"
+              },
+              "width": {
+                "number": 8.7,
+                "unit": "in"
+              },
+              "height": {
+                "number": 13.9,
+                "unit": "in"
+              },
+              "weight": null
+            }
+          }
+        ],
+        "variants": {
+          "options": [
+            {
+              "name": "Color",
+              "values": [
+                {
+                  "label": "Almond Cream",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/a92050c3-2ab3-4591-affc-cf75784d599d",
+                  "product_id": "LmEfWQi"
+                },
+                {
+                  "label": "Aqua Sky",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/977d0c2b-6912-47af-a440-5ac1731f0d94",
+                  "product_id": "WuAO0B1"
+                },
+                {
+                  "label": "Beetroot",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/31230b12-c367-40eb-a23c-97bea65dd7f1",
+                  "product_id": "FkyPyNd"
+                },
+                {
+                  "label": "Black Matte",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/7cc674a8-2182-4a65-9cf9-8d6711f66391",
+                  "product_id": "iAfXxv2"
+                },
+                {
+                  "label": "Blue Velvet",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/b198b705-ad37-4c03-8a88-845385d93c0e",
+                  "product_id": "VRnz3Sc"
+                },
+                {
+                  "label": "Contour Silver",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/2c03cd73-9774-4ff6-9415-e547b2d7fa6a",
+                  "product_id": "lGOnIFQ"
+                },
+                {
+                  "label": "Empire Red",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/f94c5371-4be5-4598-ba3f-79b681017eea",
+                  "product_id": "muLXXMd"
+                },
+                {
+                  "label": "Feather Pink",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/f2b7fbd5-6159-41ff-b4ff-43cbc086a9fc",
+                  "product_id": "4BatyWK"
+                },
+                {
+                  "label": "Green",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/aaaf08cd-fe2b-44bd-951c-ac97bfed9a69",
+                  "product_id": "E7uqnrB"
+                },
+                {
+                  "label": "Matte Dried Rose",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/84a23e7f-072c-4f35-a319-b88849e9989e",
+                  "product_id": "waz3W1Y"
+                },
+                {
+                  "label": "Mint Julep",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/27ca349b-294f-47d6-aaed-bba849071fef",
+                  "product_id": "3XSPDDZ"
+                },
+                {
+                  "label": "Red",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/a2487164-8825-451f-b3e0-5921c1b8d0cc",
+                  "product_id": "oZ2ZAY2"
+                },
+                {
+                  "label": "White",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/b68f4a43-8de0-4dc9-9bec-c703a9ad7afc",
+                  "product_id": "VLWPN0P"
+                },
+                {
+                  "label": "Black Matte, Agave, White, Porcelain White, Mineral Water Blue, Empire Red, Matte Dried Rose, Onyx Black, Contour Silver, Pistachio, Cast Iron Black, Blue Velvet, Milkshake, Juniper, Wildflower, Cardamom, Feather Pink, Elderberry, Scorched Orange, Beetroot",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/4616169d-bd20-49db-81e5-d2d1404393b2",
+                  "product_id": "DgJlNh9"
+                },
+                {
+                  "label": "Pistachio",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/69fecd8b-b186-40cd-82af-a290930c4815",
+                  "product_id": "MTb3wi4"
+                },
+                {
+                  "label": "Mineral Water Blue, Feather Pink, Juniper, Onyx Black, White, Empire Red, Pistachio, Blue Steel, Matcha, Milkshake, Ice, Porcelain White, Scorched Orange, Mint Julep, Cast Iron Black, Almond Cream, Aqua Sky, Contour Silver, Cherry Tomato, Blue Velvet",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/f9bfa2ae-86ac-494c-bf29-64f6606668e2",
+                  "product_id": "RqTB9J0"
+                },
+                {
+                  "label": "Blue Salt",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/3cab5896-5be0-420b-a1c3-255507c80265",
+                  "product_id": "1SREqDe"
+                },
+                {
+                  "label": "Wildflower",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/87396aa3-fd17-4b5f-83a2-96cb7699ad1c",
+                  "product_id": "3yWT4WQ"
+                }
+              ]
+            }
+          ],
+          "selected": [
+            {
+              "name": "Color",
+              "label": "Empire Red"
+            }
+          ]
+        },
+        "structured_attributes": {
+          "pattern": [
+            "Solid"
+          ],
+          "material": [
+            "Metal",
+            "Stainless steel"
+          ],
+          "speed-settings": [
+            "Multiple"
+          ],
+          "power-source": [
+            "AC-powered"
+          ],
+          "cleaning-instructions": [
+            "Dishwasher safe"
+          ]
+        },
+        "ratings": {
+          "value": 4.85,
+          "count": 112803,
+          "source_count": 4
+        }
+      }
+    },
+    {
+      "group": "kitchenaid-artisan",
+      "note": "black matte (colour variant)",
+      "url": "https://www.kitchenaid.com/countertop-appliances/stand-mixers/tilt-head-stand-mixers/p.artisan-series-5-quart-tilt-head-stand-mixer.KSM150PSBM.html",
+      "ms": 425,
+      "resolved": true,
+      "product_id": "nHjGjHW",
+      "title": "KitchenAid Artisan Series 5-Quart Tilt-Head Stand Mixer",
+      "offers": 5,
+      "own_offer": {
+        "price": 379.99,
+        "availability": "InStock",
+        "condition": "new"
+      },
+      "variants_selected": [
+        {
+          "name": "Color",
+          "label": "Black Matte"
+        }
+      ],
+      "unresolved": null,
+      "raw": {
+        "id": "nHjGjHW",
+        "title": "KitchenAid Artisan Series 5-Quart Tilt-Head Stand Mixer",
+        "description": "The KitchenAid Artisan Series 5 Quart Tilt-Head Stand Mixer is a durable and versatile kitchen appliance designed to handle a wide variety of recipes. It features 10 speeds for precise mixing, from gentle stirring to vigorous whipping. The tilt-head design allows for easy access to the bowl and attachments, while the 5-quart stainless steel bowl is spacious enough for large batches and is dishwasher-safe. With over 20 color options, it can complement any kitchen decor. The mixer is also compatible with over 10 optional hub-powered attachments, expanding its functionality for tasks like making pasta, grinding meat, or creating ice cream. Built with a durable metal construction and 59 touchpoints around the bowl, it ensures excellent mixing results.",
+        "brands": [
+          {
+            "id": "gFHk",
+            "name": "KitchenAid"
+          }
+        ],
+        "images": [
+          {
+            "url": "https://cdn.trychannel3.com/01d43859-3a6e-4323-b1c1-41649b8caacf?mid=jw51",
+            "cleaned_url": "https://cdn.trychannel3.com/cleaned/v1/01d43859-3a6e-4323-b1c1-41649b8caacf?mid=jw51",
+            "is_main_image": true,
+            "shot_type": "hero",
+            "alt_text": "Black Artisan Series stand mixer with stainless steel bowl."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/afb83327-3d6d-474d-af46-e32cae545a9f?mid=jw51",
+            "cleaned_url": "https://cdn.trychannel3.com/cleaned/v1/afb83327-3d6d-474d-af46-e32cae545a9f?mid=jw51",
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Black KitchenAid stand mixer with a stainless steel bowl."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/79796d6c-c943-4c5e-a7c3-7b671d119ac6?mid=jw51",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "lifestyle",
+            "alt_text": "Black stand mixer in a kitchen with baking ingredients."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/5d5d35f6-25ce-4f6b-84e6-79f56115d3e6?mid=jw51",
+            "cleaned_url": null,
+            "is_main_image": false,
+            "shot_type": "in_use",
+            "alt_text": "Black stand mixer using a whisk attachment to mix batter."
+          },
+          {
+            "url": "https://cdn.trychannel3.com/e94e8439-650b-4777-9171-f1cf17a65c2a?mid=jw51",
+            "cleaned_url": "https://cdn.trychannel3.com/cleaned/v1/e94e8439-650b-4777-9171-f1cf17a65c2a?mid=jw51",
+            "is_main_image": false,
+            "shot_type": "hero",
+            "alt_text": "Black stand mixer with a light gray bowl."
+          }
+        ],
+        "category": {
+          "slug": "stand-mixers",
+          "title": "Stand Mixers",
+          "path": [
+            {
+              "slug": "home-garden",
+              "title": "Home & Garden"
+            },
+            {
+              "slug": "kitchen-dining",
+              "title": "Kitchen & Dining"
+            },
+            {
+              "slug": "kitchen-appliances",
+              "title": "Kitchen Appliances"
+            },
+            {
+              "slug": "food-mixers-blenders",
+              "title": "Food Mixers & Blenders"
+            },
+            {
+              "slug": "food-mixers",
+              "title": "Food Mixers"
+            },
+            {
+              "slug": "stand-mixers",
+              "title": "Stand Mixers"
+            }
+          ],
+          "has_children": false
+        },
+        "gender": null,
+        "age": "adult",
+        "materials": [
+          "Stainless Steel",
+          "Metal"
+        ],
+        "key_features": [
+          "5 Quart Capacity",
+          "Tilt-Head Design",
+          "10 Speeds",
+          "Durable metal construction",
+          "Over 10 Attachments Available",
+          "Dishwasher-safe bowl",
+          "Includes 5 accessories",
+          "Tilt-back head stand mixer with pouring shield",
+          "High performance 325-watt motor",
+          "Non-hinged power hub for additional optional attachments"
+        ],
+        "colors": [
+          {
+            "hex": "#1a1a1a",
+            "percentage": 0.5133
+          },
+          {
+            "hex": "#b6b6b6",
+            "percentage": 0.1409
+          },
+          {
+            "hex": "#343434",
+            "percentage": 0.1368
+          },
+          {
+            "hex": "#e3e3e3",
+            "percentage": 0.121
+          },
+          {
+            "hex": "#626262",
+            "percentage": 0.088
+          }
+        ],
+        "offers": [
+          {
+            "url": "https://buy.trychannel3.com/nHjGjHW-jw51-S666bu?o=01KXGM2Y5V0KHBCBCRGQBHGCQ9",
+            "domain": "kitchenaid.com",
+            "price": {
+              "price": 379.99,
+              "compare_at_price": 499.99,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": null
+          },
+          {
+            "url": "https://buy.trychannel3.com/nHjGjHW-dMiw-S666bu?o=01KZKBY4WWTE30YDMAX61JCWEJ",
+            "domain": "containerstore.com",
+            "price": {
+              "price": 499.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": null
+          },
+          {
+            "url": "https://buy.trychannel3.com/nHjGjHW-7Nxp-S666bu?o=01M4X5FEB4FGVNWCZCADD3FTJ8",
+            "domain": "tractorsupply.com",
+            "price": {
+              "price": 499.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": {
+              "length": {
+                "number": 14.3,
+                "unit": "in"
+              },
+              "width": {
+                "number": 9.3,
+                "unit": "in"
+              },
+              "height": {
+                "number": 14,
+                "unit": "in"
+              },
+              "weight": {
+                "number": 22,
+                "unit": "lb"
+              }
+            }
+          },
+          {
+            "url": "https://buy.trychannel3.com/nHjGjHW-p1PB-S666bu?o=01KYC0EJQ3T67J90MB5KF9GKX3",
+            "domain": "bestbuy.com",
+            "price": {
+              "price": 499.99,
+              "compare_at_price": null,
+              "currency": "USD"
+            },
+            "availability": "InStock",
+            "condition": "new",
+            "dimensions": null
+          },
+          {
+            "url": "https://buy.trychannel3.com/nHjGjHW-RnUy-S666bu?o=01M31CD7FQ82YYBEGT9YRMCBQB",
+            "domain": "beachcamera.com",
+            "price": {
+              "price": 329.95,
+              "compare_at_price": 429.99,
+              "currency": "USD"
+            },
+            "availability": "OutOfStock",
+            "condition": "used",
+            "dimensions": null
+          }
+        ],
+        "variants": {
+          "options": [
+            {
+              "name": "Color",
+              "values": [
+                {
+                  "label": "Black Matte",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/01d43859-3a6e-4323-b1c1-41649b8caacf",
+                  "product_id": "nHjGjHW"
+                },
+                {
+                  "label": "Contour Silver",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/d7a7eb69-0d3c-41ca-b818-cb3a7f4316c2",
+                  "product_id": "UDUNwfE"
+                },
+                {
+                  "label": "Matte Dried Rose",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/f0a0f86d-64dd-4381-b542-bc758e34da8f",
+                  "product_id": "Bj2NU5w"
+                },
+                {
+                  "label": "Matte White",
+                  "exists": true,
+                  "available": null,
+                  "thumbnail_url": "https://cdn.trychannel3.com/b9810fe7-246f-4dfd-a53f-00d363cb5084",
+                  "product_id": "ZRKbZmQ"
+                }
+              ]
+            }
+          ],
+          "selected": [
+            {
+              "name": "Color",
+              "label": "Black Matte"
+            }
+          ]
+        },
+        "structured_attributes": {
+          "cleaning-instructions": [
+            "Dishwasher safe"
+          ],
+          "speed-settings": [
+            "Multiple"
+          ],
+          "material": [
+            "Metal",
+            "Stainless steel",
+            "Wood"
+          ],
+          "power-source": [
+            "AC-powered"
+          ],
+          "pattern": [
+            "Solid"
+          ],
+          "blade-material": [
+            "Stainless steel"
+          ],
+          "blender-jar-material": [
+            "Stainless steel"
+          ]
+        },
+        "ratings": {
+          "value": 4.81,
+          "count": 40519,
+          "source_count": 3
+        }
+      }
+    }
+  ]
+}

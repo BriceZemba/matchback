@@ -1,0 +1,2144 @@
+{
+  "ranAt": "2026-10-29T02:27:02.315Z",
+  "split": "dev",
+  "cache": "frozen",
+  "summary": {
+    "matchback": {
+      "cases": 49,
+      "correct": 38,
+      "manual": 11,
+      "unsafe": 0,
+      "missed": 0,
+      "unsafeDollars": 0,
+      "legitAutoPaid": 8,
+      "legitTotal": 15,
+      "trapsTotal": 34
+    },
+    "id_only": {
+      "cases": 49,
+      "correct": 30,
+      "manual": 7,
+      "unsafe": 0,
+      "missed": 12,
+      "unsafeDollars": 0,
+      "legitAutoPaid": 2,
+      "legitTotal": 15,
+      "trapsTotal": 34
+    },
+    "naive": {
+      "cases": 49,
+      "correct": 28,
+      "manual": 7,
+      "unsafe": 14,
+      "missed": 0,
+      "unsafeDollars": 1539.63,
+      "legitAutoPaid": 9,
+      "legitTotal": 15,
+      "trapsTotal": 34
+    }
+  },
+  "rows": [
+    {
+      "case": {
+        "id": "t7-01",
+        "product": "T7",
+        "split": "dev",
+        "url": "https://www.bhphotovideo.com/c/product/1559836-REG/samsung_mu_pc1t0t_am_1tb_t7_portable_ssd.html",
+        "legit": true,
+        "kind": "same",
+        "why": "Same model and capacity, new, B&H"
+      },
+      "paidCents": 27499,
+      "competitorCents": 23001,
+      "condition": "new",
+      "conditionSource": "page_lookup",
+      "availability": "InStock",
+      "competitorId": "e2dXeQi",
+      "relation": "same_product",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "approved",
+          "refundCents": 4498,
+          "notPassed": []
+        },
+        "id_only": {
+          "decision": "approved",
+          "refundCents": 4498,
+          "notPassed": []
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 4498,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "t7-02",
+        "product": "T7",
+        "split": "dev",
+        "url": "https://www.bhphotovideo.com/c/product/1691588-REG/samsung_mu_pe1t0s_am_1tb_t7_shield_portable.html",
+        "legit": false,
+        "kind": "different_model",
+        "why": "T7 Shield is a different, rugged model"
+      },
+      "paidCents": 27499,
+      "competitorCents": 27130,
+      "condition": "new",
+      "conditionSource": "page_lookup",
+      "availability": "InStock",
+      "competitorId": "J4Kgrsx",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 369,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 369,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 369,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "t7-03",
+        "product": "T7",
+        "split": "dev",
+        "url": "https://www.bhphotovideo.com/c/product/1851331-REG/samsung_1tb_t7_portable_ssd.html",
+        "legit": false,
+        "kind": "bundle",
+        "why": "Kit: T7 plus a MagSafe/cold-shoe holder"
+      },
+      "paidCents": 27499,
+      "competitorCents": 25000,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "uCDx0ad",
+      "relation": "bundle_or_kit",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 2499,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 2499,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 2499,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "t7-04",
+        "product": "T7",
+        "split": "dev",
+        "url": "https://www.bhphotovideo.com/c/product/1559839-REG/samsung_mu_pc2t0t_am_2tb_t7_portable_ssd.html",
+        "legit": false,
+        "kind": "different_model",
+        "why": "2TB capacity, not 1TB"
+      },
+      "paidCents": 27499,
+      "competitorCents": 42124,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "5Pb2zgb",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "kin-01",
+        "product": "KINDLE",
+        "split": "dev",
+        "url": "https://www.target.com/p/amazon-kindle-paperwhite-2024-black/-/A-91563138",
+        "legit": true,
+        "kind": "same",
+        "why": "Same model and colour, new, Target"
+      },
+      "paidCents": 21999,
+      "competitorCents": 19999,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "cTyUOkU",
+      "relation": "same_product",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "approved",
+          "refundCents": 2000,
+          "notPassed": []
+        },
+        "id_only": {
+          "decision": "approved",
+          "refundCents": 2000,
+          "notPassed": []
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 2000,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "kin-02",
+        "product": "KINDLE",
+        "split": "dev",
+        "url": "https://www.target.com/p/amazon-kindle-paperwhite-2024-jade/-/A-93320269",
+        "legit": true,
+        "kind": "color",
+        "why": "Same model, Jade colour"
+      },
+      "paidCents": 21999,
+      "competitorCents": 19999,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "i5iqoIN",
+      "relation": "same_product_other_color",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 2000,
+          "notPassed": [
+            "condition: review"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 2000,
+          "notPassed": [
+            "condition: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 2000,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "kin-04",
+        "product": "KINDLE",
+        "split": "dev",
+        "url": "https://www.target.com/p/amazon-kindle-paperwhite-signature-edition-2024-metallic-black/-/A-93320263",
+        "legit": false,
+        "kind": "different_model",
+        "why": "Signature Edition: more storage, wireless charging"
+      },
+      "paidCents": 21999,
+      "competitorCents": 24999,
+      "condition": "new",
+      "conditionSource": "page_lookup",
+      "availability": "InStock",
+      "competitorId": "q1SnUDU",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "kin-05",
+        "product": "KINDLE",
+        "split": "dev",
+        "url": "https://www.bestbuy.com/product/amazon-kindle-paperwhite-colorsoft-case-water-safe-fabric-foldable-lightweight-cover-black/J39HW6S586",
+        "legit": false,
+        "kind": "accessory",
+        "why": "A case for the Kindle, not the Kindle"
+      },
+      "paidCents": 21999,
+      "competitorCents": 3699,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "tIGf4fm",
+      "relation": "accessory_or_part",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 18300,
+          "notPassed": [
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 18300,
+          "notPassed": [
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 18300,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "mx-01",
+        "product": "MX3S",
+        "split": "dev",
+        "url": "https://www.backmarket.com/en-us/p/logitech-mx-master-3s-mouse-wireless/24c32268-7ef8-477f-819f-864825ed84ad",
+        "legit": false,
+        "kind": "refurbished",
+        "why": "Back Market refurbished marketplace"
+      },
+      "paidCents": 12999,
+      "competitorCents": 12300,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "nLZKmNT",
+      "relation": "same_product",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 699,
+          "notPassed": [
+            "retailer: fail",
+            "condition: review"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 699,
+          "notPassed": [
+            "retailer: fail",
+            "condition: review"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 699,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "mx-02",
+        "product": "MX3S",
+        "split": "dev",
+        "url": "https://www.bestbuy.com/product/logitech-mx-master-3s-performance-wireless-mouse-darkfield-wireless-32-81-ft-bluetooth-radio-frequency-2-40-wireless-gray/J7H7ZY8XHR/sku/12173582",
+        "legit": true,
+        "kind": "same",
+        "why": "Same mouse, new, Best Buy"
+      },
+      "paidCents": 12999,
+      "competitorCents": 30532,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "3LErKYT",
+      "relation": "same_product_other_color",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "mx-04",
+        "product": "MX3S",
+        "split": "dev",
+        "url": "https://www.bestbuy.com/product/logitech-mx-master-3s-for-mac-wireless-bluetooth-laser-mouse-with-ultrafast-scrolling-wireless-space-gray/J7H7ZY8XWJ/sku/11068536",
+        "legit": false,
+        "kind": "different_model",
+        "why": "MX Master 3S for Mac: different model (no receiver, Mac layout)"
+      },
+      "paidCents": 12999,
+      "competitorCents": null,
+      "condition": null,
+      "conditionSource": null,
+      "availability": null,
+      "competitorId": null,
+      "relation": null,
+      "lookupError": "Channel3 could not read that page (500: Product extraction failed).",
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "id_only": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "naive": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "mx-06",
+        "product": "MX3S",
+        "split": "dev",
+        "url": "https://www.backmarket.com/en-us/p/logitech-mx-master-3-mouse-wireless/d57ab9ff-5f14-41c3-92d9-bc78706c9e37",
+        "legit": false,
+        "kind": "different_model",
+        "why": "MX Master 3 (older model), refurbished marketplace"
+      },
+      "paidCents": 12999,
+      "competitorCents": 13800,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "ES5IzMP",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "retailer: fail",
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "retailer: fail",
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "art-01",
+        "product": "ARTISAN",
+        "split": "dev",
+        "url": "https://www.kitchenaid.com/countertop-appliances/stand-mixers/tilt-head-stand-mixers/p.artisan-series-5-quart-tilt-head-stand-mixer.KSM150PSBM.html",
+        "legit": true,
+        "kind": "color",
+        "why": "Same mixer, Black Matte"
+      },
+      "paidCents": 44999,
+      "competitorCents": 37999,
+      "condition": "new",
+      "conditionSource": "page_lookup",
+      "availability": "InStock",
+      "competitorId": "nHjGjHW",
+      "relation": "same_product_other_color",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "approved",
+          "refundCents": 7000,
+          "notPassed": []
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 7000,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 7000,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "art-03",
+        "product": "ARTISAN",
+        "split": "dev",
+        "url": "https://www.kitchenaid.com/countertop-appliances/stand-mixers/tilt-head-stand-mixers/p.artisan-series-5-quart-tilt-head-stand-mixer.KSM150PSMJ.html",
+        "legit": true,
+        "kind": "color",
+        "why": "Same mixer, Mint Julep"
+      },
+      "paidCents": 44999,
+      "competitorCents": 37999,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "LmIQRUd",
+      "relation": "same_product_other_color",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "approved",
+          "refundCents": 7000,
+          "notPassed": []
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 7000,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "art-04",
+        "product": "ARTISAN",
+        "split": "dev",
+        "url": "https://www.kitchenaid.com/p.KSM3316XWH.html",
+        "legit": false,
+        "kind": "different_model",
+        "why": "Artisan Mini 3.5 quart, not 5 quart"
+      },
+      "paidCents": 44999,
+      "competitorCents": 44999,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "jj3SjAV",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "art-05",
+        "product": "ARTISAN",
+        "split": "dev",
+        "url": "https://www.kitchenaid.com/countertop-appliances/refurbished/stand-mixers/p.refurbished-artisan-mini-3-5-quart-tilt-head-stand-mixer.RKSM33XXWH.html",
+        "legit": false,
+        "kind": "refurbished",
+        "why": "Refurbished Artisan Mini, sold by the brand itself"
+      },
+      "paidCents": 44999,
+      "competitorCents": 22999,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "uJp3axR",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 22000,
+          "notPassed": [
+            "condition: review",
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 22000,
+          "notPassed": [
+            "condition: review",
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 22000,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "xm5-01",
+        "product": "XM5",
+        "split": "dev",
+        "url": "https://www.bestbuy.com/product/sony-wh-1000xm5-wireless-noise-canceling-headphones-black-wood-headphone-stand/JJG3SJJ7J4/sku/12326508",
+        "legit": false,
+        "kind": "bundle",
+        "why": "Headphones plus a wood stand"
+      },
+      "paidCents": 39999,
+      "competitorCents": 30999,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "fUIFDuU",
+      "relation": "bundle_or_kit",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 9000,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 9000,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 9000,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "xm5-02",
+        "product": "XM5",
+        "split": "dev",
+        "url": "https://www.bestbuy.com/product/sony-wh-1000xm6-best-wireless-noise-canceling-headphones-black/J7XSRH5RCF",
+        "legit": false,
+        "kind": "different_model",
+        "why": "WH-1000XM6, newer model"
+      },
+      "paidCents": 39999,
+      "competitorCents": 45800,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "SANXW2g",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "xm5-04",
+        "product": "XM5",
+        "split": "dev",
+        "url": "https://www.walmart.com/ip/Sony-WH1000XM6-Noise-Canceling-Wireless-Over-Ear-Headphones/16504921979",
+        "legit": false,
+        "kind": "different_model",
+        "why": "WH-1000XM6"
+      },
+      "paidCents": 39999,
+      "competitorCents": 45800,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "xdLLTHt",
+      "relation": "cannot_tell",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: review"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "xm5-05",
+        "product": "XM5",
+        "split": "dev",
+        "url": "https://www.target.com/p/sony-wh-1000xm5-bluetooth-wireless-noise-canceling-over-the-ear-headphones-black-target-certified-refurbished/-/A-88821098",
+        "legit": false,
+        "kind": "refurbished",
+        "why": "Target Certified Refurbished"
+      },
+      "paidCents": 39999,
+      "competitorCents": 12999,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "T8ng60n",
+      "relation": "used_or_refurbished_listing",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 27000,
+          "notPassed": [
+            "condition: review",
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 27000,
+          "notPassed": [
+            "condition: review",
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 27000,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "xm5-07",
+        "product": "XM5",
+        "split": "dev",
+        "url": "https://www.target.com/p/sony-wh-1000xm4-noise-canceling-overhead-bluetooth-wireless-headphones-black-target-certified-refurbished/-/A-87881706",
+        "legit": false,
+        "kind": "refurbished",
+        "why": "Refurbished WH-1000XM4 (older model)"
+      },
+      "paidCents": 39999,
+      "competitorCents": 15999,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "ccZ5dpX",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 24000,
+          "notPassed": [
+            "condition: review",
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 24000,
+          "notPassed": [
+            "condition: review",
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 24000,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "xm5-08",
+        "product": "XM5",
+        "split": "dev",
+        "url": "https://www.bestbuy.com/site/reviews/sony-wh-1000xm5-wireless-noise-cancelling-over-the-ear-headphones-black/6505727",
+        "legit": true,
+        "kind": "color",
+        "why": "Same headphones, Black, Best Buy"
+      },
+      "paidCents": 39999,
+      "competitorCents": 22800,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "PECKtcJ",
+      "relation": "same_product_other_color",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 17199,
+          "notPassed": [
+            "condition: review",
+            "floor: review"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 17199,
+          "notPassed": [
+            "condition: review",
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 17199,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "app-01",
+        "product": "APP2",
+        "split": "dev",
+        "url": "https://www.bestbuy.com/site/apple-airpods-pro-2nd-generation-with-magsafe-case-usbc-white/6447382.p?skuId=6447382",
+        "legit": true,
+        "kind": "same",
+        "why": "Same product, new, Best Buy"
+      },
+      "paidCents": 24999,
+      "competitorCents": 24900,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "i6eVxxH",
+      "relation": "same_product",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 99,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 99,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "app-02",
+        "product": "APP2",
+        "split": "dev",
+        "url": "https://www.bestbuy.com/product/apple-airpods-pro-2nd-gen-with-magsafe-case-usb-c-active-noise-cancelling-white/JX36Q46F47",
+        "legit": false,
+        "kind": "refurbished",
+        "why": "Apple Refurbished Excellent, sold by Best Buy"
+      },
+      "paidCents": 24999,
+      "competitorCents": null,
+      "condition": null,
+      "conditionSource": null,
+      "availability": null,
+      "competitorId": null,
+      "relation": null,
+      "lookupError": "Channel3 could not read that page (500: Product extraction failed).",
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "id_only": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "naive": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "app-04",
+        "product": "APP2",
+        "split": "dev",
+        "url": "https://www.walmart.com/ip/Restored-Apple-AirPods-Pro-2-White-With-USB-C-Charging-Case-In-Ear-Headphones-MTJV3AM-A-Refurbished/5198217434",
+        "legit": false,
+        "kind": "refurbished",
+        "why": "Walmart Restored"
+      },
+      "paidCents": 24999,
+      "competitorCents": 16799,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "oclYiJD",
+      "relation": "used_or_refurbished_listing",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 8200,
+          "notPassed": [
+            "condition: review",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 8200,
+          "notPassed": [
+            "condition: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 8200,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "app-05",
+        "product": "APP2",
+        "split": "dev",
+        "url": "https://www.bestbuy.com/product/apple-airpods-4-with-active-noise-cancellation-white/JJGCQ832YX/sku/10190061",
+        "legit": false,
+        "kind": "different_model",
+        "why": "AirPods 4 with ANC, not AirPods Pro 2"
+      },
+      "paidCents": 24999,
+      "competitorCents": 15800,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "rXyLgdd",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 9199,
+          "notPassed": [
+            "condition: review",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 9199,
+          "notPassed": [
+            "condition: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 9199,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "sw-01",
+        "product": "SWOLED",
+        "split": "dev",
+        "url": "https://www.walmart.com/ip/Nintendo-Switch-OLED-Model-with-White-Joy-Con/910582148",
+        "legit": true,
+        "kind": "same",
+        "why": "Same console, new, Walmart"
+      },
+      "paidCents": 34999,
+      "competitorCents": 39900,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "evDlnzH",
+      "relation": "same_product",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "sw-02",
+        "product": "SWOLED",
+        "split": "dev",
+        "url": "https://www.walmart.com/ip/Nintendo-Switch-OLED-Model-W-White-Joy-Con-Console-with-Mario-Kart-8-Deluxe-Game-Limited-Bundle/692568631",
+        "legit": false,
+        "kind": "bundle",
+        "why": "Console bundled with a game"
+      },
+      "paidCents": 34999,
+      "competitorCents": 49500,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "DqDXj3n",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "sw-04",
+        "product": "SWOLED",
+        "split": "dev",
+        "url": "https://www.bestbuy.com/product/geek-squad-certified-refurbished-switch-lite-nintendo-switch-lite/JCQ6H68Y98",
+        "legit": false,
+        "kind": "refurbished",
+        "why": "Refurbished Switch Lite (different model)"
+      },
+      "paidCents": 34999,
+      "competitorCents": null,
+      "condition": null,
+      "conditionSource": null,
+      "availability": null,
+      "competitorId": null,
+      "relation": null,
+      "lookupError": "Channel3 could not read that page (500: Product extraction failed).",
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "id_only": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "naive": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "qc-01",
+        "product": "QCUE2",
+        "split": "dev",
+        "url": "https://www.bose.com/p/earbuds/bose-quietcomfort-ultra-earbuds-2nd-gen/QCUE2-HEADPHONEIN.html",
+        "legit": true,
+        "kind": "same",
+        "why": "Same earbuds from the brand store"
+      },
+      "paidCents": 29999,
+      "competitorCents": 24900,
+      "condition": "new",
+      "conditionSource": "page_lookup",
+      "availability": "InStock",
+      "competitorId": "ARiXrpT",
+      "relation": "same_product_other_color",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "approved",
+          "refundCents": 5099,
+          "notPassed": []
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 5099,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 5099,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "qc-02",
+        "product": "QCUE2",
+        "split": "dev",
+        "url": "https://www.bose.com/p/refurbished/bose-quietcomfort-ultra-earbuds-2nd-gen/QCUE2-HEADPHONEIN-FR.html",
+        "legit": false,
+        "kind": "refurbished",
+        "why": "Bose refurbished store"
+      },
+      "paidCents": 29999,
+      "competitorCents": 27900,
+      "condition": "new",
+      "conditionSource": "page_lookup",
+      "availability": "InStock",
+      "competitorId": "bPmOjNm",
+      "relation": "cannot_tell",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 2099,
+          "notPassed": [
+            "identity: review"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 2099,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 2099,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "qc-04",
+        "product": "QCUE2",
+        "split": "dev",
+        "url": "https://www.bose.com/p/product-sets/SET-QCUE2-AFP2.html",
+        "legit": false,
+        "kind": "bundle",
+        "why": "Earbuds + AirFly Pro 2 set"
+      },
+      "paidCents": 29999,
+      "competitorCents": 35399,
+      "condition": "new",
+      "conditionSource": "page_lookup",
+      "availability": "InStock",
+      "competitorId": "6iwBn5e",
+      "relation": "bundle_or_kit",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "ip-01",
+        "product": "IPDUO6",
+        "split": "dev",
+        "url": "https://www.walmart.com/ip/Instant-Pot-Duo-6-Qt-Electric-Pressure-Cooker-7-in-1-with-Easy-Release-Steam-Switch-Slow-Cooker-Rice-Cooker-Steamer-and-More/575389962",
+        "legit": true,
+        "kind": "same",
+        "why": "Instant Pot Duo 6 qt, new, Walmart"
+      },
+      "paidCents": 12999,
+      "competitorCents": 9700,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "VA740J5",
+      "relation": "same_product",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 3299,
+          "notPassed": [
+            "condition: review"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 3299,
+          "notPassed": [
+            "condition: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 3299,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "ip-02",
+        "product": "IPDUO6",
+        "split": "dev",
+        "url": "https://www.walmart.com/ip/Instant-Pot-Duo-Nova-6-Quart-7-in-1-One-Touch-Multi-Cooker-Silver-112-0079-0-Refurbished/851820967",
+        "legit": false,
+        "kind": "refurbished",
+        "why": "Restored Duo Nova (refurbished, different model)"
+      },
+      "paidCents": 12999,
+      "competitorCents": null,
+      "condition": null,
+      "conditionSource": null,
+      "availability": null,
+      "competitorId": null,
+      "relation": null,
+      "lookupError": "Channel3 could not read that page (404: Product not found).",
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "id_only": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "naive": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "mx-07",
+        "product": "MX3S",
+        "split": "dev",
+        "url": "https://www.bestbuy.com/site/logitech-mx-master-3s-for-mac-bluetooth-laser-mouse-with-ultrafast-scrolling-pale-gray/6516288.p?skuId=6516288",
+        "legit": false,
+        "kind": "different_model",
+        "why": "MX Master 3S for Mac (910-006570)"
+      },
+      "paidCents": 12999,
+      "competitorCents": null,
+      "condition": null,
+      "conditionSource": null,
+      "availability": null,
+      "competitorId": null,
+      "relation": null,
+      "lookupError": "Channel3 could not read that page (500: Product extraction failed).",
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "id_only": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "naive": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "mx-08",
+        "product": "MX3S",
+        "split": "dev",
+        "url": "https://www.staples.com/logitech-mx-master-3s-wireless-usb-mouse-graphite-910-006581/product_IM102PP56",
+        "legit": false,
+        "kind": "different_model",
+        "why": "MX Master 3S for Business (910-006581)"
+      },
+      "paidCents": 12999,
+      "competitorCents": 11999,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "5OKWont",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 1000,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 1000,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 1000,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "mx-12",
+        "product": "MX3S",
+        "split": "dev",
+        "url": "https://www.walmart.com/ip/Restored-Logitech-MX-Master-3S-Graphite-Like-New-Refurbished/5340980649",
+        "legit": false,
+        "kind": "refurbished",
+        "why": "Walmart Restored"
+      },
+      "paidCents": 12999,
+      "competitorCents": null,
+      "condition": null,
+      "conditionSource": null,
+      "availability": null,
+      "competitorId": null,
+      "relation": null,
+      "lookupError": "Channel3 could not read that page (500: Product extraction failed).",
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "id_only": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "naive": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "app-07",
+        "product": "APP2",
+        "split": "dev",
+        "url": "https://www.walmart.com/ip/Apple-AirPods-Pro-with-MagSafe-Charging-Case-1st-Generation/975690481",
+        "legit": false,
+        "kind": "different_model",
+        "why": "AirPods Pro 1st generation (Lightning)"
+      },
+      "paidCents": 24999,
+      "competitorCents": 6900,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "bRfOzE5",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 18099,
+          "notPassed": [
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 18099,
+          "notPassed": [
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 18099,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "qc-06",
+        "product": "QCUE2",
+        "split": "dev",
+        "url": "https://bestbuy.com/product/bose-quietcomfort-ultra-true-wireless-noise-cancelling-in-ear-earbuds-white-smoke/J7C5V6T83W/sku/11936725",
+        "legit": false,
+        "kind": "different_model",
+        "why": "QC Ultra Earbuds 1st generation (882826-0020)"
+      },
+      "paidCents": 29999,
+      "competitorCents": null,
+      "condition": null,
+      "conditionSource": null,
+      "availability": null,
+      "competitorId": null,
+      "relation": null,
+      "lookupError": "Channel3 could not read that page (500: Product extraction failed).",
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "id_only": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "naive": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "qc-08",
+        "product": "QCUE2",
+        "split": "dev",
+        "url": "https://www.walmart.com/ip/Bose-QuietComfort-Ultra-Headphones-Noise-Cancelling-Over-Ear-Wireless-Bluetooth-Headphones-White-Smoke/1861910938",
+        "legit": false,
+        "kind": "different_model",
+        "why": "QC Ultra over-ear headphones, not earbuds"
+      },
+      "paidCents": 29999,
+      "competitorCents": 18500,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "qhVq1fO",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 11499,
+          "notPassed": [
+            "condition: review",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 11499,
+          "notPassed": [
+            "condition: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 11499,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "kin-07",
+        "product": "KINDLE",
+        "split": "dev",
+        "url": "https://www.bestbuy.com/product/amazon-kindle-paperwhite-kids-16-gb-2024-starfish/J39HW697T2",
+        "legit": false,
+        "kind": "different_model",
+        "why": "Paperwhite Kids edition (cover, Kids+ bundle)"
+      },
+      "paidCents": 21999,
+      "competitorCents": 22999,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "HwUgjzs",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "kin-09",
+        "product": "KINDLE",
+        "split": "dev",
+        "url": "https://www.bestbuy.com/product/amazon-kindle-colorsoft-16-gb-with-color-display-and-adjustable-warm-light-2025-black/J39HW69C9C",
+        "legit": false,
+        "kind": "different_model",
+        "why": "Kindle Colorsoft (colour display)"
+      },
+      "paidCents": 21999,
+      "competitorCents": 27499,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "CtXCJHi",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "ip-04",
+        "product": "IPDUO6",
+        "split": "dev",
+        "url": "https://www.walmart.com/ip/Instant-Pot-DUO-Plus-6qt-9-in-1-Multi-Use-Programmable-Slow-Cooker/647517523",
+        "legit": false,
+        "kind": "different_model",
+        "why": "Duo Plus, not Duo"
+      },
+      "paidCents": 12999,
+      "competitorCents": 13980,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "KyTgDI4",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "t7-06",
+        "product": "T7",
+        "split": "dev",
+        "url": "https://www.walmart.com/ip/SAMSUNG-T7-Portable-SSD-1TB-Titan-Gray-Up-to-1-050MB-s-USB-3-2-Gen2-MU-PC1T0T-AM/953015472",
+        "legit": true,
+        "kind": "same",
+        "why": "Same T7 1TB (MU-PC1T0T/AM), Walmart"
+      },
+      "paidCents": 27499,
+      "competitorCents": 27499,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "g51f3Np",
+      "relation": "same_product",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "t7-07",
+        "product": "T7",
+        "split": "dev",
+        "url": "https://www.bestbuy.com/product/samsung-t7-1tb-external-usb-3-2-gen-2-portable-ssd-with-hardware-encryption-titan-gray/J3ZYGCQG8H",
+        "legit": true,
+        "kind": "same",
+        "why": "Same T7 1TB, Best Buy"
+      },
+      "paidCents": 27499,
+      "competitorCents": 25999,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "DMBm3wB",
+      "relation": "same_product",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "approved",
+          "refundCents": 1500,
+          "notPassed": []
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 1500,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 1500,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "sw-05",
+        "product": "SWOLED",
+        "split": "dev",
+        "url": "https://www.walmart.com/ip/Nintendo-Switch-OLED-Model-White-Joy-Con-64GB-Console-Improved-HD-Screen-LAN-Port-Dock-Minecraft-Mytrix-Wireless-Switch-Pro-Controller-Accessories-JP/770133235",
+        "legit": false,
+        "kind": "bundle",
+        "why": "Japanese version, bundled with game and controller"
+      },
+      "paidCents": 34999,
+      "competitorCents": 42499,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "QtKgFpQ",
+      "relation": "bundle_or_kit",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "art-07",
+        "product": "ARTISAN",
+        "split": "dev",
+        "url": "https://www.kitchenaid.com/countertop-appliances/stand-mixers/tilt-head-stand-mixers/p.artisan-series-5-quart-tilt-head-stand-mixer.KSM150PSDC.html",
+        "legit": true,
+        "kind": "color",
+        "why": "Same mixer, Cardamom"
+      },
+      "paidCents": 44999,
+      "competitorCents": 39999,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "3XSPDDZ",
+      "relation": "same_product_other_color",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "approved",
+          "refundCents": 5000,
+          "notPassed": []
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 5000,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "art-11",
+        "product": "ARTISAN",
+        "split": "dev",
+        "url": "https://www.kitchenaid.com/p.KSM3316XER.html",
+        "legit": false,
+        "kind": "different_model",
+        "why": "Artisan Mini 3.5 quart, Empire Red (same colour, different model)"
+      },
+      "paidCents": 44999,
+      "competitorCents": 44999,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "FUpX8NG",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "art-12",
+        "product": "ARTISAN",
+        "split": "dev",
+        "url": "https://www.kitchenaid.com/countertop-appliances/stand-mixers/tilt-head-stand-mixers/p.artisan-series-5-quart-tilt-head-stand-mixer.KSM150PSMH.html",
+        "legit": true,
+        "kind": "color",
+        "why": "Same mixer, Milkshake"
+      },
+      "paidCents": 44999,
+      "competitorCents": 37999,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "VLWPN0P",
+      "relation": "same_product_other_color",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "approved",
+          "refundCents": 7000,
+          "notPassed": []
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 7000,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 10000,
+          "notPassed": []
+        }
+      }
+    }
+  ]
+}

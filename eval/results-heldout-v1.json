@@ -1,0 +1,696 @@
+{
+  "ranAt": "2026-10-29T01:53:31.162Z",
+  "split": "heldout",
+  "cache": "frozen",
+  "summary": {
+    "matchback": {
+      "cases": 15,
+      "correct": 7,
+      "manual": 7,
+      "unsafe": 0,
+      "missed": 1,
+      "unsafeDollars": 0,
+      "legitAutoPaid": 1,
+      "legitTotal": 5,
+      "trapsTotal": 10
+    },
+    "id_only": {
+      "cases": 15,
+      "correct": 8,
+      "manual": 3,
+      "unsafe": 0,
+      "missed": 4,
+      "unsafeDollars": 0,
+      "legitAutoPaid": 0,
+      "legitTotal": 5,
+      "trapsTotal": 10
+    },
+    "naive": {
+      "cases": 15,
+      "correct": 8,
+      "manual": 3,
+      "unsafe": 4,
+      "missed": 0,
+      "unsafeDollars": 518.21,
+      "legitAutoPaid": 2,
+      "legitTotal": 5,
+      "trapsTotal": 10
+    }
+  },
+  "rows": [
+    {
+      "case": {
+        "id": "t7-05",
+        "product": "T7",
+        "split": "heldout",
+        "url": "https://bestbuy.com/product/samsung-t7-2tb-external-usb-3-2-gen-2-portable-ssd-with-hardware-encryption-titan-gray/J3ZYGCQGGG/sku/11526952",
+        "legit": false,
+        "kind": "different_model",
+        "why": "2TB capacity, not 1TB"
+      },
+      "paidCents": 27499,
+      "competitorCents": null,
+      "condition": null,
+      "conditionSource": null,
+      "availability": null,
+      "competitorId": null,
+      "relation": null,
+      "lookupError": "Channel3 could not read that page (timeout: POST /v1/lookup failed: timeout).",
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "id_only": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "naive": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "kin-03",
+        "product": "KINDLE",
+        "split": "heldout",
+        "url": "https://www.target.com/p/amazon-kindle-paperwhite-2024-raspberry/-/A-93320267",
+        "legit": true,
+        "kind": "color",
+        "why": "Same model, Raspberry colour"
+      },
+      "paidCents": 21999,
+      "competitorCents": 19999,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "oqEtzT2",
+      "relation": "same_product_other_color",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 2000,
+          "notPassed": [
+            "condition: review"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 2000,
+          "notPassed": [
+            "condition: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 2000,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "kin-06",
+        "product": "KINDLE",
+        "split": "heldout",
+        "url": "https://www.bestbuy.com/product/fintie-clear-case-for-7-kindle-paperwhite-12th-gen-2024-kindle-colorsoft-soft-lightweight-tpu-cover-transparent-back-shell-green/J2V7YRLGLY",
+        "legit": false,
+        "kind": "accessory",
+        "why": "Third-party case"
+      },
+      "paidCents": 21999,
+      "competitorCents": 1799,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "zaHptBr",
+      "relation": "accessory_or_part",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 20200,
+          "notPassed": [
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 20200,
+          "notPassed": [
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 20200,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "mx-03",
+        "product": "MX3S",
+        "split": "heldout",
+        "url": "https://www.bestbuy.com/site/logitech-mx-master-3s-wireless-laser-mouse-with-ultrafast-scrolling-pale-gray/6502578.p?skuId=6502578",
+        "legit": true,
+        "kind": "color",
+        "why": "Same mouse, Pale Gray"
+      },
+      "paidCents": 12999,
+      "competitorCents": null,
+      "condition": null,
+      "conditionSource": null,
+      "availability": null,
+      "competitorId": null,
+      "relation": null,
+      "lookupError": "Channel3 could not read that page (500: Product extraction failed).",
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "id_only": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "naive": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "mx-05",
+        "product": "MX3S",
+        "split": "heldout",
+        "url": "https://www.bestbuy.com/product/logitech-mx-master-3s-bluetooth-edition-for-business-performance-wireless-mouse-wireless-graphite/J7H7ZY8G3K/sku/12566845",
+        "legit": false,
+        "kind": "different_model",
+        "why": "For Business edition (910-006581), different SKU/model"
+      },
+      "paidCents": 12999,
+      "competitorCents": 11878,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "vszq1wu",
+      "relation": "same_product_other_color",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 1121,
+          "notPassed": [
+            "condition: review"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 1121,
+          "notPassed": [
+            "condition: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 1121,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "art-02",
+        "product": "ARTISAN",
+        "split": "heldout",
+        "url": "https://www.kitchenaid.com/countertop-appliances/stand-mixers/tilt-head-stand-mixers/p.artisan-series-5-quart-tilt-head-stand-mixer.KSM150PSWH.html",
+        "legit": true,
+        "kind": "color",
+        "why": "Same mixer, White"
+      },
+      "paidCents": 44999,
+      "competitorCents": 37999,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "VLWPN0P",
+      "relation": "same_product_other_color",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "approved",
+          "refundCents": 7000,
+          "notPassed": []
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 7000,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "art-06",
+        "product": "ARTISAN",
+        "split": "heldout",
+        "url": "https://www.kitchenaid.com/p.KSM3316XBM.html",
+        "legit": false,
+        "kind": "different_model",
+        "why": "Artisan Mini 3.5 quart"
+      },
+      "paidCents": 44999,
+      "competitorCents": 44999,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "47s4R30",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "xm5-03",
+        "product": "XM5",
+        "split": "heldout",
+        "url": "https://www.bestbuy.com/product/sony-wh-1000xm6-best-wireless-noise-cancelling-headphones-midnight-blue/J7XSRH5R2S",
+        "legit": false,
+        "kind": "different_model",
+        "why": "WH-1000XM6"
+      },
+      "paidCents": 39999,
+      "competitorCents": 45800,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "8O9bQUU",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "xm5-06",
+        "product": "XM5",
+        "split": "heldout",
+        "url": "https://www.walmart.com/ip/Sony-WH-1000XM5-The-Best-Wireless-Noise-Canceling-Headphones-Black/386006068?conditionGroupCode=2",
+        "legit": false,
+        "kind": "refurbished",
+        "why": "Walmart Restored listing"
+      },
+      "paidCents": 39999,
+      "competitorCents": 15999,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "vSTwfyW",
+      "relation": "cannot_tell",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 24000,
+          "notPassed": [
+            "condition: review",
+            "floor: review",
+            "identity: review"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 24000,
+          "notPassed": [
+            "condition: review",
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 24000,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "app-03",
+        "product": "APP2",
+        "split": "heldout",
+        "url": "https://www.target.com/p/refurbished-airpods-pro-2nd-generation-with-magsafe-case-usb-c-2023-2nd-generation-target-certified-refurbished/-/A-89999869",
+        "legit": false,
+        "kind": "refurbished",
+        "why": "Target Certified Refurbished"
+      },
+      "paidCents": 24999,
+      "competitorCents": 18499,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "Opz9aIr",
+      "relation": "used_or_refurbished_listing",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 6500,
+          "notPassed": [
+            "condition: review",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 6500,
+          "notPassed": [
+            "condition: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 6500,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "app-06",
+        "product": "APP2",
+        "split": "heldout",
+        "url": "https://www.bestbuy.com/site/apple-geek-squad-certified-refurbished-airpods-pro-2nd-generation-with-magsafe-case-usbc-white/6562127.p?skuId=6562127",
+        "legit": false,
+        "kind": "refurbished",
+        "why": "Geek Squad Certified Refurbished"
+      },
+      "paidCents": 24999,
+      "competitorCents": null,
+      "condition": null,
+      "conditionSource": null,
+      "availability": null,
+      "competitorId": null,
+      "relation": null,
+      "lookupError": "Channel3 could not read that page (500: Product extraction failed).",
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "id_only": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "naive": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "sw-03",
+        "product": "SWOLED",
+        "split": "heldout",
+        "url": "https://www.walmart.com/ip/Nintendo-Switch-OLED-Model-w-White-Joy-Con-Console-International-Spec-Functional-in-US-NEW/5206397016",
+        "legit": false,
+        "kind": "different_model",
+        "why": "International-spec import, not the US retail product"
+      },
+      "paidCents": 34999,
+      "competitorCents": 35900,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "Jmq2XKM",
+      "relation": "same_product",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "qc-03",
+        "product": "QCUE2",
+        "split": "heldout",
+        "url": "https://www.target.com/p/bose-quietcomfort-ultra-earbuds-2nd-gen/-/A-95009971",
+        "legit": true,
+        "kind": "color",
+        "why": "Same earbuds at Target (Midnight Violet listing)"
+      },
+      "paidCents": 29999,
+      "competitorCents": 29999,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "wh1bqS4",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "qc-05",
+        "product": "QCUE2",
+        "split": "heldout",
+        "url": "https://www.bose.com/p/product-sets/SET-QCUE2-SILCN-COVERCASE.html",
+        "legit": false,
+        "kind": "bundle",
+        "why": "Earbuds + silicone case set"
+      },
+      "paidCents": 29999,
+      "competitorCents": 32800,
+      "condition": "new",
+      "conditionSource": "page_lookup",
+      "availability": "InStock",
+      "competitorId": "E4VNl1w",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "ip-03",
+        "product": "IPDUO6",
+        "split": "heldout",
+        "url": "https://www.walmart.com/ip/Instant-Pot-6-Quart-Duo-Electric-Pressure-Cooker-7-in-1-Yogurt-Maker-Food-Steamer-Slow-Cooker-Rice-Cooker-More-Disney-Mickey-Mouse-Red/958708083",
+        "legit": true,
+        "kind": "color",
+        "why": "Same Duo 6 qt in a Disney Mickey design"
+      },
+      "paidCents": 12999,
+      "competitorCents": 9900,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "VlUoC7P",
+      "relation": "same_product_other_color",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 3099,
+          "notPassed": [
+            "condition: review"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 3099,
+          "notPassed": [
+            "condition: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 3099,
+          "notPassed": []
+        }
+      }
+    }
+  ]
+}
