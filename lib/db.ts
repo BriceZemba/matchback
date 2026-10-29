@@ -84,6 +84,9 @@ export function getDb(): Db {
   if (holder.__matchbackDb) return holder.__matchbackDb;
   const url = process.env.DATABASE_URL;
   if (url) {
+    if (!/^postgres(ql)?:\/\//.test(url)) {
+      throw new Error("DATABASE_URL must be a postgresql:// connection string (Supabase: Connect → Transaction pooler), not the project's https:// API URL.");
+    }
     const local = /@(localhost|127\.0\.0\.1)[:/]/.test(url);
     holder.__matchbackDb = new PostgresDb(postgres(url, { prepare: false, max: 3, idle_timeout: 20, connect_timeout: 10, ssl: local ? false : "require", onnotice: () => {} }));
   } else {
