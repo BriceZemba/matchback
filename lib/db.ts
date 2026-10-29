@@ -48,11 +48,20 @@ class PostgresDb implements Db {
     });
     return this.ready;
   }
+  // One query at a time. With more queries than connections the driver pipelines them on one
+  // connection, and Supabase's transaction pooler never answers pipelined queries (measured
+  // 2026-10-29: 12 pipelined SELECT 1 hung; the same 12 through this queue took 2 s from Paris).
+  private tail: Promise<unknown> = Promise.resolve();
+  private serial<T>(fn: () => Promise<T>): Promise<T> {
+    const run = this.tail.then(fn, fn);
+    this.tail = run.catch(() => undefined);
+    return run;
+  }
   private async query(text: string, params: Param[]) {
     await this.migrated();
     // The driver sends a Buffer as bytea; a plain Uint8Array is converted first.
     const values = params.map((p) => (p instanceof Uint8Array && !Buffer.isBuffer(p) ? Buffer.from(p) : p));
-    return this.sql.unsafe(toPostgresPlaceholders(text), values as never[]);
+    return this.serial(() => this.sql.unsafe(toPostgresPlaceholders(text), values as never[]));
   }
   async get(text: string, ...params: Param[]) {
     return (await this.query(text, params))[0];
@@ -88,7 +97,7 @@ export function getDb(): Db {
       throw new Error("DATABASE_URL must be a postgresql:// connection string (Supabase: Connect → Transaction pooler), not the project's https:// API URL.");
     }
     const local = /@(localhost|127\.0\.0\.1)[:/]/.test(url);
-    holder.__matchbackDb = new PostgresDb(postgres(url, { prepare: false, max: 3, idle_timeout: 20, connect_timeout: 10, ssl: local ? false : "require", onnotice: () => {} }));
+    holder.__matchbackDb = new PostgresDb(postgres(url, { prepare: false, max: 1, idle_timeout: 20, connect_timeout: 10, ssl: local ? false : "require", onnotice: () => {} }));
   } else {
     const file = process.env.MATCHBACK_DB ?? "data/matchback.db";
     if (file !== ":memory:") mkdirSync(dirname(file), { recursive: true });

@@ -58,3 +58,11 @@ describe.skipIf(process.env.LIVE !== "1" || !process.env.DATABASE_URL)("live Pos
     }
   });
 });
+
+describe.skipIf(process.env.LIVE !== "1" || !process.env.DATABASE_URL)("live Postgres concurrency", () => {
+  it("answers many parallel callers (the transaction pooler hangs on pipelined queries)", { timeout: 30_000 }, async () => {
+    const { getDb } = await import("@/lib/db");
+    const rows = await Promise.all(Array.from({ length: 12 }, (_, i) => getDb().get("SELECT ? AS n", String(i))));
+    expect(rows.map((r) => (r as { n: string }).n)).toEqual(Array.from({ length: 12 }, (_, i) => String(i)));
+  });
+});
