@@ -26,7 +26,7 @@ export type ClaimRow = {
   error: string | null;
   created_at: string;
   decided_at: string | null;
-  source: "link" | "image";
+  source: "link" | "image" | "watch";
   image_path: string | null;
   image_mime: string | null;
   competitor_domain: string | null;
@@ -68,6 +68,17 @@ export function fileClaim(orderId: string, competitorUrl: string, locale: Locale
   const id = randomUUID();
   getDb().prepare("INSERT INTO claims (id, order_id, competitor_url, status, created_at, locale) VALUES (?, ?, ?, 'verifying', ?, ?)")
     .run(id, orderId, url.toString(), now(), locale);
+  return getClaim(id)!;
+}
+
+/** File a claim from a price-watch finding: the offer is already known by store, on the product's own record. */
+export function fileWatchClaim(orderId: string, offerUrl: string, domain: string, locale: Locale = "en"): ClaimRow {
+  const order = getOrderRow(orderId);
+  if (!order || order.status !== "captured") throw new InvariantError(409, "Price-match claims are for paid orders only.");
+  const id = randomUUID();
+  getDb()
+    .prepare("INSERT INTO claims (id, order_id, competitor_url, status, created_at, source, competitor_domain, locale) VALUES (?, ?, ?, 'verifying', ?, 'watch', ?, ?)")
+    .run(id, orderId, offerUrl, now(), domain, locale);
   return getClaim(id)!;
 }
 
@@ -287,6 +298,10 @@ export async function verifyClaim(claimId: string, deps: VerifyDeps = defaultDep
   let evidence: ClaimEvidence;
   if (claim.source === "image") {
     evidence = await evaluateImageClaim(claim, claimInput, deps);
+  } else if (claim.source === "watch") {
+    // Re-read the product record now, so the refund uses today's offer, not the one seen when it was found.
+    const product = await deps.channel3.product(order.product_id);
+    evidence = await evaluateClaim({ ...claimInput, resolved: { product, domain: claim.competitor_domain! } }, deps);
   } else {
     evidence = await evaluateClaim(claimInput, deps);
   }

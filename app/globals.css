@@ -236,3 +236,18 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.02e
 .icon-btn svg { transition: transform 0.4s var(--ease); }
 .icon-btn:hover svg { transform: rotate(25deg); }
 @media (max-width: 600px) { .site-header .pill { display: none; } }
+
+/* ---------- price watch ---------- */
+.btn-sm { min-height: 36px; padding: 0 12px; font-size: 12px; box-shadow: 2px 2px 0 var(--rule); }
+.watch-card h2 { font-size: 24px; margin-top: 8px; }
+.watch-card.found { border-color: var(--ok); box-shadow: 5px 5px 0 var(--ok); }
+.watch-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.watch-live { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ok); }
+.pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 var(--ok); animation: pulse 2s ease-out infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 60%, transparent); } 80%, 100% { box-shadow: 0 0 0 9px transparent; } }
+.watch-kv { border-top: 1.5px dashed var(--hair); padding-top: 14px; }
+.watch-back { color: var(--ok); font-weight: 700; font-size: 17px; }
+.watch-checks { list-style: none; padding: 0; margin: 14px 0 0; display: flex; flex-wrap: wrap; gap: 6px 14px; font-family: var(--mono); font-size: 12px; color: var(--ink-2, var(--ink)); }
+.watch-checks li { display: inline-flex; align-items: center; gap: 5px; }
+.watch-checks svg { color: var(--ok); }
+.watch-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 18px; padding-top: 14px; border-top: 1.5px solid var(--hair); }

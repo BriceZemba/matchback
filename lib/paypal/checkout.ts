@@ -25,6 +25,7 @@ export type OrderRow = {
   captured_cents: number | null;
   captured_at: string | null;
   status: string;
+  created_at: string;
 };
 
 type CatalogRow = { product_id: string; title: string; price_cents: number; currency: string };

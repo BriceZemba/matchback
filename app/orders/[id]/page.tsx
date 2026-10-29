@@ -3,6 +3,8 @@ import { getDb } from "@/lib/db";
 import { fromCents } from "@/lib/money";
 import { getOrderRow } from "@/lib/paypal/checkout";
 import { claimsForOrder } from "@/lib/verifier/run";
+import { settingsFromEnv } from "@/lib/verifier/policy";
+import { activeFinding, lastWatched } from "@/lib/watch";
 import { SubmitButton } from "../../submit-button";
 import { ClaimForm } from "./claim-form";
 import { requestPrefs } from "@/lib/locale-server";
@@ -24,7 +26,7 @@ function Check() {
 export default async function OrderPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ notice?: string }> }) {
   const { id } = await params;
   const { notice } = await searchParams;
-  const { t: tt } = await requestPrefs();
+  const { locale, t: tt } = await requestPrefs();
   const t = tt.order;
   const order = getOrderRow(id);
   if (!order) {
@@ -49,6 +51,14 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
     { label: t.s4, sub: refunded ? t.s4subDone(`$${fromCents(refunded.amount_cents)}`) : t.s4subWait, done: Boolean(refunded) },
   ];
   const current = steps.findIndex((s) => !s.done);
+  const w = tt.watch;
+  const finding = paid && !refunded ? activeFinding(id) : undefined;
+  const watchedAt = lastWatched(id);
+  const ago = (iso: string) => {
+    const mins = Math.round((Date.now() - Date.parse(iso)) / 60_000);
+    const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+    return mins < 60 ? rtf.format(-mins, "minute") : mins < 2880 ? rtf.format(-Math.round(mins / 60), "hour") : rtf.format(-Math.round(mins / 1440), "day");
+  };
 
   return (
     <main className="shell">
@@ -97,7 +107,44 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
           )}
 
           {paid && !refunded && (
-            <section className="card card-pad claim-card rise" style={{ ["--i" as string]: 2 }}>
+            <section className={`card card-pad watch-card rise${finding ? " found" : ""}`} style={{ ["--i" as string]: 2 }} aria-live="polite">
+              <div className="watch-head">
+                <span className="eyebrow">{w.eyebrow}</span>
+                <span className="watch-live"><span className="pulse" />{w.watching}</span>
+              </div>
+              {finding ? (
+                <>
+                  <h2>{w.foundTitle}</h2>
+                  <p className="muted" style={{ margin: "8px 0 0", fontSize: 15 }}>{w.foundBody(finding.domain, `$${fromCents(finding.price_cents)}`)}</p>
+                  <dl className="kv watch-kv">
+                    <dt>{w.youPaid}</dt><dd>${fromCents(order.captured_cents ?? order.amount_cents)}</dd>
+                    <dt>{finding.domain}</dt><dd>${fromCents(finding.price_cents)}</dd>
+                    <dt>{w.youGet}</dt><dd className="watch-back">${fromCents(finding.refund_cents)}</dd>
+                  </dl>
+                  <ul className="watch-checks">{w.verified.map((v) => <li key={v}><Check />{v}</li>)}</ul>
+                  <form action="/api/watch/claim" method="post" style={{ marginTop: 16 }}>
+                    <input type="hidden" name="findingId" value={finding.id} />
+                    <input type="hidden" name="orderId" value={order.id} />
+                    <SubmitButton pendingLabel={w.claiming} className="btn btn-accent">{w.claim(`$${fromCents(finding.refund_cents)}`)}</SubmitButton>
+                  </form>
+                  <p className="subtle" style={{ margin: "10px 0 0" }}>{w.recheck}</p>
+                </>
+              ) : (
+                <>
+                  <h2>{w.idleTitle}</h2>
+                  <p className="muted" style={{ margin: "8px 0 0", fontSize: 15 }}>{w.idleBody(settingsFromEnv().windowDays)}</p>
+                </>
+              )}
+              <form action="/api/watch/check" method="post" className="watch-foot">
+                <input type="hidden" name="orderId" value={order.id} />
+                <span className="subtle mono">{w.lastChecked}: {watchedAt ? ago(watchedAt) : w.never}</span>
+                <SubmitButton pendingLabel={w.checking} className="btn btn-ghost btn-sm">{w.checkNow}</SubmitButton>
+              </form>
+            </section>
+          )}
+
+          {paid && !refunded && (
+            <section className="card card-pad claim-card rise" style={{ ["--i" as string]: 3 }}>
               <span className="eyebrow">{t.claimEyebrow}</span>
               <h2 style={{ marginTop: 8 }}>{t.claimTitle}</h2>
               <ClaimForm orderId={order.id} t={tt.form} />
@@ -110,7 +157,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
           )}
 
           {claims.length > 0 && (
-            <section className="card card-pad rise" style={{ ["--i" as string]: 3 }}>
+            <section className="card card-pad rise" style={{ ["--i" as string]: 4 }}>
               <h2 style={{ fontSize: 22 }}>{t.claims}</h2>
               <ul className="list">
                 {claims.map((c) => {
@@ -119,7 +166,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
                     <li key={c.id}>
                       <a href={`/claims/${c.id}`}>
                         <span style={{ overflowWrap: "anywhere" }}>
-                          {c.source === "image" ? `${t.screenshot}${c.competitor_domain ? ` · ${c.competitor_domain}` : ""}` : new URL(c.competitor_url).hostname.replace(/^www\./, "")}
+                          {c.source === "image" ? `${t.screenshot}${c.competitor_domain ? ` · ${c.competitor_domain}` : ""}` : c.source === "watch" ? `${w.claimLabel} · ${c.competitor_domain}` : new URL(c.competitor_url).hostname.replace(/^www\./, "")}
                         </span>
                         <span className={`status status-${s.tone}`}>{s.label}</span>
                       </a>

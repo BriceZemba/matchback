@@ -85,6 +85,21 @@ function migrate(d: DatabaseSync) {
     );
     CREATE INDEX IF NOT EXISTS claims_by_order ON claims(order_id);
 
+    -- Price watch: cheaper offers the verifier approved after a purchase, before anyone claimed them.
+    CREATE TABLE IF NOT EXISTS watch_findings (
+      id            TEXT PRIMARY KEY,
+      order_id      TEXT NOT NULL REFERENCES orders(id),
+      domain        TEXT NOT NULL,
+      offer_url     TEXT NOT NULL,
+      price_cents   INTEGER NOT NULL,
+      refund_cents  INTEGER NOT NULL,
+      status        TEXT NOT NULL,   -- suggested | claimed | expired
+      evidence_json TEXT NOT NULL,
+      claim_id      TEXT,
+      found_at      TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS watch_findings_by_order ON watch_findings(order_id);
+
     -- Channel3 answers, so a claim re-check, the evaluation and the filmed demo read the same data.
     CREATE TABLE IF NOT EXISTS channel3_cache (
       key         TEXT PRIMARY KEY,   -- lookup:<url> | product:<id> | stats:<id>
@@ -100,6 +115,7 @@ function migrate(d: DatabaseSync) {
   addColumn(d, "claims", "image_mime TEXT");
   addColumn(d, "claims", "competitor_domain TEXT");
   addColumn(d, "claims", "locale TEXT NOT NULL DEFAULT 'en'");
+  addColumn(d, "orders", "watch_checked_at TEXT");
 }
 
 function addColumn(d: DatabaseSync, table: string, definition: string) {

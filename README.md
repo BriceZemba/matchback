@@ -13,6 +13,8 @@
 5. Fixed rules decide: claim window, resale sites, condition, stock, price floor. The AI never decides money on its own.
 6. **PayPal** refunds the difference on the original capture, and Matchback reads the refund back independently.
 
+**Price watch.** The shopper doesn't have to go looking. During the claim window Matchback keeps checking the other stores on the product's Channel3 record. When one drops below the price paid, the same verifier runs on it, and only an approved offer is shown on the order page as a one-click claim (verified again before the refund). Set `MATCHBACK_WATCH_MODE=auto` to file and refund automatically, and `MATCHBACK_WATCH_INTERVAL_MIN` to run it on a schedule.
+
 ## Evaluation
 
 On 49 real claims (33 traps), a naive "approve if cheaper" bot wrongly refunds $1,751.86; Matchback wrongly refunds $0.00. Method, limits and every case: [`eval/README.md`](eval/README.md), [`eval/results.md`](eval/results.md).
