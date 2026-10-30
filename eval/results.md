@@ -52,7 +52,7 @@ Cases whose identity verdict or decision changed:
 
 ## Development set (final version)
 
-Run 2026-10-30T03:06:12.247Z, Channel3 cache mode `frozen`, 49 cases.
+Run 2026-10-30T03:21:23.016Z, Channel3 cache mode `frozen`, 49 cases.
 
 | System | Correct | Sent to a person | Unsafe payouts | Money wrongly refunded | Missed legit | Legit claims paid automatically |
 |---|---|---|---|---|---|---|
@@ -129,7 +129,7 @@ Run 2026-10-30T03:06:12.247Z, Channel3 cache mode `frozen`, 49 cases.
 
 ## Held-out set 2 (final version; already seen once with v2)
 
-Run 2026-10-30T03:06:18.250Z, Channel3 cache mode `frozen`, 11 cases.
+Run 2026-10-30T03:21:29.742Z, Channel3 cache mode `frozen`, 11 cases.
 
 | System | Correct | Sent to a person | Unsafe payouts | Money wrongly refunded | Missed legit | Legit claims paid automatically |
 |---|---|---|---|---|---|---|
@@ -158,7 +158,7 @@ Run 2026-10-30T03:06:18.250Z, Channel3 cache mode `frozen`, 11 cases.
 
 ## Held-out set 1 (final version; already seen with v1 and v2)
 
-Run 2026-10-30T03:06:15.160Z, Channel3 cache mode `frozen`, 15 cases.
+Run 2026-10-30T03:21:26.226Z, Channel3 cache mode `frozen`, 15 cases.
 
 | System | Correct | Sent to a person | Unsafe payouts | Money wrongly refunded | Missed legit | Legit claims paid automatically |
 |---|---|---|---|---|---|---|

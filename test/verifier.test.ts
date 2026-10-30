@@ -248,8 +248,9 @@ describe("evaluateClaim", () => {
     const black: C3Product = { id: "nHjGjHW", title: "KitchenAid Artisan Series 5-Quart Tilt-Head Stand Mixer", offers: [offer("kitchenaid.com", 379.99, "new")] };
     const url = "https://www.kitchenaid.com/p.KSM150PSBM.html";
     const c3 = fakeChannel3({ [url]: black }, { muLXXMd: red });
-    const ai = await evaluateClaim(input(url, "muLXXMd", 44999), deps(c3, llmReturning("same_product_other_color").fetch));
-    const idOnly = await evaluateClaim(input(url, "muLXXMd", 44999), deps(c3, llmDown, { identityMode: "id_only" }));
+    const bought = { ...input(url, "muLXXMd", 44999), purchasedTitle: "KitchenAid Artisan Series 5-Quart Tilt-Head Stand Mixer, Empire Red" };
+    const ai = await evaluateClaim(bought, deps(c3, llmReturning("same_product_other_color").fetch));
+    const idOnly = await evaluateClaim(bought, deps(c3, llmDown, { identityMode: "id_only" }));
     expect(ai.decision.status).toBe("approved");
     expect(idOnly.decision.status).toBe("refused");
   });
@@ -343,5 +344,33 @@ describe("verifyClaim", () => {
   it("will not file a claim on an unpaid order", async () => {
     const o = await createOrderRow("nLZKmNT");
     await expect(fileClaim(o.id, "https://www.officedepot.com/x")).rejects.toThrow(/paid orders/);
+  });
+});
+
+describe("qualifying retailer", () => {
+  it("honours listed stores and the brand's own store; any other store goes to a person", async () => {
+    const { isKnownRetailer, brandStore } = await import("@/lib/verifier/retailers");
+    expect(isKnownRetailer("bestbuy.com")).toBe(true);
+    expect(isKnownRetailer("www.bhphotovideo.com")).toBe(true);
+    expect(isKnownRetailer("kitchenaid.com", "KitchenAid Artisan Series Stand Mixer")).toBe(true);
+    expect(isKnownRetailer("instantpot.com", "Instant Pot Duo Plus V4")).toBe(true);
+    expect(isKnownRetailer("jbl.com", "Flip 6 speaker", ["JBL"])).toBe(true);
+    expect(isKnownRetailer("cheap-electronics-deals.shop", "Samsung T7 Portable SSD")).toBe(false);
+    expect(isKnownRetailer("samsung-outlet.com", "Samsung T7 Portable SSD")).toBe(false);
+    expect(brandStore("t7.com", "Samsung T7 Portable SSD")).toBe(false); // only the leading brand words count
+    const d = decide(base({ competitorDomain: "deals4u.shop", offer: offer("deals4u.shop", 99.99, "new") }));
+    expect(d.checks.find((c) => c.id === "retailer")?.outcome).toBe("review");
+    expect(d.status).toBe("needs_review");
+  });
+
+  it("extra stores can be added by the merchant", async () => {
+    const { isKnownRetailer } = await import("@/lib/verifier/retailers");
+    process.env.MATCHBACK_EXTRA_RETAILERS = "deals4u.shop, www.localcamera.com";
+    try {
+      expect(isKnownRetailer("deals4u.shop")).toBe(true);
+      expect(isKnownRetailer("localcamera.com")).toBe(true);
+    } finally {
+      delete process.env.MATCHBACK_EXTRA_RETAILERS;
+    }
   });
 });

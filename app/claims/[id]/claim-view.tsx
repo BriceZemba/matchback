@@ -66,6 +66,7 @@ export function ClaimView({ id, locale, t }: { id: string; locale: Locale; t: Cl
         if (stop) return;
         setClaim(data);
         if (data.status === "verifying" || data.status === "approved") timer = setTimeout(load, 1500);
+        else if (data.status === "refund_unknown") timer = setTimeout(load, 10_000);
       } catch {
         if (!stop) timer = setTimeout(load, 3000);
       }

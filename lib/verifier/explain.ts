@@ -133,6 +133,14 @@ export async function explainDecision(input: ExplainInput, opts: { providers?: L
   return { text: templateExplanation(input), source: "template" };
 }
 
+/** A refund whose outcome was unknown has now been confirmed with PayPal. */
+export function refundDoneText(locale: Locale, cents: number): string {
+  const amount = usd(cents);
+  return locale === "fr" ? `PayPal a confirmé votre remboursement de ${amount} sur votre compte PayPal.`
+    : locale === "es" ? `PayPal confirmó tu reembolso de ${amount} en tu cuenta PayPal.`
+    : `PayPal has confirmed your refund of ${amount} to your PayPal account.`;
+}
+
 /** The store's own decision on a claim sent to a person, in the shopper's language. */
 export function reviewText(locale: Locale, outcome: { approvedCents: number } | { refused: true }, note: string): string {
   const extra = note ? (locale === "fr" ? ` Note du magasin : ${note}` : locale === "es" ? ` Nota de la tienda: ${note}` : ` Note from the store: ${note}`) : "";

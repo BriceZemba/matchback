@@ -1,12 +1,15 @@
-import { NextResponse } from "next/server";
-import { getClaim } from "@/lib/verifier/run";
+import { after, NextResponse } from "next/server";
+import { getClaim, isStale, reconcileClaim } from "@/lib/verifier/run";
 
 export const runtime = "nodejs";
+export const maxDuration = 120;
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const claim = await getClaim(id);
   if (!claim) return NextResponse.json({ error: "not found" }, { status: 404 });
+  // A run that crashed or timed out left this claim unfinished: retry it after answering.
+  if (isStale(claim)) after(() => reconcileClaim(id).then(() => undefined, (err) => console.error("claim retry failed", id, err)));
   return NextResponse.json({
     id: claim.id,
     orderId: claim.order_id,

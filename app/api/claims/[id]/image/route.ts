@@ -7,5 +7,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   const { id } = await params;
   const image = await getClaimImage(id);
   if (!image) return new Response("not found", { status: 404 });
-  return new Response(image.bytes, { headers: { "Content-Type": image.mime, "Cache-Control": "private, max-age=3600" } });
+  return new Response(image.bytes, {
+    headers: { "Content-Type": image.mime, "Cache-Control": "private, max-age=3600", "X-Content-Type-Options": "nosniff", "Content-Disposition": "inline", "Content-Security-Policy": "default-src 'none'; sandbox" },
+  });
 }

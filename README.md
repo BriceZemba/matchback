@@ -37,14 +37,14 @@ Every claim gets a receipt: each check with its outcome, the evidence, and a sho
 The AI does three jobs: it reads screenshots, it judges whether a listing is the same product (not another edition, a bundle, an accessory or a refurbished unit), and it explains the decision. The refund itself comes from fixed rules, and any doubt goes to a person, not to a payout:
 
 1. **Claim window:** within 14 days of payment.
-2. **Real store:** resale marketplaces (eBay, Back Market…) are refused.
+2. **Known store:** a store on the list of price-match competitors (major retailers and authorized dealers, extendable with `MATCHBACK_EXTRA_RETAILERS`) or the brand's own store. Resale marketplaces (eBay, Back Market…) are refused; any other shop goes to a person, so a site set up just to show a fake low price is never paid automatically.
 3. **Sold new:** condition stated as new; missing condition is checked against a second source, then sent to a person.
 4. **In stock.**
 5. **Lower price:** at least $1.00 lower; an offer in another currency goes to a person.
 6. **Plausible price:** under 60% of the price paid goes to a person.
 7. **Same product:** the AI's verdict, overruled by fixed rules when an edition word or model year differs (refused) or only one listing names a later generation (sent to a person); for screenshots, the image must also show the product that was bought.
 
-Then: one price-match refund per payment (a unique index in the database), every PayPal write recorded before it is sent (its key is also the `PayPal-Request-Id`, so a retry can't pay twice), and every refund read back from PayPal afterwards. Limits of 10 claims per order and 20 per minute keep the demo safe from abuse.
+Then: one price-match refund per payment (a unique index in the database), every PayPal write recorded before it is sent (its key is also the `PayPal-Request-Id`, so a retry can't pay twice), and every refund read back from PayPal afterwards. Limits of 10 claims per order, 6 per minute per visitor (only a hash of the IP address is kept) and 30 per minute overall keep the demo safe from abuse. A claim left unfinished by a crash or a timeout (still checking, approved but not refunded, refund outcome unknown) is retried after five minutes, from the receipt page or the daily job, under a database lease so only one retry runs; the PayPal write guard means a refund that did go out is found, never sent twice. Uploaded images are checked by their bytes, and every page carries security headers (no framing, no MIME sniffing).
 
 ## Evidence
 
@@ -60,7 +60,7 @@ Method, limits and every case: [`eval/README.md`](eval/README.md), [`eval/result
 
 **Live run on the hosted app (2026-10-29).** A GoPro HERO12 bought for $349.99. The price watch found it new and in stock at Best Buy for $295.99. The claim passed all seven checks and PayPal refunded **$54.00** about 6 seconds later (sandbox refund `5WL32001NT6600625`). Read back from PayPal: `COMPLETED`, 54.00 USD, linked to the claim, payment `PARTIALLY_REFUNDED`.
 
-**Tests.** 102 unit tests (`npm test`, no network), plus live tests against Channel3, the AI providers and the hosted database (`LIVE=1`).
+**Tests.** 113 unit tests (`npm test`, no network), plus live tests against Channel3, the AI providers and the hosted database (`LIVE=1`).
 
 ## How it fits together
 

@@ -2,6 +2,7 @@ import { after, NextResponse } from "next/server";
 import { publicOrigin } from "@/lib/origin";
 import { toHttp } from "@/lib/paypal/errors";
 import { cookieValue, pickLocale } from "@/lib/i18n";
+import { clientKey } from "@/lib/client";
 import { fileImageClaim, verifyClaim } from "@/lib/verifier/run";
 
 export const runtime = "nodejs";
@@ -16,7 +17,7 @@ export async function POST(req: Request) {
   try {
     if (!(file instanceof File)) throw Object.assign(new Error("Choose an image to upload."), { status: 400 });
     const locale = pickLocale(cookieValue(req, "lang"), req.headers.get("accept-language"));
-    const claim = await fileImageClaim(orderId, { bytes: new Uint8Array(await file.arrayBuffer()), mime: file.type }, locale);
+    const claim = await fileImageClaim(orderId, { bytes: new Uint8Array(await file.arrayBuffer()), mime: file.type }, locale, { client: clientKey(req) });
     // Runs after the redirect is sent; on Vercel the function stays alive for it (up to maxDuration).
     after(() => verifyClaim(claim.id).then(() => undefined, (err) => console.error("verification failed", claim.id, err)));
     return NextResponse.redirect(`${origin}/claims/${claim.id}`, 303);

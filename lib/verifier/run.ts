@@ -7,10 +7,11 @@ import type { LlmProvider } from "@/lib/llm";
 import { getOrderRow } from "@/lib/paypal/checkout";
 import { InvariantError, OutcomeUnknownError, PaypalRefusedError, friendlyRefusal } from "@/lib/paypal/errors";
 import { issuePriceMatchRefund, maxRefundShare } from "@/lib/paypal/refunds";
-import { explainDecision, refundProblemText, reviewText, type Explanation } from "./explain";
+import { explainDecision, refundDoneText, refundProblemText, reviewText, type Explanation } from "./explain";
 import type { Locale } from "@/lib/i18n";
 import { imageMatchesPurchase, readOfferImage, resolveListing, type Extraction } from "./image-intake";
 import { checkIdentity, type IdentityMode, type IdentityVerdict } from "./identity";
+import { isKnownRetailer } from "./retailers";
 import { decide, isResaleDomain, settingsFromEnv, type Check, type ConditionSource, type Decision, type PolicySettings } from "./policy";
 
 export type ClaimStatus = "verifying" | "approved" | "refused" | "needs_review" | "refunded" | "refund_unknown" | "refund_failed";
@@ -72,24 +73,33 @@ export async function claimsForOrder(orderId: string): Promise<ClaimRow[]> {
   return await getDb().all(`SELECT ${CLAIM_COLUMNS} FROM claims WHERE order_id = ? ORDER BY created_at DESC`, orderId) as ClaimRow[];
 }
 
-// Limits for a public demo: each claim spends Channel3 and AI calls on the store's keys.
+// Limits for a public demo: each claim spends Channel3 and AI calls on the store's keys. The per-visitor
+// limit comes first, so one sender cannot use up the shared budget for everyone else.
 const MAX_CLAIMS_PER_ORDER = 10;
-const MAX_CLAIMS_PER_MINUTE = 20;
+const MAX_CLAIMS_PER_CLIENT_PER_MINUTE = 6;
+const MAX_CLAIMS_PER_MINUTE = 30;
 
-async function assertClaimBudget(orderId: string) {
+/** Who is filing, for the per-visitor limit: a hash of the sender's IP address. */
+export type FileOptions = { client?: string };
+
+async function assertClaimBudget(orderId: string, client?: string) {
   const db = getDb();
   const perOrder = (await db.get("SELECT COUNT(*) AS n FROM claims WHERE order_id = ?", orderId)) as { n: number | string };
   if (Number(perOrder.n) >= MAX_CLAIMS_PER_ORDER) throw new InvariantError(429, "This order has reached its limit of price-match claims.");
   const since = new Date(Date.now() - 60_000).toISOString();
+  if (client) {
+    const mine = (await db.get("SELECT COUNT(*) AS n FROM claims WHERE client_hash = ? AND created_at > ?", client, since)) as { n: number | string };
+    if (Number(mine.n) >= MAX_CLAIMS_PER_CLIENT_PER_MINUTE) throw new InvariantError(429, "You have sent several claims in a short time. Try again in a minute.");
+  }
   const recent = (await db.get("SELECT COUNT(*) AS n FROM claims WHERE created_at > ?", since)) as { n: number | string };
   if (Number(recent.n) >= MAX_CLAIMS_PER_MINUTE) throw new InvariantError(429, "Matchback is busy right now. Try again in a minute.");
 }
 
 /** File a claim. Checks run before anything is stored or any provider is called. */
-export async function fileClaim(orderId: string, competitorUrl: string, locale: Locale = "en"): Promise<ClaimRow> {
+export async function fileClaim(orderId: string, competitorUrl: string, locale: Locale = "en", opts: FileOptions = {}): Promise<ClaimRow> {
   const order = await getOrderRow(orderId);
   if (!order || order.status !== "captured") throw new InvariantError(409, "Price-match claims are for paid orders only.");
-  await assertClaimBudget(orderId);
+  await assertClaimBudget(orderId, opts.client);
   let url: URL;
   try {
     url = new URL(competitorUrl.trim());
@@ -98,32 +108,43 @@ export async function fileClaim(orderId: string, competitorUrl: string, locale: 
   }
   if (url.protocol !== "https:" && url.protocol !== "http:") throw new InvariantError(400, "Only web links are accepted.");
   const id = randomUUID();
-  await getDb().run("INSERT INTO claims (id, order_id, competitor_url, status, created_at, locale) VALUES (?, ?, ?, 'verifying', ?, ?)", id, orderId, url.toString(), now(), locale);
+  await getDb().run("INSERT INTO claims (id, order_id, competitor_url, status, created_at, locale, client_hash) VALUES (?, ?, ?, 'verifying', ?, ?, ?)", id, orderId, url.toString(), now(), locale, opts.client ?? null);
   return (await getClaim(id))!;
 }
 
 /** File a claim from a price-watch finding: the offer is already known by store, on the product's own record. */
-export async function fileWatchClaim(orderId: string, offerUrl: string, domain: string, locale: Locale = "en"): Promise<ClaimRow> {
+export async function fileWatchClaim(orderId: string, offerUrl: string, domain: string, locale: Locale = "en", opts: FileOptions = {}): Promise<ClaimRow> {
   const order = await getOrderRow(orderId);
   if (!order || order.status !== "captured") throw new InvariantError(409, "Price-match claims are for paid orders only.");
-  await assertClaimBudget(orderId);
+  await assertClaimBudget(orderId, opts.client);
   const id = randomUUID();
-  await getDb().run("INSERT INTO claims (id, order_id, competitor_url, status, created_at, source, competitor_domain, locale) VALUES (?, ?, ?, 'verifying', ?, 'watch', ?, ?)", id, orderId, offerUrl, now(), domain, locale);
+  await getDb().run("INSERT INTO claims (id, order_id, competitor_url, status, created_at, source, competitor_domain, locale, client_hash) VALUES (?, ?, ?, 'verifying', ?, 'watch', ?, ?, ?)", id, orderId, offerUrl, now(), domain, locale, opts.client ?? null);
   return (await getClaim(id))!;
 }
 
 export const IMAGE_TYPES: Record<string, string> = { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp" };
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
+/** PNG, JPEG or WebP, recognised by the file's signature bytes; null for anything else. */
+export function imageTypeOf(b: Uint8Array): "image/png" | "image/jpeg" | "image/webp" | null {
+  const at = (i: number, ...bytes: number[]) => bytes.every((x, k) => b[i + k] === x);
+  if (at(0, 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a)) return "image/png";
+  if (at(0, 0xff, 0xd8, 0xff)) return "image/jpeg";
+  if (at(0, 0x52, 0x49, 0x46, 0x46) && at(8, 0x57, 0x45, 0x42, 0x50)) return "image/webp";
+  return null;
+}
+
 /** File a claim from a screenshot or photo of the cheaper offer. */
-export async function fileImageClaim(orderId: string, image: { bytes: Uint8Array; mime: string }, locale: Locale = "en"): Promise<ClaimRow> {
+export async function fileImageClaim(orderId: string, image: { bytes: Uint8Array; mime: string }, locale: Locale = "en", opts: FileOptions = {}): Promise<ClaimRow> {
   const order = await getOrderRow(orderId);
   if (!order || order.status !== "captured") throw new InvariantError(409, "Price-match claims are for paid orders only.");
-  await assertClaimBudget(orderId);
-  if (!IMAGE_TYPES[image.mime]) throw new InvariantError(415, "Upload a PNG, JPEG or WebP image.");
+  await assertClaimBudget(orderId, opts.client);
   if (image.bytes.byteLength === 0 || image.bytes.byteLength > MAX_IMAGE_BYTES) throw new InvariantError(413, "The image must be under 5 MB.");
+  // The type comes from the file's own bytes, not from what the browser declared.
+  const mime = imageTypeOf(image.bytes);
+  if (!mime) throw new InvariantError(415, "Upload a PNG, JPEG or WebP image.");
   const id = randomUUID();
-  await getDb().run("INSERT INTO claims (id, order_id, competitor_url, status, created_at, source, image_data, image_mime, locale) VALUES (?, ?, ?, 'verifying', ?, 'image', ?, ?, ?)", id, orderId, `upload:${id}`, now(), image.bytes, image.mime, locale);
+  await getDb().run("INSERT INTO claims (id, order_id, competitor_url, status, created_at, source, image_data, image_mime, locale, client_hash) VALUES (?, ?, ?, 'verifying', ?, 'image', ?, ?, ?, ?)", id, orderId, `upload:${id}`, now(), image.bytes, mime, locale, opts.client ?? null);
   return (await getClaim(id))!;
 }
 
@@ -183,7 +204,16 @@ export async function evaluateClaim(
 ): Promise<ClaimEvidence> {
   const domain = input.resolved?.domain ?? domainOf(input.competitorUrl);
   const purchased = { productId: input.purchasedProductId, title: input.purchasedTitle };
-  const base = { paidCents: input.paidCents, currency: input.currency, capturedAt: input.capturedAt, now: deps.now(), competitorDomain: domain, settings: deps.settings };
+  // The brand's own store counts as a competitor; the brand comes from our side, never the listing.
+  let knownRetailer = isKnownRetailer(domain, input.purchasedTitle);
+  if (!knownRetailer && !isResaleDomain(domain)) {
+    try {
+      knownRetailer = isKnownRetailer(domain, input.purchasedTitle, ((await deps.channel3.product(input.purchasedProductId)).brands ?? []).map((b) => b.name));
+    } catch {
+      // keep false: the claim goes to a person
+    }
+  }
+  const base = { paidCents: input.paidCents, currency: input.currency, capturedAt: input.capturedAt, now: deps.now(), competitorDomain: domain, settings: deps.settings, knownRetailer };
 
   let competitorProduct;
   try {
@@ -459,4 +489,53 @@ export async function refuseReviewedClaim(claimId: string, note: string): Promis
   evidence.explanation = { source: "template", text: reviewText(claim.locale, { refused: true }, text) };
   await saveClaim(claim.id, "refused", evidence);
   return (await getClaim(claim.id))!;
+}
+
+// Claims a crashed or timed-out run left behind: still being checked, approved but never refunded, or
+// refunded with an unknown outcome. The receipt page and the daily job retry them.
+const STALE_MS = 5 * 60_000;
+const UNFINISHED: ClaimStatus[] = ["verifying", "approved", "refund_unknown"];
+
+export function isStale(claim: Pick<ClaimRow, "status" | "created_at" | "decided_at">, nowMs = Date.now()): boolean {
+  if (!UNFINISHED.includes(claim.status)) return false;
+  const since = claim.status === "verifying" ? claim.created_at : (claim.decided_at ?? claim.created_at);
+  return nowMs - Date.parse(since) > STALE_MS;
+}
+
+/** Retry one stale claim. A lease in the database keeps two server instances from retrying it at once. */
+export async function reconcileClaim(claimId: string, deps: VerifyDeps = defaultDeps(), nowMs = Date.now()): Promise<ClaimRow | undefined> {
+  const claim = await getClaim(claimId);
+  if (!claim || !isStale(claim, nowMs)) return claim;
+  const cutoff = new Date(nowMs - STALE_MS).toISOString();
+  const { changes } = await getDb().run(
+    "UPDATE claims SET retry_at = ? WHERE id = ? AND status = ? AND (retry_at IS NULL OR retry_at < ?)",
+    new Date(nowMs).toISOString(), claimId, claim.status, cutoff,
+  );
+  if (changes !== 1) return claim;
+  if (claim.status === "verifying") return verifyClaim(claimId, deps);
+  const evidence = JSON.parse(claim.decision_json ?? "null") as ClaimEvidence | null;
+  if (!evidence || evidence.decision.refundCents <= 0) return claim;
+  // The refund is guarded by its PayPal write claim: a refund that did go out is found and recorded, never sent twice.
+  const result = await payClaim(claim, evidence, evidence.decision.refundCents, deps.refund);
+  if (result.status === "refunded" && claim.status === "refund_unknown") {
+    evidence.explanation = { source: "template", text: refundDoneText(claim.locale, evidence.decision.refundCents) };
+    await saveClaim(claim.id, "refunded", evidence, { refund_id: result.refund_id ?? undefined });
+    return (await getClaim(claim.id))!;
+  }
+  return result;
+}
+
+/** Retry every stale claim (the daily job). */
+export async function reconcileStaleClaims(deps: VerifyDeps = defaultDeps(), nowMs = Date.now()): Promise<{ id: string; status: ClaimStatus | undefined }[]> {
+  const rows = (await getDb().all(`SELECT ${CLAIM_COLUMNS} FROM claims WHERE status IN ('verifying', 'approved', 'refund_unknown')`)) as ClaimRow[];
+  const out: { id: string; status: ClaimStatus | undefined }[] = [];
+  for (const row of rows.filter((r) => isStale(r, nowMs))) {
+    try {
+      out.push({ id: row.id, status: (await reconcileClaim(row.id, deps, nowMs))?.status });
+    } catch (err) {
+      console.error("claim retry failed", row.id, err);
+      out.push({ id: row.id, status: row.status });
+    }
+  }
+  return out;
 }

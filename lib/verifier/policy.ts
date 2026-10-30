@@ -1,4 +1,5 @@
 import type { C3Offer } from "@/lib/channel3";
+import { isKnownRetailer } from "./retailers";
 import type { IdentityVerdict } from "./identity";
 
 // The price-match policy, as a pure function: every check is deterministic and explained. The AI never
@@ -53,6 +54,8 @@ export type PolicyInput = {
   identity: IdentityVerdict | null; // null: identity could not be established (lookup or AI unavailable)
   settings: PolicySettings;
   conditionSource?: ConditionSource;
+  /** On the store's list of price-match competitors, or the brand's own store. Unset: the list alone decides. */
+  knownRetailer?: boolean;
 };
 
 const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
@@ -73,8 +76,10 @@ export function decide(input: PolicyInput): Decision {
 
   if (isResaleDomain(input.competitorDomain)) {
     add("retailer", "Qualifying retailer", "fail", `${input.competitorDomain} is a resale or refurbished marketplace.`);
+  } else if (input.knownRetailer ?? isKnownRetailer(input.competitorDomain)) {
+    add("retailer", "Qualifying retailer", "pass", `${input.competitorDomain} is on this store's list of price-match competitors.`);
   } else {
-    add("retailer", "Qualifying retailer", "pass", `${input.competitorDomain} is not a resale marketplace.`);
+    add("retailer", "Qualifying retailer", "review", `${input.competitorDomain} is not on this store's list of price-match competitors; a person checks that it is a genuine store.`);
   }
 
   if (!offer) {

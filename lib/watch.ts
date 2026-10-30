@@ -113,10 +113,10 @@ export async function getFinding(id: string): Promise<FindingRow | undefined> {
 }
 
 /** Turn a finding into a claim. verifyClaim then runs the verifier again on fresh data before any refund. */
-export async function fileFromFinding(findingId: string, locale: Locale): Promise<ClaimRow> {
+export async function fileFromFinding(findingId: string, locale: Locale, opts: { client?: string } = {}): Promise<ClaimRow> {
   const finding = await getFinding(findingId);
   if (!finding || finding.status !== "suggested") throw new InvariantError(409, "This price drop is no longer available.");
-  const claim = await fileWatchClaim(finding.order_id, finding.offer_url, finding.domain, locale);
+  const claim = await fileWatchClaim(finding.order_id, finding.offer_url, finding.domain, locale, opts);
   await getDb().run("UPDATE watch_findings SET status = 'claimed', claim_id = ? WHERE id = ?", claim.id, findingId);
   return claim;
 }

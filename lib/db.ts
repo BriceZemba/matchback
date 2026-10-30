@@ -215,6 +215,10 @@ function addedColumns(blob: "BLOB" | "BYTEA"): [table: string, definition: strin
     ["orders", "watch_checked_at TEXT"],
     // Screenshot bytes live in the database: a serverless host has no lasting disk.
     ["claims", `image_data ${blob}`],
+    // Lease for retrying a claim a crashed run left behind (one retry at a time across instances).
+    ["claims", "retry_at TEXT"],
+    // Hash of the sender's IP address, for the per-visitor claim limit. Never the address itself.
+    ["claims", "client_hash TEXT"],
   ];
 }
 
