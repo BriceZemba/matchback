@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { requestPrefs } from "@/lib/locale-server";
 import { LanguageSwitch, ThemeToggle } from "./header-controls";
+import { SiteNav } from "./site-nav";
 import { judgeMode } from "@/lib/judge";
 import { merchantKey } from "@/lib/merchant";
 import "./globals.css";
@@ -27,6 +28,14 @@ function TagMark() {
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const { locale, t, theme } = await requestPrefs();
+  const links = [
+    { href: "/", label: t.nav.shop },
+    { href: "/orders", label: t.nav.orders },
+    { href: "/how-to-use", label: t.nav.howToUse },
+    { href: "/how-it-works", label: t.nav.howItWorks },
+    ...(merchantKey() ? [{ href: "/merchant", label: t.nav.desk }] : []),
+    ...(judgeMode() ? [{ href: "/judges", label: t.nav.judges }] : []),
+  ];
   return (
     <html lang={t.htmlLang} className={`${serif.variable} ${sans.variable} ${mono.variable}`} {...(theme ? { "data-theme": theme } : {})}>
       <body>
@@ -44,14 +53,16 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
               <ThemeToggle initial={theme} labels={{ toDark: t.toDark, toLight: t.toLight }} />
             </div>
           </div>
+          <SiteNav links={links} label={t.nav.label} />
         </header>
         {children}
         <footer className="site-footer">
           <div className="shell">
             <span>{t.footerLeft}</span>
             <span>{t.footerRight}</span>
-            {judgeMode() && <a href="/judges">Guide for judges →</a>}
-            {judgeMode() && merchantKey() && <a href="/merchant">Store desk →</a>}
+            <span className="footer-links">
+              {links.slice(1).map((l) => <a key={l.href} href={l.href}>{l.label}</a>)}
+            </span>
           </div>
         </footer>
       </body>

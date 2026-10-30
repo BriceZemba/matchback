@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export default async function Store({ searchParams }: { searchParams: Promise<{ cancelled?: string; error?: string }> }) {
   const params = await searchParams;
   const items = await listCatalog();
-  const { t: { store: t } } = await requestPrefs();
+  const { t: { store: t, nav } } = await requestPrefs();
   return (
     <main>
       <div className="shell">
@@ -26,6 +26,10 @@ export default async function Store({ searchParams }: { searchParams: Promise<{ 
               <span>{t.g2}</span>
               <span>{t.g3}</span>
             </div>
+            <p className="hero-links rise" style={{ ["--i" as string]: 4 }}>
+              <a href="/how-to-use">{nav.howToUse} →</a>
+              <a href="/how-it-works">{nav.howItWorks} →</a>
+            </p>
           </div>
           <img className="hero-art rise" style={{ ["--i" as string]: 2 }} src="/hero.svg" alt={t.heroAlt} />
         </section>
