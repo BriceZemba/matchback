@@ -3,13 +3,15 @@
 // The console: a page bar (pages, view/edit, reset) around one AG Studio instance. Studio owns the
 // report being edited; the page bar drives it through AgStudioApi. Edits are kept in this browser.
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { AgReportState, AgStudioApi, AgStudioMode } from "ag-studio";
 import { AgStudio, AgStudioProvider } from "ag-studio-react";
 import type { ConsoleData } from "@/lib/console-data";
 import { buildStudioData } from "./studio/data";
 import { consoleReport, PAGE_TITLES, REPORT_VERSION } from "./studio/initial-report";
 import { matchbackStudioTheme } from "./studio/theme";
+import { DATA_CHANGED, DATA_RELOADED, matchbackWidgets } from "./studio/widgets";
 
 const STORAGE_KEY = `matchback-console-v${REPORT_VERSION}`;
 
@@ -36,6 +38,20 @@ export function Console({ data, licenseKey }: { data: ConsoleData; licenseKey?: 
   const [state, setState] = useState<AgReportState>(initialState);
   const [mode, setMode] = useState<AgStudioMode>("view");
   const studioData = useMemo(() => buildStudioData(data), [data]);
+  const router = useRouter();
+  // A widget that changed data (the review queue) asks for fresh rows from the server...
+  useEffect(() => {
+    const changed = () => router.refresh();
+    window.addEventListener(DATA_CHANGED, changed);
+    return () => window.removeEventListener(DATA_CHANGED, changed);
+  }, [router]);
+  // ...and once they are in Studio, widgets are told to query again.
+  const firstData = useRef(data.asOf);
+  useEffect(() => {
+    if (data.asOf === firstData.current) return;
+    const t = setTimeout(() => window.dispatchEvent(new Event(DATA_RELOADED)), 50);
+    return () => clearTimeout(t);
+  }, [data.asOf]);
 
   const select = (pageId: string) => {
     const api = apiRef.current;
@@ -82,6 +98,7 @@ export function Console({ data, licenseKey }: { data: ConsoleData; licenseKey?: 
             theme={matchbackStudioTheme}
             layout={{ widgetBorderEnabled: true }}
             data={studioData}
+            widgets={matchbackWidgets}
             initialState={initialState}
             mode={mode}
             onApiReady={(e) => { apiRef.current = e.api; }}

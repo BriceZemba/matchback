@@ -13,18 +13,24 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const { id } = await params;
   const origin = publicOrigin(req);
   if (!isMerchantRequest(req)) return NextResponse.json({ error: "Sign in as the merchant first." }, { status: 401 });
+  // The console's review widget asks for JSON; the store desk's form gets a redirect back.
+  const wantsJson = req.headers.get("accept")?.includes("application/json") ?? false;
   const form = await req.formData();
   try {
     let cents: number;
     try {
       cents = toCents(String(form.get("amount") ?? "").trim().replace(/^\$/, ""));
     } catch {
-      return NextResponse.redirect(`${origin}/merchant?error=${encodeURIComponent("Enter the refund as an amount, for example 12.50.")}#claim-${id}`, 303);
+      const message = "Enter the refund as an amount, for example 12.50.";
+      if (wantsJson) return NextResponse.json({ error: message }, { status: 400 });
+      return NextResponse.redirect(`${origin}/merchant?error=${encodeURIComponent(message)}#claim-${id}`, 303);
     }
     const claim = await approveReviewedClaim(id, cents, String(form.get("note") ?? ""));
+    if (wantsJson) return NextResponse.json({ id: claim.id, status: claim.status, ...(claim.error ? { error: claim.error } : {}) });
     return NextResponse.redirect(`${origin}/merchant?done=${encodeURIComponent(claim.id)}&status=${claim.status}`, 303);
   } catch (err) {
     console.error("review approve failed", id, err);
+    if (wantsJson) return NextResponse.json({ error: toHttp(err).message }, { status: toHttp(err).status });
     return NextResponse.redirect(`${origin}/merchant?error=${encodeURIComponent(toHttp(err).message)}#claim-${id}`, 303);
   }
 }

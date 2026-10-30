@@ -11,6 +11,8 @@ const title = (text: string, subtitle?: string) => ({
 });
 const sum = (id: string) => ({ id, aggregation: "sum" as const });
 const countd = (id: string) => ({ id, aggregation: "countd" as const });
+// Matchback's own widgets (./widgets.tsx) are not in Studio's built-in widget types.
+const custom = (widget: { type: string; dataMapping: object; format: object }) => widget as never;
 
 const typography = (fontSize: number, fontWeight: "normal" | "bold" = "normal") => ({
   fontFamily: "var(--mono)",
@@ -55,6 +57,11 @@ const overview: AgPageState = {
       dataMapping: { categoryKey: [{ id: "claims.outcome" }], valueKey: [countd("claims.id")] },
       format: title("Outcomes"),
     },
+    "money-kept": custom({
+      type: "matchback-money-kept",
+      dataMapping: { claimed: [sum("orders.claimedSale")], refunded: [sum("orders.refunded")], kept: [sum("orders.keptSale")] },
+      format: title("Money kept", "Refund the difference, keep the sale"),
+    }),
     "kept-vs-refunded": {
       type: "bar-chart-grouped",
       dataMapping: { categoryKey: [{ id: "products.product" }], valueKey: [sum("orders.keptSale"), sum("orders.refunded")] },
@@ -72,10 +79,11 @@ const overview: AgPageState = {
     "kpi-kept": at(9, 0, 5, 7),
     "kpi-auto": at(14, 0, 5, 7),
     "kpi-review": at(19, 0, 5, 7),
-    "outcomes-by-day": at(0, 7, 16, 16),
-    outcomes: at(16, 7, 8, 16),
-    "kept-vs-refunded": at(0, 23, 16, 18),
-    "claimed-with": at(16, 23, 8, 18),
+    "outcomes-by-day": at(0, 7, 15, 17),
+    "money-kept": at(15, 7, 9, 17),
+    "kept-vs-refunded": at(0, 24, 12, 18),
+    outcomes: at(12, 24, 6, 18),
+    "claimed-with": at(18, 24, 6, 18),
     "claim-date": at(0, 41, 8, 6),
   },
 };
@@ -113,6 +121,11 @@ const claims: AgPageState = {
       dataMapping: { categoryKey: [{ id: "checks.check" }], valueKey: [sum("checks.isFail"), sum("checks.isReview")] },
       format: { ...title("Why claims were not paid automatically", "Checks that failed, or needed a person"), style: { theme: { common: { legend: { enabled: true } } } } },
     },
+    "decision-trail": custom({
+      type: "matchback-decision-trail",
+      dataMapping: { check: [{ id: "checks.check" }], outcome: [{ id: "checks.outcome" }], count: [countd("checks.id")] },
+      format: title("Decision trail", "The checks behind the claims in view"),
+    }),
     "ai-verdicts": {
       type: "donut-chart",
       dataMapping: { categoryKey: [{ id: "claims.aiRelation" }], valueKey: [countd("claims.id")] },
@@ -121,7 +134,8 @@ const claims: AgPageState = {
   },
   widgetLayout: {
     outcome: at(0, 0, 24, 5),
-    "claims-grid": at(0, 5, 24, 22),
+    "claims-grid": at(0, 5, 16, 22),
+    "decision-trail": at(16, 5, 8, 22),
     "why-not-paid": at(0, 27, 14, 18),
     "ai-verdicts": at(14, 27, 10, 18),
   },
@@ -161,13 +175,36 @@ const stores: AgPageState = {
   },
 };
 
-export const PAGE_TITLES: Record<string, string> = { overview: "Overview", claims: "Claims", stores: "Stores & products" };
+const review: AgPageState = {
+  id: "review",
+  widgets: {
+    queue: custom({
+      type: "matchback-review-queue",
+      dataMapping: {
+        claim: [{ id: "claims.id" }], status: [{ id: "claims.status" }], product: [{ id: "claims.product" }], store: [{ id: "claims.store" }],
+        paid: [sum("claims.paid")], offer: [sum("claims.offerPrice")], reason: [{ id: "claims.reason" }],
+      },
+      format: title("Waiting for a person", "Approve sends the refund through PayPal; refuse tells the shopper why"),
+    }),
+    "review-trail": custom({
+      type: "matchback-decision-trail",
+      dataMapping: { check: [{ id: "checks.check" }], outcome: [{ id: "checks.outcome" }], count: [countd("checks.id")] },
+      format: title("What the checks found", "Across every claim"),
+    }),
+  },
+  widgetLayout: {
+    queue: at(0, 0, 16, 30),
+    "review-trail": at(16, 0, 8, 30),
+  },
+};
+
+export const PAGE_TITLES: Record<string, string> = { overview: "Overview", review: "Review queue", claims: "Claims", stores: "Stores & products" };
 
 // Bump when the starting report changes, so browsers drop a saved copy of the old one.
-export const REPORT_VERSION = 2;
+export const REPORT_VERSION = 3;
 
 export const consoleReport: AgReportState = {
   selectedPageId: overview.id,
-  pages: [overview, claims, stores],
+  pages: [overview, review, claims, stores],
   panels: { filters: { collapsed: true } },
 };
