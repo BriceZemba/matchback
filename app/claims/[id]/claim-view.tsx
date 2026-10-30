@@ -20,6 +20,7 @@ type ClaimJson = {
     identity: { relation: string; method: string; provider?: string } | null;
     priceContext: { current_status: string; min_price: number; max_price: number } | null;
     explanation?: { text: string; source: "ai" | "template"; provider?: string };
+    review?: { outcome: "approved" | "refused"; note: string; amountCents: number | null; at: string };
     image?: {
       extraction: { product: string; brand: string | null; model: string | null; store: string | null; storeDomain: string | null; priceCents: number | null; conditionWords: string[]; confidence: string } | null;
       provider: string | null;
@@ -135,7 +136,7 @@ export function ClaimView({ id, locale, t }: { id: string; locale: Locale; t: Cl
         )}
         {ev?.explanation && view.kind !== "scan" ? (
           <div className="explain">
-            <span className="ai-chip">{ev.explanation.source === "ai" ? t.aiNote : t.note}</span>
+            <span className="ai-chip">{ev.review ? t.reviewed : ev.explanation.source === "ai" ? t.aiNote : t.note}</span>
             <p>{ev.explanation.text}</p>
           </div>
         ) : (

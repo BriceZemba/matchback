@@ -30,6 +30,8 @@ For the store, paying the difference is usually cheaper than a return: on the Go
 
 Every claim gets a receipt: each check with its outcome, the evidence, and a short note written by the AI in the shopper's language (English, French or Spanish).
 
+**The store desk** (`/merchant`, signed in with the merchant key) is the store's side. Claims Matchback could not settle alone wait there with their evidence: the checks that need a person, the offer, the screenshot, the note the shopper saw. The reviewer approves with a refund amount (suggested: the gap to the offer), which goes through the same guarded PayPal refund, or refuses with a note; either way the shopper's receipt updates. The desk also shows every decision, the share decided automatically, money refunded and sales kept, and serves the same data as JSON for the merchant console: `GET /api/merchant/claims`, `GET /api/merchant/claims?status=needs_review`, `GET /api/merchant/summary` (with `Authorization: Bearer <MERCHANT_KEY>`).
+
 ### The AI never decides money
 
 The AI does three jobs: it reads screenshots, it judges whether a listing is the same product (not another edition, a bundle, an accessory or a refurbished unit), and it explains the decision. The refund itself comes from fixed rules, and any doubt goes to a person, not to a payout:
@@ -58,7 +60,7 @@ Method, limits and every case: [`eval/README.md`](eval/README.md), [`eval/result
 
 **Live run on the hosted app (2026-10-29).** A GoPro HERO12 bought for $349.99. The price watch found it new and in stock at Best Buy for $295.99. The claim passed all seven checks and PayPal refunded **$54.00** about 6 seconds later (sandbox refund `5WL32001NT6600625`). Read back from PayPal: `COMPLETED`, 54.00 USD, linked to the claim, payment `PARTIALLY_REFUNDED`.
 
-**Tests.** 84 unit tests (`npm test`, no network), plus live tests against Channel3, the AI providers and the hosted database (`LIVE=1`).
+**Tests.** 94 unit tests (`npm test`, no network), plus live tests against Channel3, the AI providers and the hosted database (`LIVE=1`).
 
 ## How it fits together
 
@@ -91,6 +93,7 @@ flowchart TB
 | AI note in the shopper's language | [`lib/verifier/explain.ts`](lib/verifier/explain.ts) |
 | Claim pipeline | [`lib/verifier/run.ts`](lib/verifier/run.ts) |
 | Price watch | [`lib/watch.ts`](lib/watch.ts) |
+| Store desk: review queue, decisions, data feeds | [`app/merchant/`](app/merchant), [`lib/merchant.ts`](lib/merchant.ts) |
 | Channel3 client and cache | [`lib/channel3.ts`](lib/channel3.ts), [`lib/channel3-cache.ts`](lib/channel3-cache.ts) |
 | Database (Postgres hosted, SQLite local) | [`lib/db.ts`](lib/db.ts) |
 
@@ -115,11 +118,11 @@ npm run dev            # http://localhost:3000, local SQLite database
 npm test
 ```
 
-Set `MATCHBACK_JUDGE_MODE=1` for the guide page and sample links, `MATCHBACK_WATCH_MODE=auto` to let the price watch file and refund claims by itself, and `DATABASE_URL` (a Postgres connection string) to use Postgres instead of SQLite.
+Set `MERCHANT_KEY` to open the store desk, `MATCHBACK_JUDGE_MODE=1` for the guide page and sample links, `MATCHBACK_WATCH_MODE=auto` to let the price watch file and refund claims by itself, and `DATABASE_URL` (a Postgres connection string) to use Postgres instead of SQLite.
 
 ## Limits
 
-- Sandbox only. A real store would also need its own PayPal live credentials and a review queue UI for the claims sent to a person (they are stored, with their evidence, but there is no reviewer screen yet).
+- Sandbox only. A real store would use its own PayPal live credentials, and the store desk has a single shared merchant key rather than reviewer accounts.
 - Channel3 can't read every page: 7 of the 49 evaluation links failed, and those claims go to a person.
 - The catalog is 12 fixed products, each pinned to its Channel3 record, so lookups are stable for the demo.
 - Prices and stock change: the expected outcomes of the sample links were recorded on 2026-10-29.

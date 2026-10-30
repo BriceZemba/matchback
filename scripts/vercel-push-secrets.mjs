@@ -4,7 +4,7 @@
 import { readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 
-const KEYS = ["PAYPAL_CLIENT_ID", "PAYPAL_CLIENT_SECRET", "CHANNEL3_API_KEY", "GROQ_API_KEY", "GEMINI_API_KEY", "DATABASE_URL", "CRON_SECRET"];
+const KEYS = ["PAYPAL_CLIENT_ID", "PAYPAL_CLIENT_SECRET", "CHANNEL3_API_KEY", "GROQ_API_KEY", "GEMINI_API_KEY", "DATABASE_URL", "CRON_SECRET", "MERCHANT_KEY"];
 const SCOPE = "the-second";
 
 const env = Object.fromEntries(

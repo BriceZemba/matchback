@@ -133,6 +133,20 @@ export async function explainDecision(input: ExplainInput, opts: { providers?: L
   return { text: templateExplanation(input), source: "template" };
 }
 
+/** The store's own decision on a claim sent to a person, in the shopper's language. */
+export function reviewText(locale: Locale, outcome: { approvedCents: number } | { refused: true }, note: string): string {
+  const extra = note ? (locale === "fr" ? ` Note du magasin : ${note}` : locale === "es" ? ` Nota de la tienda: ${note}` : ` Note from the store: ${note}`) : "";
+  if ("approvedCents" in outcome) {
+    const amount = usd(outcome.approvedCents);
+    return (locale === "fr" ? `Une personne du magasin a vérifié votre demande et l'a acceptée : ${amount} vous sont remboursés sur votre compte PayPal.`
+      : locale === "es" ? `Una persona de la tienda revisó tu solicitud y la aprobó: te reembolsamos ${amount} en tu cuenta PayPal.`
+      : `A person at the store checked your claim and approved it: ${amount} is being refunded to your PayPal account.`) + extra;
+  }
+  return (locale === "fr" ? "Une personne du magasin a vérifié votre demande et ne peut pas l'accepter."
+    : locale === "es" ? "Una persona de la tienda revisó tu solicitud y no puede aprobarla."
+    : "A person at the store checked your claim and could not approve it.") + extra;
+}
+
 /** Shown when an approved refund does not go through, in the shopper's language. */
 export function refundProblemText(locale: Locale, approvedCents: number, outcome: "unknown" | { reason: string }): string {
   const amount = usd(approvedCents);

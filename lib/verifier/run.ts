@@ -6,8 +6,8 @@ import { Channel3Error, createChannel3Client, domainOf, offerForDomain, type C3P
 import type { LlmProvider } from "@/lib/llm";
 import { getOrderRow } from "@/lib/paypal/checkout";
 import { InvariantError, OutcomeUnknownError, PaypalRefusedError, friendlyRefusal } from "@/lib/paypal/errors";
-import { issuePriceMatchRefund } from "@/lib/paypal/refunds";
-import { explainDecision, refundProblemText, type Explanation } from "./explain";
+import { issuePriceMatchRefund, maxRefundShare } from "@/lib/paypal/refunds";
+import { explainDecision, refundProblemText, reviewText, type Explanation } from "./explain";
 import type { Locale } from "@/lib/i18n";
 import { imageMatchesPurchase, readOfferImage, resolveListing, type Extraction } from "./image-intake";
 import { checkIdentity, type IdentityMode, type IdentityVerdict } from "./identity";
@@ -43,6 +43,8 @@ export type ClaimEvidence = {
   explanation?: Explanation;
   /** Screenshot claims: what the AI read and how the live listing was found. */
   image?: { extraction: Extraction | null; provider: string | null; matchedBy: string | null; reason?: string };
+  /** The store's decision on a claim the verifier sent to a person. */
+  review?: { outcome: "approved" | "refused"; note: string; amountCents: number | null; at: string };
 };
 
 // Every column except image_data: the screenshot bytes are read only when the image itself is served.
@@ -354,39 +356,106 @@ export async function verifyClaim(claimId: string, deps: VerifyDeps = defaultDep
     { ...(deps.providers ? { providers: deps.providers } : {}), ...(deps.llmFetch ? { fetch: deps.llmFetch } : {}) },
   );
 
-  const save = async (status: ClaimStatus, extra: { refund_id?: string; error?: string } = {}) => {
-    await db.run("UPDATE claims SET status = ?, decision_json = ?, refund_id = COALESCE(?, refund_id), error = ?, decided_at = ? WHERE id = ?", status, JSON.stringify(evidence), extra.refund_id ?? null, extra.error ?? null, now(), claimId);
-  };
-
   if (evidence.decision.status !== "approved") {
-    await save(evidence.decision.status);
+    await saveClaim(claimId, evidence.decision.status, evidence);
     return (await getClaim(claimId))!;
   }
+  return payClaim(claim, evidence, evidence.decision.refundCents, deps.refund);
+}
 
-  await save("approved");
+async function saveClaim(claimId: string, status: ClaimStatus, evidence: ClaimEvidence, extra: { refund_id?: string; error?: string } = {}) {
+  await getDb().run("UPDATE claims SET status = ?, decision_json = ?, refund_id = COALESCE(?, refund_id), error = ?, decided_at = ? WHERE id = ?", status, JSON.stringify(evidence), extra.refund_id ?? null, extra.error ?? null, now(), claimId);
+}
+
+/** Refund an approved claim on the PayPal capture and record the outcome. */
+async function payClaim(claim: ClaimRow, evidence: ClaimEvidence, amountCents: number, refund: typeof issuePriceMatchRefund): Promise<ClaimRow> {
+  await saveClaim(claim.id, "approved", evidence);
   try {
-    const refund = await deps.refund({
-      claimId,
-      orderId: order.id,
-      amountCents: evidence.decision.refundCents,
-      retailer: evidence.competitor?.domain ?? "a competing retailer",
+    const result = await refund({
+      claimId: claim.id,
+      orderId: claim.order_id,
+      amountCents,
+      retailer: evidence.competitor?.domain ?? claim.competitor_domain ?? "a competing retailer",
     });
-    await save("refunded", { refund_id: refund.refundId });
+    await saveClaim(claim.id, "refunded", evidence, { refund_id: result.refundId });
   } catch (err) {
     // The explanation was written expecting a refund; when the refund does not go through, say so.
     evidence.explanation = {
       source: "template",
       text: refundProblemText(
         claim.locale,
-        evidence.decision.refundCents,
+        amountCents,
         err instanceof OutcomeUnknownError ? "unknown"
           : { reason: err instanceof PaypalRefusedError ? friendlyRefusal(err.issue) : err instanceof InvariantError ? err.message : "please contact the store." },
       ),
     };
-    if (err instanceof OutcomeUnknownError) await save("refund_unknown", { error: "Refund outcome unknown; checking with PayPal." });
-    else if (err instanceof PaypalRefusedError) await save("refund_failed", { error: friendlyRefusal(err.issue) });
-    else if (err instanceof InvariantError) await save("refund_failed", { error: err.message });
-    else await save("refund_failed", { error: "Refund could not be completed." });
+    if (err instanceof OutcomeUnknownError) await saveClaim(claim.id, "refund_unknown", evidence, { error: "Refund outcome unknown; checking with PayPal." });
+    else if (err instanceof PaypalRefusedError) await saveClaim(claim.id, "refund_failed", evidence, { error: friendlyRefusal(err.issue) });
+    else if (err instanceof InvariantError) await saveClaim(claim.id, "refund_failed", evidence, { error: err.message });
+    else await saveClaim(claim.id, "refund_failed", evidence, { error: "Refund could not be completed." });
   }
-  return (await getClaim(claimId))!;
+  return (await getClaim(claim.id))!;
+}
+
+/**
+ * The offer's price as a reviewer should see it. For a screenshot whose search found another product,
+ * that listing's price says nothing about the shopper's offer: use the price read from the image.
+ */
+export function offerCentsOf(evidence: ClaimEvidence | null): number | null {
+  if (!evidence) return null;
+  const imageCents = evidence.image?.extraction?.priceCents ?? null;
+  const identityOk = evidence.decision.checks.some((c) => c.id === "identity" && c.outcome === "pass");
+  if (evidence.image && !identityOk) return imageCents;
+  return evidence.decision.competitorCents ?? imageCents;
+}
+
+/** What a reviewer is offered by default: the gap to the offer's price. */
+export function suggestedRefundCents(evidence: ClaimEvidence | null, paidCents: number): number | null {
+  const offerCents = offerCentsOf(evidence);
+  return offerCents !== null && offerCents < paidCents ? paidCents - offerCents : null;
+}
+
+/** True when the order already has its one price-match refund (any state but a released claim). */
+export async function orderRefunded(orderId: string): Promise<boolean> {
+  return !!(await getDb().get("SELECT 1 AS x FROM refunds WHERE order_id = ? AND kind = 'price_match'", orderId));
+}
+
+async function takeForReview(claimId: string, next: ClaimStatus): Promise<{ claim: ClaimRow; evidence: ClaimEvidence }> {
+  const claim = await getClaim(claimId);
+  if (!claim) throw new InvariantError(404, "Unknown claim.");
+  // Only one reviewer decision per claim: the status moves atomically out of needs_review.
+  const { changes } = await getDb().run("UPDATE claims SET status = ? WHERE id = ? AND status = 'needs_review'", next, claimId);
+  if (changes !== 1) throw new InvariantError(409, "This claim is not waiting for review any more.");
+  const evidence = JSON.parse(claim.decision_json ?? "null") as ClaimEvidence | null;
+  if (!evidence) throw new InvariantError(409, "This claim has no recorded decision.");
+  return { claim, evidence };
+}
+
+/** A reviewer approves a claim the verifier sent to a person: refund the given amount through PayPal. */
+export async function approveReviewedClaim(claimId: string, amountCents: number, note: string, refund: typeof issuePriceMatchRefund = issuePriceMatchRefund): Promise<ClaimRow> {
+  if (!Number.isInteger(amountCents) || amountCents <= 0) throw new InvariantError(400, "Enter a refund amount above $0.00.");
+  // The refund re-checks every limit; checking the cap first keeps a typo from closing the review.
+  const pending = await getClaim(claimId);
+  const order = pending ? await getOrderRow(pending.order_id) : undefined;
+  if (order?.captured_cents && amountCents > Math.floor(order.captured_cents * maxRefundShare())) {
+    throw new InvariantError(400, `The most this store refunds on one order is ${Math.round(maxRefundShare() * 100)}% of the price paid.`);
+  }
+  if (pending && (await orderRefunded(pending.order_id))) throw new InvariantError(409, "This order already received its price-match refund.");
+  const { claim, evidence } = await takeForReview(claimId, "approved");
+  const text = note.trim().slice(0, 300);
+  evidence.review = { outcome: "approved", note: text, amountCents, at: now() };
+  evidence.decision.refundCents = amountCents;
+  evidence.explanation = { source: "template", text: reviewText(claim.locale, { approvedCents: amountCents }, text) };
+  return payClaim(claim, evidence, amountCents, refund);
+}
+
+/** A reviewer refuses a claim the verifier sent to a person. */
+export async function refuseReviewedClaim(claimId: string, note: string): Promise<ClaimRow> {
+  const { claim, evidence } = await takeForReview(claimId, "refused");
+  const text = note.trim().slice(0, 300);
+  evidence.review = { outcome: "refused", note: text, amountCents: null, at: now() };
+  evidence.decision.refundCents = 0;
+  evidence.explanation = { source: "template", text: reviewText(claim.locale, { refused: true }, text) };
+  await saveClaim(claim.id, "refused", evidence);
+  return (await getClaim(claim.id))!;
 }

@@ -68,6 +68,13 @@ export default async function Judges() {
         <li className="card card-pad rise" style={{ ["--i" as string]: 5 }}>
           <span className="n">5</span>
           <div>
+            <h2>Be the store</h2>
+            <p>Open the <a href="/merchant">store desk</a> with the <strong>merchant key</strong> from the Devpost testing instructions. Claims Matchback could not settle alone wait there with their evidence: approve one with a refund amount (it goes through the same guarded PayPal refund) or refuse it, and the shopper&apos;s receipt updates. The desk also shows every decision, money refunded and sales kept.</p>
+          </div>
+        </li>
+        <li className="card card-pad rise" style={{ ["--i" as string]: 6 }}>
+          <span className="n">6</span>
+          <div>
             <h2>Switch language and theme</h2>
             <p>English, French and Spanish from the header, including the AI&apos;s note on new claims; light and dark mode.</p>
           </div>

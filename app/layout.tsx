@@ -3,6 +3,7 @@ import { Fraunces, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { requestPrefs } from "@/lib/locale-server";
 import { LanguageSwitch, ThemeToggle } from "./header-controls";
 import { judgeMode } from "@/lib/judge";
+import { merchantKey } from "@/lib/merchant";
 import "./globals.css";
 
 const serif = Fraunces({ subsets: ["latin"], variable: "--font-fraunces", axes: ["opsz"], style: ["normal", "italic"] });
@@ -50,6 +51,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <span>{t.footerLeft}</span>
             <span>{t.footerRight}</span>
             {judgeMode() && <a href="/judges">Guide for judges →</a>}
+            {judgeMode() && merchantKey() && <a href="/merchant">Store desk →</a>}
           </div>
         </footer>
       </body>
