@@ -316,6 +316,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.02e
 
 /* ---------- main menu ---------- */
 .site-nav { border-top: 1.5px solid var(--hair); background: var(--paper); }
+.site-header .site-nav .shell { display: block; height: auto; }
 .site-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .site-nav ul::-webkit-scrollbar { display: none; }
 .site-nav li { flex: none; }
@@ -324,7 +325,18 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.02e
 .site-nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--tag); font-weight: 600; }
 .site-nav li:first-child a { padding-left: 0; }
 @media (max-width: 520px) { .site-nav a { padding: 0 10px; font-size: 12px; } }
-@media (max-width: 760px) { .site-nav ul { -webkit-mask-image: linear-gradient(to right, #000 82%, transparent); mask-image: linear-gradient(to right, #000 82%, transparent); padding-right: 32px; } }
+.nav-toggle { display: none; }
+@media (max-width: 760px) {
+  .nav-toggle { appearance: none; display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 0; border: 0; background: none; color: var(--ink); font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; text-align: left; }
+  .nav-current { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .nav-caret { margin-left: auto; color: var(--ink-2); }
+  .nav-burger { display: grid; gap: 3px; width: 16px; }
+  .nav-burger i { display: block; height: 2px; background: currentColor; }
+  .site-nav ul { display: none; flex-direction: column; gap: 0; overflow: visible; padding: 0 0 10px; border-top: 1px solid var(--hair); }
+  .site-nav.open ul { display: flex; }
+  .site-nav ul a, .site-nav li:first-child a { display: flex; width: 100%; min-height: 46px; padding: 0 4px; font-size: 13px; border-bottom: 1px solid var(--hair); border-left: 3px solid transparent; }
+  .site-nav ul a[aria-current="page"] { border-bottom-color: var(--hair); border-left-color: var(--tag); padding-left: 10px; background: var(--paper-2); }
+}
 .footer-links { display: flex; flex-wrap: wrap; gap: 6px 18px; width: 100%; }
 .footer-links a { color: var(--ink-2); }
 

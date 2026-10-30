@@ -1,27 +1,41 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 export type NavLink = { href: string; label: string };
 
-/** The main menu. The current page is marked for screen readers and styled. */
-export function SiteNav({ links, label }: { links: NavLink[]; label: string }) {
+/**
+ * The main menu. A row of links on wide screens; on a phone, one "Menu" button showing the current page
+ * that opens the full list, so no link is hidden off-screen.
+ */
+export function SiteNav({ links, label, menuLabel }: { links: NavLink[]; label: string; menuLabel: string }) {
   const path = usePathname() ?? "/";
-  const current = (href: string) => (href === "/" ? path === "/" : path === href || path.startsWith(`${href}/`));
-  const list = useRef<HTMLUListElement>(null);
-  // On a phone the menu scrolls sideways: keep the current page's link in view.
+  const [open, setOpen] = useState(false);
+  const isCurrent = (href: string) => (href === "/" ? path === "/" : path === href || path.startsWith(`${href}/`));
+  const current = links.find((l) => isCurrent(l.href));
+
+  useEffect(() => setOpen(false), [path]);
   useEffect(() => {
-    const el = list.current?.querySelector<HTMLElement>('[aria-current="page"]');
-    if (el && list.current) list.current.scrollLeft = Math.max(0, el.offsetLeft - list.current.clientWidth / 2 + el.clientWidth / 2);
-  }, [path]);
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
   return (
-    <nav className="site-nav" aria-label={label}>
+    <nav className={`site-nav${open ? " open" : ""}`} aria-label={label}>
       <div className="shell">
-        <ul ref={list}>
+        <button type="button" className="nav-toggle" aria-expanded={open} aria-controls="site-nav-links" onClick={() => setOpen((o) => !o)}>
+          <span className="nav-burger" aria-hidden="true"><i /><i /><i /></span>
+          <span>{menuLabel}</span>
+          {current && <span className="nav-current">· {current.label}</span>}
+          <span className="nav-caret" aria-hidden="true">{open ? "▴" : "▾"}</span>
+        </button>
+        <ul id="site-nav-links">
           {links.map((l) => (
             <li key={l.href}>
-              <a href={l.href} aria-current={current(l.href) ? "page" : undefined}>{l.label}</a>
+              <a href={l.href} aria-current={isCurrent(l.href) ? "page" : undefined}>{l.label}</a>
             </li>
           ))}
         </ul>

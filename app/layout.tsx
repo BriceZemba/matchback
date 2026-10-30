@@ -53,7 +53,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
               <ThemeToggle initial={theme} labels={{ toDark: t.toDark, toLight: t.toLight }} />
             </div>
           </div>
-          <SiteNav links={links} label={t.nav.label} />
+          <SiteNav links={links} label={t.nav.label} menuLabel={t.nav.menu} />
         </header>
         {children}
         <footer className="site-footer">
