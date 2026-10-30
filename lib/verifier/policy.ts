@@ -56,6 +56,7 @@ export type PolicyInput = {
 };
 
 const dollars = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+const paidAgo = (days: number) => (days < 1 ? "Paid today" : days === 1 ? "Paid yesterday" : `Paid ${days} days ago`);
 
 export function isResaleDomain(domain: string): boolean {
   return RESALE_DOMAINS.some((d) => domain === d || domain.endsWith(`.${d}`));
@@ -68,7 +69,7 @@ export function decide(input: PolicyInput): Decision {
 
   const ageDays = (input.now.getTime() - new Date(input.capturedAt).getTime()) / 86_400_000;
   add("window", "Within the claim window", ageDays <= s.windowDays ? "pass" : "fail",
-    `Paid ${Math.floor(ageDays)} day(s) ago; the window is ${s.windowDays} days.`);
+    `${paidAgo(Math.floor(ageDays))}; the window is ${s.windowDays} days.`);
 
   if (isResaleDomain(input.competitorDomain)) {
     add("retailer", "Qualifying retailer", "fail", `${input.competitorDomain} is a resale or refurbished marketplace.`);
