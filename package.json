@@ -21,6 +21,8 @@
   "type": "module",
   "private": "true",
   "dependencies": {
+    "ag-studio": "3.0.0",
+    "ag-studio-react": "3.0.0",
     "next": "^16.4.3",
     "paypal": "github:context-plugins/paypal-typescript-sdk#main",
     "postgres": "^3.4.7",
