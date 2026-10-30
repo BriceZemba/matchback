@@ -62,9 +62,12 @@ export default async function MerchantPage({ searchParams }: { searchParams: Pro
           <h1 className="rise">{m.title}</h1>
           <p className="muted" style={{ maxWidth: 640 }}>{m.lede}</p>
         </div>
-        <form method="post" action="/api/merchant/logout">
-          <button className="btn btn-ghost" type="submit">{m.signOut}</button>
-        </form>
+        <div className="merchant-head-actions">
+          <a className="btn btn-accent" href="/merchant/console">{m.console}</a>
+          <form method="post" action="/api/merchant/logout">
+            <button className="btn btn-ghost" type="submit">{m.signOut}</button>
+          </form>
+        </div>
       </div>
 
       {q.done && q.status && <p className="notice" role="status">{m.done[q.status] ?? q.status}</p>}

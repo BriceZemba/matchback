@@ -9,6 +9,6 @@ const Console = dynamic(() => import("./console").then((m) => m.Console), {
   loading: () => <div className="console-loading"><span className="spinner" aria-hidden="true" /> Loading the console…</div>,
 });
 
-export function ConsoleLoader(props: { data: ConsoleData; licenseKey?: string }) {
+export function ConsoleLoader(props: { data: ConsoleData; licenseKey?: string; aiModels?: { id: string; label: string }[] }) {
   return <Console {...props} />;
 }

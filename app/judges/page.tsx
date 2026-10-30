@@ -69,7 +69,7 @@ export default async function Judges() {
           <span className="n">5</span>
           <div>
             <h2>Be the store</h2>
-            <p>Open the <a href="/merchant">store desk</a> with the <strong>merchant key</strong> from the Devpost testing instructions. Claims Matchback could not settle alone wait there with their evidence: approve one with a refund amount (it goes through the same guarded PayPal refund) or refuse it, and the shopper&apos;s receipt updates. The desk also shows every decision, money refunded and sales kept.</p>
+            <p>Open the <a href="/merchant">store desk</a> with the <strong>merchant key</strong> from the Devpost testing instructions. Claims Matchback could not settle alone wait there with their evidence: approve one with a refund amount (it goes through the same guarded PayPal refund) or refuse it, and the shopper&apos;s receipt updates. The desk also shows every decision, money refunded and sales kept. <strong>Open the console</strong> for the same data in AG Studio: Matchback&apos;s own widgets (money kept, decision trail, a review queue you can approve from) and an assistant that reads the queue, explains a claim and proposes a decision, which only your click confirms.</p>
           </div>
         </li>
         <li className="card card-pad rise" style={{ ["--i" as string]: 6 }}>

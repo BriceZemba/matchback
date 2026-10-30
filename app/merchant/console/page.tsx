@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { loadConsoleData } from "@/lib/console-data";
 import { isMerchantSession, merchantKey, MERCHANT_COOKIE } from "@/lib/merchant";
+import { CONSOLE_MODELS, consoleAiEnabled } from "@/lib/console-ai";
 import { ConsoleLoader } from "./console-loader";
 
 export const dynamic = "force-dynamic";
@@ -13,5 +14,5 @@ export default async function ConsolePage() {
   if (!merchantKey()) notFound();
   if (!isMerchantSession((await cookies()).get(MERCHANT_COOKIE)?.value)) redirect("/merchant");
   const data = await loadConsoleData();
-  return <ConsoleLoader data={data} licenseKey={process.env.AG_STUDIO_LICENSE || undefined} />;
+  return <ConsoleLoader data={data} licenseKey={process.env.AG_STUDIO_LICENSE || undefined} aiModels={consoleAiEnabled() ? CONSOLE_MODELS : undefined} />;
 }

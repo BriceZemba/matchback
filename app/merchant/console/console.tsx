@@ -5,9 +5,10 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { AgReportState, AgStudioApi, AgStudioMode } from "ag-studio";
+import { AgStudioAiModule, type AgReportState, type AgStudioApi, type AgStudioMode } from "ag-studio";
 import { AgStudio, AgStudioProvider } from "ag-studio-react";
 import type { ConsoleData } from "@/lib/console-data";
+import { buildAi } from "./studio/ai";
 import { buildStudioData } from "./studio/data";
 import { consoleReport, PAGE_TITLES, REPORT_VERSION } from "./studio/initial-report";
 import { matchbackStudioTheme } from "./studio/theme";
@@ -32,12 +33,14 @@ function save(state: AgReportState) {
   }
 }
 
-export function Console({ data, licenseKey }: { data: ConsoleData; licenseKey?: string }) {
+export function Console({ data, licenseKey, aiModels }: { data: ConsoleData; licenseKey?: string; aiModels?: { id: string; label: string }[] }) {
   const apiRef = useRef<AgStudioApi | null>(null);
   const [initialState] = useState<AgReportState>(() => savedReport() ?? consoleReport);
   const [state, setState] = useState<AgReportState>(initialState);
   const [mode, setMode] = useState<AgStudioMode>("view");
   const studioData = useMemo(() => buildStudioData(data), [data]);
+  // Read once, when Studio is created.
+  const [ai] = useState(() => (aiModels?.length ? buildAi(aiModels) : undefined));
   const router = useRouter();
   // A widget that changed data (the review queue) asks for fresh rows from the server...
   useEffect(() => {
@@ -84,21 +87,26 @@ export function Console({ data, licenseKey }: { data: ConsoleData; licenseKey?: 
         </div>
         <div className="console-actions">
           <span className="subtle console-asof">Data as of {new Date(data.asOf).toLocaleString()}</span>
+          {/* Studio shows its AI panel in edit mode, next to the compose and data panels. */}
+          {ai && mode === "view" && (
+            <button type="button" className="btn btn-accent btn-sm" onClick={() => setMode("edit")}>Ask AI</button>
+          )}
           <button type="button" className="btn btn-ghost btn-sm" onClick={() => setMode(mode === "view" ? "edit" : "view")}>
-            {mode === "view" ? "Edit layout" : "Done editing"}
+            {mode === "view" ? "Edit layout" : "Done"}
           </button>
           <button type="button" className="btn btn-ghost btn-sm" onClick={reset}>Reset</button>
           <a className="btn btn-ghost btn-sm" href="/merchant">Store desk</a>
         </div>
       </div>
       <div className="console-studio">
-        <AgStudioProvider licenseKey={licenseKey}>
+        <AgStudioProvider licenseKey={licenseKey} modules={ai ? [AgStudioAiModule] : undefined}>
           <AgStudio
             style={{ height: "100%", width: "100%" }}
             theme={matchbackStudioTheme}
             layout={{ widgetBorderEnabled: true }}
             data={studioData}
             widgets={matchbackWidgets}
+            ai={ai}
             initialState={initialState}
             mode={mode}
             onApiReady={(e) => { apiRef.current = e.api; }}
