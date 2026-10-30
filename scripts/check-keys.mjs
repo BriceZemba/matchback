@@ -20,7 +20,9 @@ async function loadEnv() {
 const env = await loadEnv();
 const results = [];
 
-async function check(name, fn) {
+async function check(name, keys, fn) {
+  const missing = keys.filter((k) => !env[k]);
+  if (missing.length) return results.push({ name, ok: false, detail: `not set: ${missing.join(", ")}`, ms: 0 });
   const t0 = Date.now();
   try {
     const detail = await fn();
@@ -65,7 +67,7 @@ async function llmToolCall(baseUrl, key, model) {
   return `model ${data.model ?? model}, tool call ${call.function.name}(${call.function.arguments})`;
 }
 
-await check("PayPal sandbox OAuth", async () => {
+await check("PayPal sandbox OAuth", ["PAYPAL_CLIENT_ID", "PAYPAL_CLIENT_SECRET"], async () => {
   const auth = Buffer.from(`${env.PAYPAL_CLIENT_ID}:${env.PAYPAL_CLIENT_SECRET}`).toString("base64");
   const data = await json(
     await fetch("https://api-m.sandbox.paypal.com/v1/oauth2/token", {
@@ -79,7 +81,7 @@ await check("PayPal sandbox OAuth", async () => {
   return `token ok (expires in ${data.expires_in}s); scopes: orders/payments ${has("payments") ? "yes" : "no"}, disputes ${has("disputes") ? "yes" : "no"}, reporting ${has("reporting") ? "yes" : "no"}`;
 });
 
-await check("Channel3 REST", async () => {
+await check("Channel3 REST", ["CHANNEL3_API_KEY"], async () => {
   const data = await json(
     await fetch("https://api.trychannel3.com/v1/search", {
       method: "POST",
@@ -90,8 +92,8 @@ await check("Channel3 REST", async () => {
   return `search ok, ${data.products?.length ?? 0} product, first offer fields: ${Object.keys(data.products?.[0]?.offers?.[0] ?? {}).join(",")}`;
 });
 
-await check("Gemini LLM", () => llmToolCall(env.GEMINI_BASE_URL, env.GEMINI_API_KEY, env.GEMINI_MODEL));
-await check("Groq LLM", () => llmToolCall(env.GROQ_BASE_URL, env.GROQ_API_KEY, env.GROQ_MODEL));
+await check("Gemini LLM", ["GEMINI_API_KEY"], () => llmToolCall(env.GEMINI_BASE_URL, env.GEMINI_API_KEY, env.GEMINI_MODEL));
+await check("Groq LLM", ["GROQ_API_KEY"], () => llmToolCall(env.GROQ_BASE_URL, env.GROQ_API_KEY, env.GROQ_MODEL));
 
 for (const r of results) console.log(`${r.ok ? "PASS" : "FAIL"}  ${r.name.padEnd(22)} ${String(r.ms).padStart(5)}ms  ${r.detail}`);
 process.exitCode = results.every((r) => r.ok) ? 0 : 1;
