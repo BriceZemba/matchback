@@ -1,5 +1,5 @@
 {
-  "ranAt": "2026-10-30T02:52:38.604Z",
+  "ranAt": "2026-10-30T03:06:18.250Z",
   "split": "heldout2",
   "cache": "frozen",
   "summary": {
@@ -179,7 +179,7 @@
       "conditionSource": "none",
       "availability": "InStock",
       "competitorId": "Y2alZ03",
-      "relation": "same_product",
+      "relation": "cannot_tell",
       "lookupError": null,
       "results": {
         "matchback": {
@@ -187,7 +187,8 @@
           "refundCents": 0,
           "notPassed": [
             "condition: review",
-            "cheaper: fail"
+            "cheaper: fail",
+            "identity: review"
           ]
         },
         "id_only": {

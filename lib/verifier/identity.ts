@@ -85,7 +85,9 @@ function normalizeTitle(t: string): string {
 
 /** Generation markers like "2nd gen" / "1st generation" / "gen 2". */
 function generationOf(t: string): string | null {
-  const m = normalizeTitle(t).match(/ (\d)(?:st|nd|rd|th)? gen(?:eration)? | gen(?:eration)? (\d) /);
+  // Interface versions are not product generations: "USB 3.2 Gen 2", "PCIe Gen 4", "Thunderbolt 4".
+  const text = normalizeTitle(t).replace(/ next gen(?:eration)?(?= )/g, " ").replace(/ (?:usb|pcie|pci e|thunderbolt)(?: \d+){0,3}(?: gen(?:eration)? \d+(?: ?x ?\d+)?)?(?= )/g, " ");
+  const m = text.match(/ (\d)(?:st|nd|rd|th)? gen(?:eration)? | gen(?:eration)? (\d) /);
   return m ? (m[1] ?? m[2] ?? null) : null;
 }
 
@@ -101,13 +103,37 @@ export function editionConflict(purchasedTitle: string, competitorTitle: string)
   const ga = generationOf(purchasedTitle);
   const gb = generationOf(competitorTitle);
   if (ga && gb && ga !== gb) return `Generation ${ga} vs generation ${gb}.`;
+  const ya = yearOf(purchasedTitle);
+  const yb = yearOf(competitorTitle);
+  if (ya && yb && ya !== yb) return `Model year ${ya} vs ${yb}.`;
+  return null;
+}
+
+/** A model year in a title, like "Kindle Paperwhite (2024)". */
+function yearOf(t: string): string | null {
+  return normalizeTitle(t).match(/ (20[1-3]\d) /)?.[1] ?? null;
+}
+
+/**
+ * A reason a "same product" verdict cannot be confirmed, or null. One listing names a later generation
+ * and the other names none: the unmarked one is often the original model (Bose QC Ultra Earbuds 2nd Gen
+ * vs the 1st generation, sold without a marker; eval case qc-07), but stores also drop the marker from a
+ * real match. So this sends the claim to a person instead of refusing it. Only ever used to downgrade.
+ * The store's own title for what it sold counts first: Channel3's record may leave the generation out.
+ */
+export function generationUnconfirmed(purchased: C3Product, competitor: C3Product, storeTitle?: string): string | null {
+  const ga = (storeTitle ? generationOf(storeTitle) : null) ?? generationOf(purchased.title);
+  const gb = generationOf(competitor.title);
+  const later = (g: string | null) => g !== null && Number(g) >= 2;
+  if (later(ga) && gb === null) return `The purchased product is generation ${ga}; the other listing names no generation.`;
+  if (later(gb) && ga === null) return `The other listing is generation ${gb}; the purchased product names no generation.`;
   return null;
 }
 
 export async function checkIdentity(
   purchased: C3Product,
   competitor: C3Product,
-  opts: { mode?: IdentityMode; providers?: LlmProvider[]; fetch?: typeof fetch } = {},
+  opts: { mode?: IdentityMode; providers?: LlmProvider[]; fetch?: typeof fetch; /** The store's own title for what it sold. */ storeTitle?: string } = {},
 ): Promise<IdentityVerdict | null> {
   if (competitor.id === purchased.id) {
     return { relation: "same_product", method: "channel3_id", evidence: [`Channel3 resolved the link to the same catalog product (${purchased.id}).`] };
@@ -128,6 +154,12 @@ export async function checkIdentity(
     if (conflict) {
       relation = "different_model";
       evidence.unshift(`Edition check: ${conflict}`);
+    } else if (relation === "same_product" || relation === "same_product_other_color") {
+      const doubt = generationUnconfirmed(purchased, competitor, opts.storeTitle);
+      if (doubt) {
+        relation = "cannot_tell";
+        evidence.unshift(`Generation check: ${doubt}`);
+      }
     }
     return { relation, method: "llm", evidence, provider };
   } catch (err) {

@@ -42,17 +42,17 @@ The AI does three jobs: it reads screenshots, it judges whether a listing is the
 4. **In stock.**
 5. **Lower price:** at least $1.00 lower; an offer in another currency goes to a person.
 6. **Plausible price:** under 60% of the price paid goes to a person.
-7. **Same product:** the AI's verdict, with a fixed rule that refuses a mismatched edition, and for screenshots a check that the image shows the product that was bought.
+7. **Same product:** the AI's verdict, overruled by fixed rules when an edition word or model year differs (refused) or only one listing names a later generation (sent to a person); for screenshots, the image must also show the product that was bought.
 
 Then: one price-match refund per payment (a unique index in the database), every PayPal write recorded before it is sent (its key is also the `PayPal-Request-Id`, so a retry can't pay twice), and every refund read back from PayPal afterwards. Limits of 10 claims per order and 20 per minute keep the demo safe from abuse.
 
 ## Evidence
 
-**Evaluation.** 75 real claims built from live product pages, 52 of them traps (another model, bundle, accessory, refurbished, marketplace, out of stock). A naive "approve if cheaper" bot wrongly refunds **$2,592.25**. Matchback wrongly refunds **$0.00**, misses no legitimate claim, and sends 19 claims to a person (11 because Channel3 could not read the page). On a held-out set run once, blind, with the final version: 0 of 8 traps paid, against 4 of 8 for the naive bot.
+**Evaluation.** 75 real claims built from live product pages, 52 of them traps (another model, bundle, accessory, refurbished, marketplace, out of stock). A naive "approve if cheaper" bot wrongly refunds **$2,592.25**. Matchback wrongly refunds **$0.00**, misses no legitimate claim, and sends 20 claims to a person (11 because Channel3 could not read the page). Run once, blind, on two held-out sets: 0 of 18 traps paid, against 8 of 18 for the naive bot. Where the AI misjudged a product (another edition, an earlier generation), a fixed rule now overrules it: see [the two cases](eval/README.md#two-ai-identity-mistakes-and-the-rules-that-now-catch-them).
 
 | System | Correct | Sent to a person | Unsafe payouts | Money wrongly refunded |
 |---|---|---|---|---|
-| Matchback (rules + AI identity) | 56/75 | 19 | 0 of 52 traps | $0.00 |
+| Matchback (rules + AI identity) | 55/75 | 20 | 0 of 52 traps | $0.00 |
 | Same rules, Channel3 id only | 45/75 | 11 | 0 of 52 traps | $0.00 |
 | Naive: approve if cheaper | 42/75 | 11 | 22 of 52 traps | $2,592.25 |
 
@@ -60,7 +60,7 @@ Method, limits and every case: [`eval/README.md`](eval/README.md), [`eval/result
 
 **Live run on the hosted app (2026-10-29).** A GoPro HERO12 bought for $349.99. The price watch found it new and in stock at Best Buy for $295.99. The claim passed all seven checks and PayPal refunded **$54.00** about 6 seconds later (sandbox refund `5WL32001NT6600625`). Read back from PayPal: `COMPLETED`, 54.00 USD, linked to the claim, payment `PARTIALLY_REFUNDED`.
 
-**Tests.** 94 unit tests (`npm test`, no network), plus live tests against Channel3, the AI providers and the hosted database (`LIVE=1`).
+**Tests.** 102 unit tests (`npm test`, no network), plus live tests against Channel3, the AI providers and the hosted database (`LIVE=1`).
 
 ## How it fits together
 

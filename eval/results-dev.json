@@ -1,16 +1,16 @@
 {
-  "ranAt": "2026-10-30T02:52:54.655Z",
+  "ranAt": "2026-10-30T03:06:12.247Z",
   "split": "dev",
   "cache": "frozen",
   "summary": {
     "matchback": {
       "cases": 49,
-      "correct": 22,
-      "manual": 27,
+      "correct": 37,
+      "manual": 12,
       "unsafe": 0,
       "missed": 0,
       "unsafeDollars": 0,
-      "legitAutoPaid": 2,
+      "legitAutoPaid": 7,
       "legitTotal": 15,
       "trapsTotal": 34
     },
@@ -27,12 +27,12 @@
     },
     "naive": {
       "cases": 49,
-      "correct": 29,
+      "correct": 28,
       "manual": 7,
-      "unsafe": 13,
+      "unsafe": 14,
       "missed": 0,
-      "unsafeDollars": 1379.73,
-      "legitAutoPaid": 8,
+      "unsafeDollars": 1539.63,
+      "legitAutoPaid": 9,
       "legitTotal": 15,
       "trapsTotal": 34
     }
@@ -51,7 +51,7 @@
       "paidCents": 27499,
       "competitorCents": 23001,
       "condition": "new",
-      "conditionSource": "product_record",
+      "conditionSource": "page_lookup",
       "availability": "InStock",
       "competitorId": "e2dXeQi",
       "relation": "same_product",
@@ -87,17 +87,17 @@
       "paidCents": 27499,
       "competitorCents": 27130,
       "condition": "new",
-      "conditionSource": "product_record",
+      "conditionSource": "page_lookup",
       "availability": "InStock",
       "competitorId": "J4Kgrsx",
-      "relation": null,
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
-          "decision": "needs_review",
+          "decision": "refused",
           "refundCents": 369,
           "notPassed": [
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -130,14 +130,14 @@
       "conditionSource": "product_record",
       "availability": "InStock",
       "competitorId": "uCDx0ad",
-      "relation": null,
+      "relation": "bundle_or_kit",
       "lookupError": null,
       "results": {
         "matchback": {
-          "decision": "needs_review",
+          "decision": "refused",
           "refundCents": 2499,
           "notPassed": [
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -170,7 +170,7 @@
       "conditionSource": "product_record",
       "availability": "InStock",
       "competitorId": "5Pb2zgb",
-      "relation": null,
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
@@ -178,7 +178,7 @@
           "refundCents": 0,
           "notPassed": [
             "cheaper: fail",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -213,7 +213,7 @@
       "condition": "new",
       "conditionSource": "product_record",
       "availability": "InStock",
-      "competitorId": "NtmB1sX",
+      "competitorId": "cTyUOkU",
       "relation": "same_product",
       "lookupError": null,
       "results": {
@@ -249,16 +249,15 @@
       "condition": null,
       "conditionSource": "none",
       "availability": "InStock",
-      "competitorId": "cazeFOX",
-      "relation": null,
+      "competitorId": "i5iqoIN",
+      "relation": "same_product_other_color",
       "lookupError": null,
       "results": {
         "matchback": {
           "decision": "needs_review",
           "refundCents": 2000,
           "notPassed": [
-            "condition: review",
-            "identity: review"
+            "condition: review"
           ]
         },
         "id_only": {
@@ -289,10 +288,10 @@
       "paidCents": 21999,
       "competitorCents": 24999,
       "condition": "new",
-      "conditionSource": "product_record",
+      "conditionSource": "page_lookup",
       "availability": "InStock",
       "competitorId": "q1SnUDU",
-      "relation": null,
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
@@ -300,7 +299,7 @@
           "refundCents": 0,
           "notPassed": [
             "cheaper: fail",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -336,15 +335,15 @@
       "conditionSource": "product_record",
       "availability": "InStock",
       "competitorId": "tIGf4fm",
-      "relation": null,
+      "relation": "accessory_or_part",
       "lookupError": null,
       "results": {
         "matchback": {
-          "decision": "needs_review",
+          "decision": "refused",
           "refundCents": 18300,
           "notPassed": [
             "floor: review",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -416,25 +415,26 @@
       },
       "paidCents": 12999,
       "competitorCents": 30532,
-      "condition": "new",
-      "conditionSource": "product_record",
+      "condition": null,
+      "conditionSource": "none",
       "availability": "InStock",
-      "competitorId": "Q4YQdLL",
-      "relation": null,
+      "competitorId": "3LErKYT",
+      "relation": "same_product_other_color",
       "lookupError": null,
       "results": {
         "matchback": {
           "decision": "refused",
           "refundCents": 0,
           "notPassed": [
-            "cheaper: fail",
-            "identity: review"
+            "condition: review",
+            "cheaper: fail"
           ]
         },
         "id_only": {
           "decision": "refused",
           "refundCents": 0,
           "notPassed": [
+            "condition: review",
             "cheaper: fail",
             "identity: fail"
           ]
@@ -510,7 +510,7 @@
       "conditionSource": "none",
       "availability": "InStock",
       "competitorId": "ES5IzMP",
-      "relation": null,
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
@@ -520,7 +520,7 @@
             "retailer: fail",
             "condition: review",
             "cheaper: fail",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -555,18 +555,16 @@
       "paidCents": 44999,
       "competitorCents": 37999,
       "condition": "new",
-      "conditionSource": "product_record",
+      "conditionSource": "page_lookup",
       "availability": "InStock",
       "competitorId": "nHjGjHW",
-      "relation": null,
+      "relation": "same_product_other_color",
       "lookupError": null,
       "results": {
         "matchback": {
-          "decision": "needs_review",
+          "decision": "approved",
           "refundCents": 7000,
-          "notPassed": [
-            "identity: review"
-          ]
+          "notPassed": []
         },
         "id_only": {
           "decision": "refused",
@@ -576,11 +574,9 @@
           ]
         },
         "naive": {
-          "decision": "refused",
-          "refundCents": 0,
-          "notPassed": [
-            "cheaper: fail"
-          ]
+          "decision": "approved",
+          "refundCents": 7000,
+          "notPassed": []
         }
       }
     },
@@ -600,15 +596,13 @@
       "conditionSource": "product_record",
       "availability": "InStock",
       "competitorId": "LmIQRUd",
-      "relation": null,
+      "relation": "same_product_other_color",
       "lookupError": null,
       "results": {
         "matchback": {
-          "decision": "needs_review",
+          "decision": "approved",
           "refundCents": 7000,
-          "notPassed": [
-            "identity: review"
-          ]
+          "notPassed": []
         },
         "id_only": {
           "decision": "refused",
@@ -638,25 +632,27 @@
       },
       "paidCents": 44999,
       "competitorCents": 44999,
-      "condition": "new",
-      "conditionSource": "product_record",
+      "condition": null,
+      "conditionSource": "none",
       "availability": "InStock",
       "competitorId": "jj3SjAV",
-      "relation": null,
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
           "decision": "refused",
           "refundCents": 0,
           "notPassed": [
+            "condition: review",
             "cheaper: fail",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
           "decision": "refused",
           "refundCents": 0,
           "notPassed": [
+            "condition: review",
             "cheaper: fail",
             "identity: fail"
           ]
@@ -684,9 +680,9 @@
       "competitorCents": 22999,
       "condition": null,
       "conditionSource": "none",
-      "availability": "OutOfStock",
+      "availability": "InStock",
       "competitorId": "uJp3axR",
-      "relation": null,
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
@@ -694,9 +690,8 @@
           "refundCents": 22000,
           "notPassed": [
             "condition: review",
-            "stock: fail",
             "floor: review",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -704,7 +699,6 @@
           "refundCents": 22000,
           "notPassed": [
             "condition: review",
-            "stock: fail",
             "floor: review",
             "identity: fail"
           ]
@@ -732,14 +726,14 @@
       "conditionSource": "product_record",
       "availability": "InStock",
       "competitorId": "fUIFDuU",
-      "relation": null,
+      "relation": "bundle_or_kit",
       "lookupError": null,
       "results": {
         "matchback": {
-          "decision": "needs_review",
+          "decision": "refused",
           "refundCents": 9000,
           "notPassed": [
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -768,25 +762,27 @@
       },
       "paidCents": 39999,
       "competitorCents": 45800,
-      "condition": "new",
-      "conditionSource": "product_record",
+      "condition": null,
+      "conditionSource": "none",
       "availability": "InStock",
-      "competitorId": "voIXYFX",
-      "relation": null,
+      "competitorId": "SANXW2g",
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
           "decision": "refused",
           "refundCents": 0,
           "notPassed": [
+            "condition: review",
             "cheaper: fail",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
           "decision": "refused",
           "refundCents": 0,
           "notPassed": [
+            "condition: review",
             "cheaper: fail",
             "identity: fail"
           ]
@@ -816,7 +812,7 @@
       "conditionSource": "none",
       "availability": "InStock",
       "competitorId": "xdLLTHt",
-      "relation": null,
+      "relation": "cannot_tell",
       "lookupError": null,
       "results": {
         "matchback": {
@@ -857,26 +853,26 @@
         "why": "Target Certified Refurbished"
       },
       "paidCents": 39999,
-      "competitorCents": 14999,
+      "competitorCents": 12999,
       "condition": null,
       "conditionSource": "none",
       "availability": "InStock",
-      "competitorId": "nHnCIWy",
-      "relation": null,
+      "competitorId": "T8ng60n",
+      "relation": "used_or_refurbished_listing",
       "lookupError": null,
       "results": {
         "matchback": {
-          "decision": "needs_review",
-          "refundCents": 25000,
+          "decision": "refused",
+          "refundCents": 27000,
           "notPassed": [
             "condition: review",
             "floor: review",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
           "decision": "refused",
-          "refundCents": 25000,
+          "refundCents": 27000,
           "notPassed": [
             "condition: review",
             "floor: review",
@@ -885,7 +881,7 @@
         },
         "naive": {
           "decision": "approved",
-          "refundCents": 25000,
+          "refundCents": 27000,
           "notPassed": []
         }
       }
@@ -905,17 +901,17 @@
       "condition": null,
       "conditionSource": "none",
       "availability": "InStock",
-      "competitorId": "KRVtoYg",
-      "relation": null,
+      "competitorId": "ccZ5dpX",
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
-          "decision": "needs_review",
+          "decision": "refused",
           "refundCents": 24000,
           "notPassed": [
             "condition: review",
             "floor: review",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -950,7 +946,7 @@
       "conditionSource": "none",
       "availability": "InStock",
       "competitorId": "PECKtcJ",
-      "relation": null,
+      "relation": "same_product_other_color",
       "lookupError": null,
       "results": {
         "matchback": {
@@ -958,8 +954,7 @@
           "refundCents": 17199,
           "notPassed": [
             "condition: review",
-            "floor: review",
-            "identity: review"
+            "floor: review"
           ]
         },
         "id_only": {
@@ -989,24 +984,24 @@
         "why": "Same product, new, Best Buy"
       },
       "paidCents": 24999,
-      "competitorCents": 27999,
+      "competitorCents": 24900,
       "condition": "new",
       "conditionSource": "product_record",
       "availability": "InStock",
-      "competitorId": "RWvTn6A",
+      "competitorId": "i6eVxxH",
       "relation": "same_product",
       "lookupError": null,
       "results": {
         "matchback": {
           "decision": "refused",
-          "refundCents": 0,
+          "refundCents": 99,
           "notPassed": [
             "cheaper: fail"
           ]
         },
         "id_only": {
           "decision": "refused",
-          "refundCents": 0,
+          "refundCents": 99,
           "notPassed": [
             "cheaper: fail"
           ]
@@ -1077,25 +1072,25 @@
         "why": "Walmart Restored"
       },
       "paidCents": 24999,
-      "competitorCents": 15500,
+      "competitorCents": 16799,
       "condition": null,
       "conditionSource": "none",
       "availability": "InStock",
       "competitorId": "oclYiJD",
-      "relation": null,
+      "relation": "used_or_refurbished_listing",
       "lookupError": null,
       "results": {
         "matchback": {
-          "decision": "needs_review",
-          "refundCents": 9499,
+          "decision": "refused",
+          "refundCents": 8200,
           "notPassed": [
             "condition: review",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
           "decision": "refused",
-          "refundCents": 9499,
+          "refundCents": 8200,
           "notPassed": [
             "condition: review",
             "identity: fail"
@@ -1103,7 +1098,7 @@
         },
         "naive": {
           "decision": "approved",
-          "refundCents": 9499,
+          "refundCents": 8200,
           "notPassed": []
         }
       }
@@ -1119,25 +1114,25 @@
         "why": "AirPods 4 with ANC, not AirPods Pro 2"
       },
       "paidCents": 24999,
-      "competitorCents": 15990,
+      "competitorCents": 15800,
       "condition": null,
       "conditionSource": "none",
       "availability": "InStock",
       "competitorId": "rXyLgdd",
-      "relation": null,
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
-          "decision": "needs_review",
-          "refundCents": 9009,
+          "decision": "refused",
+          "refundCents": 9199,
           "notPassed": [
             "condition: review",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
           "decision": "refused",
-          "refundCents": 9009,
+          "refundCents": 9199,
           "notPassed": [
             "condition: review",
             "identity: fail"
@@ -1145,7 +1140,7 @@
         },
         "naive": {
           "decision": "approved",
-          "refundCents": 9009,
+          "refundCents": 9199,
           "notPassed": []
         }
       }
@@ -1166,7 +1161,7 @@
       "conditionSource": "none",
       "availability": "InStock",
       "competitorId": "evDlnzH",
-      "relation": null,
+      "relation": "same_product",
       "lookupError": null,
       "results": {
         "matchback": {
@@ -1174,8 +1169,7 @@
           "refundCents": 0,
           "notPassed": [
             "condition: review",
-            "cheaper: fail",
-            "identity: review"
+            "cheaper: fail"
           ]
         },
         "id_only": {
@@ -1212,7 +1206,7 @@
       "conditionSource": "none",
       "availability": "InStock",
       "competitorId": "DqDXj3n",
-      "relation": null,
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
@@ -1221,7 +1215,7 @@
           "notPassed": [
             "condition: review",
             "cheaper: fail",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -1304,7 +1298,7 @@
       "conditionSource": "page_lookup",
       "availability": "InStock",
       "competitorId": "ARiXrpT",
-      "relation": null,
+      "relation": "cannot_tell",
       "lookupError": null,
       "results": {
         "matchback": {
@@ -1339,31 +1333,31 @@
         "why": "Bose refurbished store"
       },
       "paidCents": 29999,
-      "competitorCents": 24900,
+      "competitorCents": 27900,
       "condition": "new",
       "conditionSource": "page_lookup",
       "availability": "InStock",
-      "competitorId": "ARiXrpT",
-      "relation": null,
+      "competitorId": "bPmOjNm",
+      "relation": "cannot_tell",
       "lookupError": null,
       "results": {
         "matchback": {
           "decision": "needs_review",
-          "refundCents": 5099,
+          "refundCents": 2099,
           "notPassed": [
             "identity: review"
           ]
         },
         "id_only": {
           "decision": "refused",
-          "refundCents": 5099,
+          "refundCents": 2099,
           "notPassed": [
             "identity: fail"
           ]
         },
         "naive": {
           "decision": "approved",
-          "refundCents": 5099,
+          "refundCents": 2099,
           "notPassed": []
         }
       }
@@ -1384,7 +1378,7 @@
       "conditionSource": "page_lookup",
       "availability": "InStock",
       "competitorId": "6iwBn5e",
-      "relation": null,
+      "relation": "bundle_or_kit",
       "lookupError": null,
       "results": {
         "matchback": {
@@ -1392,7 +1386,7 @@
           "refundCents": 0,
           "notPassed": [
             "cheaper: fail",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -1428,15 +1422,14 @@
       "conditionSource": "none",
       "availability": "InStock",
       "competitorId": "VA740J5",
-      "relation": null,
+      "relation": "same_product",
       "lookupError": null,
       "results": {
         "matchback": {
           "decision": "needs_review",
           "refundCents": 3299,
           "notPassed": [
-            "condition: review",
-            "identity: review"
+            "condition: review"
           ]
         },
         "id_only": {
@@ -1562,14 +1555,14 @@
       "conditionSource": "product_record",
       "availability": "InStock",
       "competitorId": "5OKWont",
-      "relation": null,
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
-          "decision": "needs_review",
+          "decision": "refused",
           "refundCents": 1000,
           "notPassed": [
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -1643,36 +1636,34 @@
         "why": "AirPods Pro 1st generation (Lightning)"
       },
       "paidCents": 24999,
-      "competitorCents": 26799,
+      "competitorCents": 6900,
       "condition": "new",
       "conditionSource": "product_record",
       "availability": "InStock",
       "competitorId": "bRfOzE5",
-      "relation": null,
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
           "decision": "refused",
-          "refundCents": 0,
+          "refundCents": 18099,
           "notPassed": [
-            "cheaper: fail",
-            "identity: review"
+            "floor: review",
+            "identity: fail"
           ]
         },
         "id_only": {
           "decision": "refused",
-          "refundCents": 0,
+          "refundCents": 18099,
           "notPassed": [
-            "cheaper: fail",
+            "floor: review",
             "identity: fail"
           ]
         },
         "naive": {
-          "decision": "refused",
-          "refundCents": 0,
-          "notPassed": [
-            "cheaper: fail"
-          ]
+          "decision": "approved",
+          "refundCents": 18099,
+          "notPassed": []
         }
       }
     },
@@ -1738,15 +1729,15 @@
       "conditionSource": "none",
       "availability": "InStock",
       "competitorId": "qhVq1fO",
-      "relation": null,
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
-          "decision": "needs_review",
+          "decision": "refused",
           "refundCents": 11499,
           "notPassed": [
             "condition: review",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -1780,7 +1771,7 @@
       "conditionSource": "product_record",
       "availability": "InStock",
       "competitorId": "HwUgjzs",
-      "relation": null,
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
@@ -1788,7 +1779,7 @@
           "refundCents": 0,
           "notPassed": [
             "cheaper: fail",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -1824,7 +1815,7 @@
       "conditionSource": "product_record",
       "availability": "InStock",
       "competitorId": "CtXCJHi",
-      "relation": null,
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
@@ -1832,7 +1823,7 @@
           "refundCents": 0,
           "notPassed": [
             "cheaper: fail",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -1863,12 +1854,12 @@
         "why": "Duo Plus, not Duo"
       },
       "paidCents": 12999,
-      "competitorCents": 14500,
+      "competitorCents": 13980,
       "condition": null,
       "conditionSource": "none",
       "availability": "InStock",
       "competitorId": "KyTgDI4",
-      "relation": null,
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
@@ -1877,7 +1868,7 @@
           "notPassed": [
             "condition: review",
             "cheaper: fail",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -1914,7 +1905,7 @@
       "conditionSource": "none",
       "availability": "InStock",
       "competitorId": "g51f3Np",
-      "relation": null,
+      "relation": "same_product",
       "lookupError": null,
       "results": {
         "matchback": {
@@ -1922,8 +1913,7 @@
           "refundCents": 0,
           "notPassed": [
             "condition: review",
-            "cheaper: fail",
-            "identity: review"
+            "cheaper: fail"
           ]
         },
         "id_only": {
@@ -1960,15 +1950,13 @@
       "conditionSource": "product_record",
       "availability": "InStock",
       "competitorId": "DMBm3wB",
-      "relation": null,
+      "relation": "same_product",
       "lookupError": null,
       "results": {
         "matchback": {
-          "decision": "needs_review",
+          "decision": "approved",
           "refundCents": 1500,
-          "notPassed": [
-            "identity: review"
-          ]
+          "notPassed": []
         },
         "id_only": {
           "decision": "refused",
@@ -2000,7 +1988,7 @@
       "conditionSource": "none",
       "availability": "InStock",
       "competitorId": "QtKgFpQ",
-      "relation": null,
+      "relation": "bundle_or_kit",
       "lookupError": null,
       "results": {
         "matchback": {
@@ -2009,7 +1997,7 @@
           "notPassed": [
             "condition: review",
             "cheaper: fail",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
@@ -2046,15 +2034,13 @@
       "conditionSource": "product_record",
       "availability": "InStock",
       "competitorId": "3XSPDDZ",
-      "relation": null,
+      "relation": "same_product_other_color",
       "lookupError": null,
       "results": {
         "matchback": {
-          "decision": "needs_review",
+          "decision": "approved",
           "refundCents": 5000,
-          "notPassed": [
-            "identity: review"
-          ]
+          "notPassed": []
         },
         "id_only": {
           "decision": "refused",
@@ -2084,25 +2070,27 @@
       },
       "paidCents": 44999,
       "competitorCents": 44999,
-      "condition": "new",
-      "conditionSource": "product_record",
+      "condition": null,
+      "conditionSource": "none",
       "availability": "InStock",
-      "competitorId": "rEEIb4G",
-      "relation": null,
+      "competitorId": "FUpX8NG",
+      "relation": "different_model",
       "lookupError": null,
       "results": {
         "matchback": {
           "decision": "refused",
           "refundCents": 0,
           "notPassed": [
+            "condition: review",
             "cheaper: fail",
-            "identity: review"
+            "identity: fail"
           ]
         },
         "id_only": {
           "decision": "refused",
           "refundCents": 0,
           "notPassed": [
+            "condition: review",
             "cheaper: fail",
             "identity: fail"
           ]
@@ -2127,24 +2115,22 @@
         "why": "Same mixer, Milkshake"
       },
       "paidCents": 44999,
-      "competitorCents": 34999,
+      "competitorCents": 37999,
       "condition": "new",
       "conditionSource": "product_record",
       "availability": "InStock",
       "competitorId": "VLWPN0P",
-      "relation": null,
+      "relation": "same_product_other_color",
       "lookupError": null,
       "results": {
         "matchback": {
-          "decision": "needs_review",
-          "refundCents": 10000,
-          "notPassed": [
-            "identity: review"
-          ]
+          "decision": "approved",
+          "refundCents": 7000,
+          "notPassed": []
         },
         "id_only": {
           "decision": "refused",
-          "refundCents": 10000,
+          "refundCents": 7000,
           "notPassed": [
             "identity: fail"
           ]

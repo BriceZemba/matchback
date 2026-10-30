@@ -2,11 +2,14 @@
 // Usage: node eval/report.mjs
 //
 // Files and what they are:
-//   results-dev-v1.json      development set, identity prompt v1
-//   results-dev.json         development set, final version (v2)
-//   results-heldout-v1.json  held-out set 1, v1 — its first and only blind look
-//   results-heldout.json     held-out set 1, v2 — a second look (the set had already been seen once)
-//   results-heldout2.json    held-out set 2, v2 — first look, collected before v2 was written
+//   results-dev-v1.json       development set, identity prompt v1
+//   results-dev-v2.json       development set, v2 (identity prompt v2 + edition rule)
+//   results-dev.json          development set, final version (v3: + generation and model-year rules)
+//   results-heldout-v1.json   held-out set 1, v1 — its first and only blind look
+//   results-heldout-v2.json   held-out set 1, v2 — a second look
+//   results-heldout.json      held-out set 1, final version
+//   results-heldout2-v2.json  held-out set 2, v2 — its first and only blind look (collected before v2)
+//   results-heldout2.json     held-out set 2, final version — a second look (v3 was written after it)
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 
 const FACT = new Set(["stock", "cheaper", "floor", "window"]);
@@ -44,16 +47,19 @@ out.push("**Grades.** *correct*: a trap refused, or a legitimate claim paid (or 
 
 const dev = load("results-dev.json");
 const devV1 = load("results-dev-v1.json");
+const devV2 = load("results-dev-v2.json");
 const ho1v1 = load("results-heldout-v1.json");
-const ho1v2 = load("results-heldout.json");
+const ho1v2 = load("results-heldout-v2.json");
+const ho1 = load("results-heldout.json");
+const ho2v2 = load("results-heldout2-v2.json");
 const ho2 = load("results-heldout2.json");
 
 // Final version over every case it has been run on.
-const finalSets = [dev, ho1v2, ho2].filter(Boolean);
+const finalSets = [dev, ho1, ho2].filter(Boolean);
 if (finalSets.length) {
   const rows = finalSets.flatMap((d) => d.rows);
   out.push(`## Final version, all ${rows.length} cases`, "");
-  out.push("Development set + held-out set 1 (second look) + held-out set 2 (first look).", "");
+  out.push("Development set + held-out sets 1 and 2. Both held-out sets had already been seen when the final version was written; their blind numbers are in the next section.", "");
   out.push(HEAD);
   for (const s of SYS) out.push(line(LABEL[s], totals(rows, s)));
   const manual = rows.filter((r) => r.results.matchback.decision === "needs_review");
@@ -61,11 +67,11 @@ if (finalSets.length) {
 }
 
 // Blind results only: each held-out set the first time it was run.
-if (ho1v1 || ho2) {
+if (ho1v1 || ho2v2) {
   out.push("## First-look held-out results (the honest generalisation numbers)", "");
   out.push("Each row is a held-out set the first and only time it was run blind.", "");
   out.push("| Set | Version | Cases | Matchback unsafe | Matchback missed | Matchback sent to a person | Naive unsafe | Naive money wrongly refunded |", "|---|---|---|---|---|---|---|---|");
-  for (const [name, ver, d] of [["Held-out 1", "v1", ho1v1], ["Held-out 2", "v2 (final)", ho2]]) {
+  for (const [name, ver, d] of [["Held-out 1", "v1", ho1v1], ["Held-out 2", "v2", ho2v2]]) {
     if (!d) continue;
     const m = totals(d.rows, "matchback");
     const nv = totals(d.rows, "naive");
@@ -74,26 +80,32 @@ if (ho1v1 || ho2) {
   out.push("");
 }
 
-// What changed between the two identity prompts, on the development set.
-if (devV1 && dev) {
-  out.push("## Development set: identity prompt v1 → v2", "");
+// What changed from one version to the next, on the same cases.
+function versionChange(title, pairs, labels) {
+  const before = pairs.flatMap(([a]) => a?.rows ?? []);
+  const after = pairs.flatMap(([, b]) => b?.rows ?? []);
+  if (!before.length || !after.length) return;
+  out.push(`## ${title}`, "");
   out.push("| Version | Correct | Sent to a person | Unsafe payouts | Money wrongly refunded | Missed legit | Legit claims paid automatically |", "|---|---|---|---|---|---|---|");
-  out.push(line("v1", totals(devV1.rows, "matchback")));
-  out.push(line("v2 (final)", totals(dev.rows, "matchback")));
-  const before = Object.fromEntries(devV1.rows.map((r) => [r.case.id, r]));
-  const changed = dev.rows.filter((r) => before[r.case.id] && (before[r.case.id].results.matchback.decision !== r.results.matchback.decision || before[r.case.id].relation !== r.relation));
-  out.push("", changed.length ? "Cases whose AI relation or decision changed:" : "No case changed.", "");
+  out.push(line(labels[0], totals(before, "matchback")));
+  out.push(line(labels[1], totals(after, "matchback")));
+  const old = Object.fromEntries(before.map((r) => [r.case.id, r]));
+  const changed = after.filter((r) => old[r.case.id] && (old[r.case.id].results.matchback.decision !== r.results.matchback.decision || old[r.case.id].relation !== r.relation));
+  out.push("", changed.length ? "Cases whose identity verdict or decision changed:" : "No case changed.", "");
   for (const r of changed) {
-    const a = before[r.case.id];
+    const a = old[r.case.id];
     out.push(`- **${r.case.id}** (${r.case.legit ? "legit" : "trap"}: ${r.case.why}): ${a.relation ?? "—"} → ${r.relation ?? "—"}; ${a.results.matchback.decision} → ${r.results.matchback.decision}`);
   }
   out.push("");
 }
+versionChange("Development set: v1 → v2 (identity prompt v2 + edition rule)", [[devV1, devV2]], ["v1", "v2"]);
+versionChange("All 75 cases: v2 → v3 (generation and model-year rules)", [[devV2, dev], [ho1v2, ho1], [ho2v2, ho2]], ["v2", "v3 (final)"]);
 
 const sections = [
   [dev, "Development set (final version)"],
-  [ho2, "Held-out set 2 (final version, first look)"],
-  [ho1v2, "Held-out set 1 (final version, second look — this set was already run once with v1)"],
+  [ho2, "Held-out set 2 (final version; already seen once with v2)"],
+  [ho1, "Held-out set 1 (final version; already seen with v1 and v2)"],
+  [ho2v2, "Held-out set 2 (version 2, first look)"],
   [ho1v1, "Held-out set 1 (version 1, first look)"],
 ];
 for (const [data, title] of sections) {

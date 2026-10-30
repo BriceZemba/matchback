@@ -1,0 +1,517 @@
+{
+  "ranAt": "2026-10-30T02:52:38.604Z",
+  "split": "heldout2",
+  "cache": "frozen",
+  "summary": {
+    "matchback": {
+      "cases": 11,
+      "correct": 9,
+      "manual": 2,
+      "unsafe": 0,
+      "missed": 0,
+      "unsafeDollars": 0,
+      "legitAutoPaid": 1,
+      "legitTotal": 3,
+      "trapsTotal": 8
+    },
+    "id_only": {
+      "cases": 11,
+      "correct": 7,
+      "manual": 1,
+      "unsafe": 0,
+      "missed": 3,
+      "unsafeDollars": 0,
+      "legitAutoPaid": 0,
+      "legitTotal": 3,
+      "trapsTotal": 8
+    },
+    "naive": {
+      "cases": 11,
+      "correct": 6,
+      "manual": 1,
+      "unsafe": 4,
+      "missed": 0,
+      "unsafeDollars": 534.41,
+      "legitAutoPaid": 1,
+      "legitTotal": 3,
+      "trapsTotal": 8
+    }
+  },
+  "rows": [
+    {
+      "case": {
+        "id": "mx-10",
+        "product": "MX3S",
+        "split": "heldout2",
+        "url": "https://www.walmart.com/ip/Logitech-MX-MASTER-3S-Performance-Wireless-Mouse/2055320482",
+        "legit": true,
+        "kind": "same",
+        "why": "Same mouse, Graphite, Walmart"
+      },
+      "paidCents": 12999,
+      "competitorCents": 9200,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "7T2eYHk",
+      "relation": "same_product_other_color",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 3799,
+          "notPassed": [
+            "condition: review"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 3799,
+          "notPassed": [
+            "condition: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 3799,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "mx-11",
+        "product": "MX3S",
+        "split": "heldout2",
+        "url": "https://www.walmart.com/ip/Logitech-MX-Master-3S-Business-Full-size-Mouse-Darkfield-Wireless-Bluetooth-Yes-Graphite-USB-Type-A-8000-dpi-Scroll-Wheel-7-Button-s-Right-handed-Onl/1554277076",
+        "legit": false,
+        "kind": "different_model",
+        "why": "MX Master 3S Business edition"
+      },
+      "paidCents": 12999,
+      "competitorCents": 11058,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "CUNrrr7",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 1941,
+          "notPassed": [
+            "condition: review",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 1941,
+          "notPassed": [
+            "condition: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 1941,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "app-08",
+        "product": "APP2",
+        "split": "heldout2",
+        "url": "https://www.bestbuy.com/product/apple-airpods-pro-1st-generation-with-magsafe-charging-case-white/JJ8ZHSV2V5",
+        "legit": false,
+        "kind": "refurbished",
+        "why": "Refurbished AirPods Pro 1st generation"
+      },
+      "paidCents": 24999,
+      "competitorCents": 10499,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "gVm7C9a",
+      "relation": "used_or_refurbished_listing",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 14500,
+          "notPassed": [
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 14500,
+          "notPassed": [
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 14500,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "qc-07",
+        "product": "QCUE2",
+        "split": "heldout2",
+        "url": "https://www.walmart.com/ip/Bose-QuietComfort-Ultra-Wireless-Earbuds-Noise-Cancelling-Bluetooth-Headphones-Black/2655908227",
+        "legit": false,
+        "kind": "different_model",
+        "why": "QC Ultra Earbuds 1st generation (882826-0010)"
+      },
+      "paidCents": 29999,
+      "competitorCents": 29999,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "Y2alZ03",
+      "relation": "same_product",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "kin-08",
+        "product": "KINDLE",
+        "split": "heldout2",
+        "url": "https://www.bestbuy.com/product/amazon-kindle-paperwhite-kids-16-gb-2024-cyber-city/J39HW69TJ2",
+        "legit": false,
+        "kind": "different_model",
+        "why": "Paperwhite Kids edition"
+      },
+      "paidCents": 21999,
+      "competitorCents": 22999,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "nx17h9R",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "ip-05",
+        "product": "IPDUO6",
+        "split": "heldout2",
+        "url": "https://www.walmart.com/ip/Instant-Pot-8-qt-Duo-Plus-Stainless-Steel-Pressure-Cooker-Black-Silver/1926479178",
+        "legit": false,
+        "kind": "different_model",
+        "why": "Duo Plus 8 quart"
+      },
+      "paidCents": 12999,
+      "competitorCents": 13905,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "nY0Bhwq",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "condition: review",
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "t7-08",
+        "product": "T7",
+        "split": "heldout2",
+        "url": "https://www.walmart.com/ip/Samsung-MU-PC1T0T-AM-Portable-SSD-T7-USB-3-2-1TB-Gray-Bundle-with-Converter-Adapter-Type-C-Adapter-Vivitar-Hard-Shell-Case-White/7213953043",
+        "legit": false,
+        "kind": "bundle",
+        "why": "T7 bundled with adapter and case"
+      },
+      "paidCents": 27499,
+      "competitorCents": null,
+      "condition": null,
+      "conditionSource": null,
+      "availability": null,
+      "competitorId": null,
+      "relation": null,
+      "lookupError": "Channel3 could not read that page (404: Product not found).",
+      "results": {
+        "matchback": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "id_only": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review",
+            "offer: review",
+            "identity: review"
+          ]
+        },
+        "naive": {
+          "decision": "needs_review",
+          "refundCents": 0,
+          "notPassed": [
+            "lookup: review"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "t7-09",
+        "product": "T7",
+        "split": "heldout2",
+        "url": "https://www.bestbuy.com/site/reviews/samsung-geek-squad-certified-refurbished-t7-1tb-external-usb-3-2-gen-2-portable-ssd-with-hardware-encryption-titan-gray/6415699",
+        "legit": false,
+        "kind": "refurbished",
+        "why": "Geek Squad Certified Refurbished T7"
+      },
+      "paidCents": 27499,
+      "competitorCents": 12499,
+      "condition": null,
+      "conditionSource": "none",
+      "availability": "InStock",
+      "competitorId": "Cuhp9HH",
+      "relation": "used_or_refurbished_listing",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 15000,
+          "notPassed": [
+            "condition: review",
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 15000,
+          "notPassed": [
+            "condition: review",
+            "floor: review",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 15000,
+          "notPassed": []
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "art-08",
+        "product": "ARTISAN",
+        "split": "heldout2",
+        "url": "https://www.kitchenaid.com/countertop-appliances/stand-mixers/tilt-head-stand-mixers/p.artisan-series-5-quart-tilt-head-stand-mixer.KSM150PSVB.html",
+        "legit": true,
+        "kind": "color",
+        "why": "Same mixer, Blue Velvet"
+      },
+      "paidCents": 44999,
+      "competitorCents": 37999,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "VRnz3Sc",
+      "relation": "same_product_other_color",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "approved",
+          "refundCents": 7000,
+          "notPassed": []
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 7000,
+          "notPassed": [
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "art-09",
+        "product": "ARTISAN",
+        "split": "heldout2",
+        "url": "https://www.kitchenaid.com/countertop-appliances/stand-mixers/tilt-head-stand-mixers/p.artisan-series-5-quart-tilt-head-stand-mixer.KSM150PSBT.html",
+        "legit": true,
+        "kind": "color",
+        "why": "Same mixer, Butter"
+      },
+      "paidCents": 44999,
+      "competitorCents": 49999,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "GAAKpLX",
+      "relation": "same_product_other_color",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail"
+          ]
+        }
+      }
+    },
+    {
+      "case": {
+        "id": "art-10",
+        "product": "ARTISAN",
+        "split": "heldout2",
+        "url": "https://www.kitchenaid.com/countertop-appliances/refurbished/stand-mixers/p.refurbished-artisan-mini-3-5-quart-tilt-head-stand-mixer.RKSM33XXBM.html",
+        "legit": false,
+        "kind": "refurbished",
+        "why": "Refurbished Artisan Mini, brand store"
+      },
+      "paidCents": 44999,
+      "competitorCents": 44999,
+      "condition": "new",
+      "conditionSource": "product_record",
+      "availability": "InStock",
+      "competitorId": "RMeFT9j",
+      "relation": "different_model",
+      "lookupError": null,
+      "results": {
+        "matchback": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "id_only": {
+          "decision": "refused",
+          "refundCents": 0,
+          "notPassed": [
+            "cheaper: fail",
+            "identity: fail"
+          ]
+        },
+        "naive": {
+          "decision": "approved",
+          "refundCents": 22000,
+          "notPassed": []
+        }
+      }
+    }
+  ]
+}

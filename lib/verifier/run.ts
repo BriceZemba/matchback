@@ -219,6 +219,7 @@ export async function evaluateClaim(
     const purchasedProduct = competitorProduct.id === input.purchasedProductId ? competitorProduct : await deps.channel3.product(input.purchasedProductId);
     identity = await checkIdentity(purchasedProduct, competitorProduct, {
       mode: deps.identityMode,
+      storeTitle: input.purchasedTitle,
       ...(deps.providers ? { providers: deps.providers } : {}),
       ...(deps.llmFetch ? { fetch: deps.llmFetch } : {}),
     });

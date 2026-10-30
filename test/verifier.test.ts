@@ -7,7 +7,7 @@ import { createOrderRow } from "@/lib/paypal/checkout";
 import { decide, type PolicyInput, type PolicySettings } from "@/lib/verifier/policy";
 import { evaluateClaim, fileClaim, verifyClaim, type VerifyDeps } from "@/lib/verifier/run";
 import { InvariantError } from "@/lib/paypal/errors";
-import { editionConflict, type IdentityVerdict } from "@/lib/verifier/identity";
+import { editionConflict, generationUnconfirmed, type IdentityVerdict } from "@/lib/verifier/identity";
 
 // Offers below are the ones Channel3 returned in the 2026-10-28 spike (spikes/channel3/out/*-rest.json).
 const settings: PolicySettings = { windowDays: 14, minDiffCents: 100, floorShare: 0.6, allowColorVariants: true };
@@ -85,6 +85,35 @@ describe("policy", () => {
   });
 });
 
+describe("generationUnconfirmed", () => {
+  const p = (title: string, key_features?: string[]) => ({ id: title, title, ...(key_features ? { key_features } : {}) });
+
+  it("doubts a match when only one listing names a later generation (eval held-out case qc-07)", () => {
+    expect(generationUnconfirmed(p("Bose QuietComfort Ultra Earbuds (2nd Gen), Black"), p("Bose QuietComfort Ultra Wireless Earbuds Noise Cancelling Bluetooth Headphones, Black"))).toContain("generation 2");
+    expect(generationUnconfirmed(p("Apple AirPods Pro"), p("Apple AirPods Pro 2nd Generation"))).toContain("generation 2");
+  });
+
+  it("reads the purchased generation from the store's own title when Channel3's record leaves it out", () => {
+    const record = p("QuietComfort Ultra Earbuds");
+    expect(generationUnconfirmed(record, p("Bose QuietComfort Ultra Wireless Noise Cancelling Earbuds 882826-0010 - Walmart.com"), "Bose QuietComfort Ultra Earbuds (2nd Gen), Black")).toContain("generation 2");
+    expect(generationUnconfirmed(record, p("Bose QuietComfort Ultra Earbuds (2nd Gen)"), "Bose QuietComfort Ultra Earbuds (2nd Gen), Black")).toBeNull();
+  });
+
+  it("accepts a first generation, matching generations, or none at all", () => {
+    expect(generationUnconfirmed(p("Echo Dot (1st Gen)"), p("Echo Dot"))).toBeNull();
+    expect(generationUnconfirmed(p("AirPods Pro 2nd generation"), p("Apple AirPods Pro (2nd Gen)"))).toBeNull();
+    expect(generationUnconfirmed(p("Logitech MX Master 3S"), p("Logitech MX Master 3S Graphite"))).toBeNull();
+  });
+
+  it("does not read marketing words as a generation (Kindle: \"Next-generation 7\" display\")", () => {
+    expect(generationUnconfirmed(p("Amazon Kindle Paperwhite Next-generation 7 inch display"), p("Amazon Kindle Paperwhite (2024) - Jade"))).toBeNull();
+  });
+
+  it("ignores interface versions (the T7's USB 3.2 Gen 2)", () => {
+    expect(generationUnconfirmed(p("Samsung T7 Portable SSD 1TB USB 3.2 Gen 2 External Solid State Drive"), p("Samsung, Portable SSD, 1TB, Up to 1,050MB/s, Titan Gray - Walmart.com"))).toBeNull();
+  });
+});
+
 describe("editionConflict", () => {
   it("flags an edition word present in only one title", () => {
     expect(editionConflict("Logitech MX Master 3S Performance Wireless Mouse", "Logitech MX Master 3S for Business Wireless Laser Mouse,")).toContain("for business");
@@ -102,6 +131,16 @@ describe("editionConflict", () => {
     expect(editionConflict("Instant Pot DUO60 6 Qt 7-in-1 Multi-Use Programmable Pressure Cooker", "Instant Pot, 6 Qt Electric Pressure Cooker 7-in-1, Easy Steam Release, Slow Cooker, Rice Cooker - Walmart.com")).toBeNull();
     expect(editionConflict("Samsung T7 Portable SSD 1TB USB 3.2 Gen 2 External Solid State Drive", "Samsung, Portable SSD, 1TB, Up to 1,050MB/s, Titan Gray - Walmart.com")).toBeNull();
     expect(editionConflict("QuietComfort Ultra Earbuds", "Bose Quietcomfort Earbuds")).toBeNull();
+  });
+
+  it("flags different model years when both titles state one", () => {
+    expect(editionConflict("Amazon Kindle Paperwhite (2024)", "Amazon Kindle Paperwhite (2021) 8 GB")).toContain("Model year");
+    expect(editionConflict("Amazon Kindle Paperwhite (2024)", "Amazon Kindle Paperwhite 2024 Jade")).toBeNull();
+  });
+
+  it("does not read interface versions as product generations", () => {
+    expect(editionConflict("Samsung T7 Portable SSD 1TB USB 3.2 Gen 2", "Samsung T7 Portable SSD 1TB USB 3.2 Gen 1")).toBeNull();
+    expect(editionConflict("Samsung T7 Portable SSD 1TB USB 3.2 Gen 2", "Samsung T7 Shield 1TB")).toContain("shield");
   });
 
   it("flags the Staples for-Business listing (eval dev case mx-08)", () => {
@@ -192,6 +231,16 @@ describe("evaluateClaim", () => {
     expect(ev.decision.status).toBe("approved");
     expect(ev.decision.refundCents).toBe(2000);
     expect(llm.calls).toHaveLength(0);
+  });
+
+  it("a cheaper, new 1st-generation listing the AI calls the same as a 2nd-gen purchase goes to a person, not a payout", async () => {
+    const gen2: C3Product = { id: "CBwmyTM", title: "Bose QuietComfort Ultra Earbuds (2nd Gen), Black", offers: [] };
+    const gen1: C3Product = { id: "Y2alZ03", title: "Bose QuietComfort Ultra Wireless Earbuds Noise Cancelling Bluetooth Headphones, Black", offers: [offer("walmart.com", 249, "new")] };
+    const url = "https://www.walmart.com/ip/Bose-QuietComfort-Ultra-Wireless-Earbuds/2655908227";
+    const ev = await evaluateClaim({ ...input(url, "CBwmyTM", 29900), purchasedTitle: "Bose QuietComfort Ultra Earbuds (2nd Gen), Black" }, deps(fakeChannel3({ [url]: gen1 }, { CBwmyTM: { ...gen2, title: "QuietComfort Ultra Earbuds" } }), llmReturning("same_product").fetch));
+    expect(ev.identity).toMatchObject({ relation: "cannot_tell", method: "llm" });
+    expect(ev.identity?.evidence[0]).toMatch(/^Generation check/);
+    expect(ev.decision.status).toBe("needs_review");
   });
 
   it("id-only baseline (ablation) refuses a colour variant the AI would accept", async () => {
