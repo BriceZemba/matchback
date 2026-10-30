@@ -48,13 +48,13 @@ Then: one price-match refund per payment (a unique index in the database), every
 
 ## Evidence
 
-**Evaluation.** 49 real claims built from live product pages, 33 of them traps (another model, bundle, accessory, refurbished, marketplace, out of stock). A naive "approve if cheaper" bot wrongly refunds **$1,751.86**. Matchback wrongly refunds **$0.00**, and sends 14 claims to a person (7 because Channel3 could not read the page).
+**Evaluation.** 75 real claims built from live product pages, 52 of them traps (another model, bundle, accessory, refurbished, marketplace, out of stock). A naive "approve if cheaper" bot wrongly refunds **$2,592.25**. Matchback wrongly refunds **$0.00**, misses no legitimate claim, and sends 19 claims to a person (11 because Channel3 could not read the page). On a held-out set run once, blind, with the final version: 0 of 8 traps paid, against 4 of 8 for the naive bot.
 
 | System | Correct | Sent to a person | Unsafe payouts | Money wrongly refunded |
 |---|---|---|---|---|
-| Matchback (rules + AI identity) | 34/49 | 14 | 0 of 33 traps | $0.00 |
-| Same rules, Channel3 id only | 30/49 | 7 | 0 of 33 traps | $0.00 |
-| Naive: approve if cheaper | 27/49 | 7 | 15 of 33 traps | $1,751.86 |
+| Matchback (rules + AI identity) | 56/75 | 19 | 0 of 52 traps | $0.00 |
+| Same rules, Channel3 id only | 45/75 | 11 | 0 of 52 traps | $0.00 |
+| Naive: approve if cheaper | 42/75 | 11 | 22 of 52 traps | $2,592.25 |
 
 Method, limits and every case: [`eval/README.md`](eval/README.md), [`eval/results.md`](eval/results.md).
 
@@ -123,7 +123,7 @@ Set `MERCHANT_KEY` to open the store desk, `MATCHBACK_JUDGE_MODE=1` for the guid
 ## Limits
 
 - Sandbox only. A real store would use its own PayPal live credentials, and the store desk has a single shared merchant key rather than reviewer accounts.
-- Channel3 can't read every page: 7 of the 49 evaluation links failed, and those claims go to a person.
+- Channel3 can't read every page: 11 of the 75 evaluation links failed, and those claims go to a person.
 - The catalog is 12 fixed products, each pinned to its Channel3 record, so lookups are stable for the demo.
 - Prices and stock change: the expected outcomes of the sample links were recorded on 2026-10-29.
 

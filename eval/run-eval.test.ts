@@ -16,6 +16,8 @@ for (const line of (() => { try { return readFileSync(".env", "utf8"); } catch {
   if (m && process.env[m[1]!] === undefined) process.env[m[1]!] = m[2]!.trim();
 }
 process.env.MATCHBACK_DB = "eval/eval-cache.db";
+// The evaluation reads only its recorded cache, never the hosted database that .env may point at.
+delete process.env.DATABASE_URL;
 
 type Case = { id: string; product: string; split: "dev" | "heldout"; url: string; legit: boolean; kind: string; why: string };
 type Product = { title: string; productId?: string; refUrl?: string; paidCents: number };
