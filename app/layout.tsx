@@ -31,9 +31,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const links = [
     { href: "/", label: t.nav.shop },
     { href: "/orders", label: t.nav.orders },
+    ...(merchantKey() ? [{ href: "/merchant", label: t.nav.desk }] : []),
     { href: "/how-to-use", label: t.nav.howToUse },
     { href: "/how-it-works", label: t.nav.howItWorks },
-    ...(merchantKey() ? [{ href: "/merchant", label: t.nav.desk }] : []),
     ...(judgeMode() ? [{ href: "/judges", label: t.nav.judges }] : []),
   ];
   return (
