@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { CheckoutPaymentIntent, type Order } from "paypal";
+import { CheckoutPaymentIntent, PayPalExperienceUserAction, type Order } from "paypal";
 import { ensureCatalog } from "@/lib/catalog";
 import { getDb, now } from "@/lib/db";
 import { fromCents, toCents } from "@/lib/money";
@@ -72,6 +72,8 @@ export async function createCheckoutOrder(orderId: string, appBaseUrl: string): 
       paymentSource: {
         paypal: {
           experienceContext: {
+            // The payment is captured as soon as the buyer returns, so PayPal's button says Pay Now.
+            userAction: PayPalExperienceUserAction.PayNow,
             returnUrl: `${appBaseUrl}/checkout/return?order=${encodeURIComponent(orderId)}`,
             cancelUrl: `${appBaseUrl}/?cancelled=1`,
           },
