@@ -86,7 +86,10 @@ describe("console data", () => {
     expect(data.claims).toEqual([expect.objectContaining({ id: "c1", outcome: "Refunded", store: "officedepot.com", paid: 119.99, offerPrice: 99.99, gap: 20, refunded: 20, isRefunded: 1, isDecided: 1, isAutomatic: 1, decidedBy: "Matchback" })]);
     expect(data.checks.map((c) => [c.check, c.outcome])).toEqual([["Within the claim window", "Passed"], ["Same product", "Passed"]]);
     expect(data.orders).toEqual([expect.objectContaining({ paid: 119.99, refunded: 20, claimedSale: 119.99, keptSale: 99.99, fullReturn: 119.99 })]);
-    expect(data.stores).toEqual([{ id: "officedepot.com", storeType: "Listed competitor" }]);
+    // Every store the rules know is there, with the claims it drew.
+    expect(data.stores.find((s) => s.id === "officedepot.com")).toEqual({ id: "officedepot.com", storeType: "Listed competitor", claims: 1 });
+    expect(data.stores.find((s) => s.id === "bestbuy.com")).toEqual({ id: "bestbuy.com", storeType: "Listed competitor", claims: 0 });
+    expect(data.stores.find((s) => s.id === "ebay.com")).toEqual({ id: "ebay.com", storeType: "Resale marketplace", claims: 0 });
     expect(data.claims[0]?.orderRefunded).toBe("yes");
     expect(data.refunds).toEqual([expect.objectContaining({ amount: 20, refundId: "RF1" })]);
   });

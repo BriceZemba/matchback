@@ -2,8 +2,8 @@ import { listCatalog } from "@/lib/catalog";
 import { getDb } from "@/lib/db";
 import { claimRecords, type ClaimRecord } from "@/lib/merchant";
 import { loadStoreSettings } from "@/lib/store-settings";
-import { isResaleDomain } from "@/lib/verifier/policy";
-import { brandStore, isKnownRetailer } from "@/lib/verifier/retailers";
+import { isResaleDomain, RESALE_DOMAINS } from "@/lib/verifier/policy";
+import { brandStore, isKnownRetailer, KNOWN_RETAILERS } from "@/lib/verifier/retailers";
 import type { ClaimEvidence } from "@/lib/verifier/run";
 
 // The merchant console's tables, read from the database on the server and handed to AG Studio in
@@ -32,7 +32,7 @@ export type ConsoleOrder = {
   claimedSale: number; keptSale: number; fullReturn: number; claims: number;
 };
 export type ConsoleProduct = { id: string; product: string; brand: string; price: number };
-export type ConsoleStore = { id: string; storeType: string };
+export type ConsoleStore = { id: string; storeType: string; claims: number };
 export type ConsoleRefund = { claimId: string; orderId: string; amount: number; refundId: string; status: string; day: string };
 export type ConsoleFinding = { id: string; orderId: string; store: string; price: number; refund: number; status: string; day: string };
 
@@ -121,14 +121,17 @@ export async function loadConsoleData(): Promise<ConsoleData> {
   const products: ConsoleProduct[] = catalog.map((p) => ({ id: p.product_id, product: p.title, brand: p.title.split(/\s+/)[0] ?? "", price: p.price_cents / 100 }));
 
   const { extraRetailers } = await loadStoreSettings();
-  const storeIds = [...new Set(claims.map((c) => c.store))];
+  // Every store the rules know, not only those seen in a claim, so the types show the whole policy.
+  const storeIds = [...new Set([...claims.map((c) => c.store), ...extraRetailers, ...KNOWN_RETAILERS, ...RESALE_DOMAINS])];
   const stores: ConsoleStore[] = storeIds.map((id) => ({
     id,
     storeType: id === "unknown" ? "Unknown"
       : isResaleDomain(id) ? "Resale marketplace"
-      : isKnownRetailer(id, "", [], extraRetailers) ? "Listed competitor"
+      : isKnownRetailer(id, "", [], []) ? "Listed competitor"
+      : isKnownRetailer(id, "", [], extraRetailers) ? "Added by the store"
       : catalog.some((p) => brandStore(id, p.title)) ? "Brand store"
       : "Not on the list",
+    claims: claims.filter((c) => c.store === id).length,
   }));
 
   const refunds = ((await db.all("SELECT claim_id, order_id, amount_cents, refund_id, status, created_at FROM refunds WHERE kind = 'price_match' AND status = 'completed' ORDER BY created_at DESC LIMIT 1000")) as {

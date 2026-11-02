@@ -114,11 +114,12 @@ export function buildStudioData(data: ConsoleData): AgDataSourcesDefinition {
       },
       {
         id: "stores",
-        description: "Competitor stores seen in claims, by type: listed competitor, brand store, not on the list (sent to a person), resale marketplace (refused).",
+        description: "Every store the rules know, plus any seen in a claim, with its number of claims. Types: listed competitor, added by the store, brand store, not on the list (sent to a person), resale marketplace (refused).",
         data: data.stores,
         fields: fields([
           ["id", "Store", "textFormat"],
           ["storeType", "Store type", "textFormat"],
+          ["claims", "Claims", "integerFormat"],
         ]),
       },
       {

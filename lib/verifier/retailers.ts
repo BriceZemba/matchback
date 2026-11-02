@@ -4,7 +4,7 @@
 //
 // The store's settings add to the list; MATCHBACK_EXTRA_RETAILERS (comma-separated domains) is their default.
 
-const KNOWN_RETAILERS = [
+export const KNOWN_RETAILERS = [
   // general and big-box
   "amazon.com", "walmart.com", "target.com", "costco.com", "samsclub.com", "bjs.com", "kohls.com", "macys.com",
   "nordstrom.com", "jcpenney.com", "qvc.com", "hsn.com", "meijer.com", "kroger.com",

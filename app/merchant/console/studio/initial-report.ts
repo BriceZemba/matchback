@@ -151,8 +151,14 @@ const stores: AgPageState = {
     },
     "store-types": {
       type: "donut-chart",
-      dataMapping: { categoryKey: [{ id: "stores.storeType" }], valueKey: [countd("claims.id")] },
-      format: title("Store types", "Unknown shops go to a person; resale marketplaces are refused"),
+      dataMapping: { categoryKey: [{ id: "stores.storeType" }], valueKey: [countd("stores.id")] },
+      format: title("Store types", "Number of stores the rules know"),
+    },
+    "known-stores": {
+      type: "grid",
+      dataMapping: { cols: [{ id: "stores.id" }, { id: "stores.storeType" }, sum("stores.claims")] },
+      sort: [{ field: sum("stores.claims"), direction: "desc" }],
+      format: title("Stores the rules know", "Listed and added stores can be paid; resale is refused; any other shop goes to a person"),
     },
     products: {
       type: "grid",
@@ -172,6 +178,7 @@ const stores: AgPageState = {
     "store-types": at(15, 0, 9, 20),
     products: at(0, 20, 12, 20),
     findings: at(12, 20, 12, 20),
+    "known-stores": at(0, 40, 24, 22),
   },
 };
 
@@ -243,7 +250,7 @@ const review: AgPageState = {
 export const PAGE_TITLES: Record<string, string> = { overview: "Overview", review: "Review queue", claims: "Claims", stores: "Stores & products", evaluation: "Evaluation" };
 
 // Bump when the starting report changes, so browsers drop a saved copy of the old one.
-export const REPORT_VERSION = 6;
+export const REPORT_VERSION = 7;
 
 export const consoleReport: AgReportState = {
   selectedPageId: overview.id,
