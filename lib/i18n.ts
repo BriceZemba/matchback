@@ -126,7 +126,7 @@ const en = {
   },
   nav: {
     label: "Main", menu: "Menu",
-    demoNote: "This is a demo store running Matchback, a price-match agent for online stores. Pay with a PayPal sandbox account: no real money moves.", judgesCta: "Guide for judges →",
+    demoNote: "Demo store · PayPal sandbox, no real money", judgesCta: "Guide for judges →",
     shop: "Shop", orders: "My orders", howToUse: "How to use", howItWorks: "How it works", desk: "Store desk", judges: "For judges",
   },
   myOrders: {
@@ -344,7 +344,7 @@ const fr: Dict = {
   },
   nav: {
     label: "Principal", menu: "Menu",
-    demoNote: "Ceci est une boutique de démonstration qui utilise Matchback, un agent d'alignement de prix pour les boutiques en ligne. Payez avec un compte PayPal sandbox : aucun argent réel ne circule.", judgesCta: "Guide pour le jury →",
+    demoNote: "Boutique de démo · PayPal sandbox, aucun argent réel", judgesCta: "Guide pour le jury →",
     shop: "Boutique", orders: "Mes commandes", howToUse: "Mode d'emploi", howItWorks: "Comment ça marche", desk: "Espace magasin", judges: "Pour le jury",
   },
   myOrders: {
@@ -561,7 +561,7 @@ const es: Dict = {
   },
   nav: {
     label: "Principal", menu: "Menú",
-    demoNote: "Esta es una tienda de demostración con Matchback, un agente de igualación de precios para tiendas en línea. Paga con una cuenta sandbox de PayPal: no se mueve dinero real.", judgesCta: "Guía para el jurado →",
+    demoNote: "Tienda de demostración · PayPal sandbox, sin dinero real", judgesCta: "Guía para el jurado →",
     shop: "Tienda", orders: "Mis pedidos", howToUse: "Cómo usarlo", howItWorks: "Cómo funciona", desk: "Panel de la tienda", judges: "Para el jurado",
   },
   myOrders: {
