@@ -87,6 +87,7 @@ describe("console data", () => {
     expect(data.checks.map((c) => [c.check, c.outcome])).toEqual([["Within the claim window", "Passed"], ["Same product", "Passed"]]);
     expect(data.orders).toEqual([expect.objectContaining({ paid: 119.99, refunded: 20, claimedSale: 119.99, keptSale: 99.99, fullReturn: 119.99 })]);
     expect(data.stores).toEqual([{ id: "officedepot.com", storeType: "Listed competitor" }]);
+    expect(data.claims[0]?.orderRefunded).toBe("yes");
     expect(data.refunds).toEqual([expect.objectContaining({ amount: 20, refundId: "RF1" })]);
   });
 });

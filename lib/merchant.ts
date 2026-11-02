@@ -132,7 +132,7 @@ const SELECT = `
 
 /** Every claim, newest first. */
 export async function claimRecords(opts: { status?: ClaimStatus; limit?: number } = {}): Promise<ClaimRecord[]> {
-  const limit = Math.min(Math.max(opts.limit ?? 500, 1), 1000);
+  const limit = Math.floor(Math.min(Math.max(opts.limit ?? 500, 1), 1000));
   const rows = (opts.status
     ? await getDb().all(`${SELECT} WHERE c.status = ? ORDER BY c.created_at DESC LIMIT ${limit}`, opts.status)
     : await getDb().all(`${SELECT} ORDER BY c.created_at DESC LIMIT ${limit}`)) as Row[];

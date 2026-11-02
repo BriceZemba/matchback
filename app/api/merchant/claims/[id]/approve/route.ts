@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+import { readForm } from "@/lib/client";
 import { publicOrigin } from "@/lib/origin";
 import { isMerchantRequest } from "@/lib/merchant";
-import { toHttp } from "@/lib/paypal/errors";
+import { InvariantError, toHttp } from "@/lib/paypal/errors";
 import { toCents } from "@/lib/money";
 import { approveReviewedClaim } from "@/lib/verifier/run";
 
@@ -15,7 +16,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!isMerchantRequest(req)) return NextResponse.json({ error: "Sign in as the merchant first." }, { status: 401 });
   // The console's review widget asks for JSON; the store desk's form gets a redirect back.
   const wantsJson = req.headers.get("accept")?.includes("application/json") ?? false;
-  const form = await req.formData();
+  const form = await readForm(req);
   try {
     let cents: number;
     try {
@@ -29,7 +30,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     if (wantsJson) return NextResponse.json({ id: claim.id, status: claim.status, ...(claim.error ? { error: claim.error } : {}) });
     return NextResponse.redirect(`${origin}/merchant?done=${encodeURIComponent(claim.id)}&status=${claim.status}`, 303);
   } catch (err) {
-    console.error("review approve failed", id, err);
+    if (!(err instanceof InvariantError)) console.error("review approve failed", id, err);
     if (wantsJson) return NextResponse.json({ error: toHttp(err).message }, { status: toHttp(err).status });
     return NextResponse.redirect(`${origin}/merchant?error=${encodeURIComponent(toHttp(err).message)}#claim-${id}`, 303);
   }

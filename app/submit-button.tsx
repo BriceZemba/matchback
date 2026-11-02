@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 /** A submit button that shows a spinner while the form posts (the forms post to route handlers). */
 export function SubmitButton({ children, pendingLabel, className = "btn btn-primary", formAction, noValidate = false }: {
@@ -10,6 +10,12 @@ export function SubmitButton({ children, pendingLabel, className = "btn btn-prim
   noValidate?: boolean;
 }) {
   const [pending, setPending] = useState(false);
+  // Coming back with the browser's Back button restores the page as it was left: spinning.
+  useEffect(() => {
+    const restored = (e: PageTransitionEvent) => { if (e.persisted) setPending(false); };
+    window.addEventListener("pageshow", restored);
+    return () => window.removeEventListener("pageshow", restored);
+  }, []);
   return (
     <button
       type="submit"

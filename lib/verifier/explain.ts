@@ -133,6 +133,13 @@ export async function explainDecision(input: ExplainInput, opts: { providers?: L
   return { text: templateExplanation(input), source: "template" };
 }
 
+/** The automatic check could not finish. */
+export function checkUnfinishedText(locale: Locale): string {
+  return locale === "fr" ? "La vérification automatique n'a pas pu aboutir : une personne du magasin va regarder votre demande. Rien n'a été débité ni remboursé."
+    : locale === "es" ? "La comprobación automática no pudo terminar: una persona de la tienda revisará tu solicitud. No se ha cobrado ni reembolsado nada."
+    : "The automatic check could not finish, so a person at the store will look at your claim. Nothing has been charged or refunded.";
+}
+
 /** A refund whose outcome was unknown has now been confirmed with PayPal. */
 export function refundDoneText(locale: Locale, cents: number): string {
   const amount = usd(cents);

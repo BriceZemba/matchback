@@ -4,14 +4,14 @@ import { cookieValue, pickLocale } from "@/lib/i18n";
 import { toHttp } from "@/lib/paypal/errors";
 import { verifyClaim } from "@/lib/verifier/run";
 import { fileFromFinding } from "@/lib/watch";
-import { clientKey } from "@/lib/client";
+import { clientKey, readForm } from "@/lib/client";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
 
 // The shopper accepts a price drop the watch found. It becomes a normal claim and is verified again.
 export async function POST(req: Request) {
-  const form = await req.formData();
+  const form = await readForm(req);
   const findingId = String(form.get("findingId") ?? "");
   const orderId = String(form.get("orderId") ?? "");
   const origin = publicOrigin(req);

@@ -100,7 +100,8 @@ const en = {
     starting: "Starting check",
     uploading: "Uploading",
     drop: "Drop a screenshot or photo here",
-    dropHint: "A store page, an app, an ad or a shelf price tag. PNG, JPEG or WebP, up to 5 MB.",
+    dropHint: "A store page, an app, an ad or a shelf price tag. PNG, JPEG or WebP; large photos are reduced automatically.",
+    tooBig: "This image is too large. Try a screenshot or a smaller photo.",
     change: "click to change",
     yourShot: "Your screenshot",
     imageNote: "AI reads the product, store and price. The refund always uses the store's live price, not the one in the image.",
@@ -123,6 +124,9 @@ const en = {
     checkNow: "Check prices now",
     checking: "Checking stores",
     claimLabel: "Price watch",
+  },
+  errors: {
+    notFoundTitle: "Nothing here", notFoundBody: "This page or this order does not exist. The link may be incomplete.", backToShop: "Go to the shop",
   },
   nav: {
     label: "Main", menu: "Menu",
@@ -318,7 +322,8 @@ const fr: Dict = {
     starting: "Vérification lancée",
     uploading: "Envoi",
     drop: "Déposez une capture d'écran ou une photo ici",
-    dropHint: "Une page de boutique, une appli, une pub ou une étiquette en rayon. PNG, JPEG ou WebP, 5 Mo max.",
+    dropHint: "Une page de boutique, une appli, une pub ou une étiquette en rayon. PNG, JPEG ou WebP ; les grandes photos sont réduites automatiquement.",
+    tooBig: "Cette image est trop lourde. Essayez une capture ou une photo plus petite.",
     change: "cliquer pour changer",
     yourShot: "Votre capture",
     imageNote: "L'IA lit le produit, la boutique et le prix. Le remboursement utilise toujours le prix réel en ligne, pas celui de l'image.",
@@ -341,6 +346,9 @@ const fr: Dict = {
     checkNow: "Vérifier les prix",
     checking: "Vérification des boutiques",
     claimLabel: "Veille des prix",
+  },
+  errors: {
+    notFoundTitle: "Rien ici", notFoundBody: "Cette page ou cette commande n'existe pas. Le lien est peut-être incomplet.", backToShop: "Aller à la boutique",
   },
   nav: {
     label: "Principal", menu: "Menu",
@@ -535,7 +543,8 @@ const es: Dict = {
     starting: "Iniciando verificación",
     uploading: "Subiendo",
     drop: "Suelta aquí una captura o una foto",
-    dropHint: "Una página de tienda, una app, un anuncio o una etiqueta. PNG, JPEG o WebP, hasta 5 MB.",
+    dropHint: "Una página de tienda, una app, un anuncio o una etiqueta. PNG, JPEG o WebP; las fotos grandes se reducen automáticamente.",
+    tooBig: "Esta imagen es demasiado grande. Prueba con una captura o una foto más pequeña.",
     change: "haz clic para cambiar",
     yourShot: "Tu captura",
     imageNote: "La IA lee el producto, la tienda y el precio. El reembolso siempre usa el precio real de la tienda, no el de la imagen.",
@@ -558,6 +567,9 @@ const es: Dict = {
     checkNow: "Revisar precios",
     checking: "Revisando tiendas",
     claimLabel: "Vigilancia de precios",
+  },
+  errors: {
+    notFoundTitle: "Aquí no hay nada", notFoundBody: "Esta página o este pedido no existe. Puede que el enlace esté incompleto.", backToShop: "Ir a la tienda",
   },
   nav: {
     label: "Principal", menu: "Menú",

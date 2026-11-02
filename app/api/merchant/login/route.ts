@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { readForm } from "@/lib/client";
 import { publicOrigin } from "@/lib/origin";
 import { keyMatches, merchantKey, merchantSession, MERCHANT_COOKIE } from "@/lib/merchant";
 
@@ -8,7 +9,7 @@ export const runtime = "nodejs";
 export async function POST(req: Request) {
   const origin = publicOrigin(req);
   const key = merchantKey();
-  const typed = String((await req.formData()).get("key") ?? "");
+  const typed = String((await readForm(req)).get("key") ?? "");
   if (!key || !keyMatches(typed)) {
     await new Promise((r) => setTimeout(r, 600)); // slows down guessing
     return NextResponse.redirect(`${origin}/merchant?error=key`, 303);

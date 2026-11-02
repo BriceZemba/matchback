@@ -162,6 +162,7 @@ function QueueItem({ row, fields }: { row: Record<string, unknown>; fields: Reco
   const offerRaw = value(row, fields.offer);
   const offer = offerRaw === null || offerRaw === undefined ? null : num(offerRaw);
   const suggested = offer !== null && offer < paid ? (paid - offer).toFixed(2) : "";
+  const refundedAlready = value(row, fields.orderRefunded) === "yes";
   const amountRef = useRef<HTMLInputElement>(null);
   const noteRef = useRef<HTMLInputElement>(null);
   const [d, setD] = useState<Decision>({ state: "idle" });
@@ -189,9 +190,13 @@ function QueueItem({ row, fields }: { row: Record<string, unknown>; fields: Reco
         <p className="cw-queue-result ok">{d.message}</p>
       ) : (
         <div className="cw-queue-form">
-          <label>Refund $<input ref={amountRef} inputMode="decimal" defaultValue={suggested} placeholder="0.00" /></label>
+          {refundedAlready ? (
+            <p className="cw-queue-facts" style={{ width: "100%", margin: 0 }}>This order already had its price-match refund, so this claim can only be refused.</p>
+          ) : (
+            <label>Refund $<input ref={amountRef} inputMode="decimal" defaultValue={suggested} placeholder="0.00" /></label>
+          )}
           <input ref={noteRef} className="cw-note-input" placeholder="Note to the shopper (optional)" maxLength={300} />
-          <NativeButton className="cw-btn approve" disabled={d.state === "busy"} onPress={() => void act("approve")}>{d.state === "busy" ? "Working…" : "Approve & refund"}</NativeButton>
+          {!refundedAlready && <NativeButton className="cw-btn approve" disabled={d.state === "busy"} onPress={() => void act("approve")}>{d.state === "busy" ? "Working…" : "Approve & refund"}</NativeButton>}
           <NativeButton className="cw-btn" disabled={d.state === "busy"} onPress={() => void act("refuse")}>Refuse</NativeButton>
           {d.state === "error" && <p className="cw-queue-result no">{d.message}</p>}
         </div>
@@ -201,7 +206,7 @@ function QueueItem({ row, fields }: { row: Record<string, unknown>; fields: Reco
 }
 
 function ReviewQueue(params: AgWidgetParams) {
-  const { rows, fields } = useWidgetRows(params, ["claim", "status", "product", "store", "paid", "offer", "reason"]);
+  const { rows, fields } = useWidgetRows(params, ["claim", "status", "product", "store", "paid", "offer", "reason", "orderRefunded"]);
   const queue = (rows ?? []).filter((r) => value(r, fields.status) === "needs_review");
   if (rows && queue.length === 0) return <div className="cw cw-empty">Nothing waiting for review. Every claim in view was decided.</div>;
   return (
@@ -241,11 +246,11 @@ const decisionTrail = {
 const reviewQueue = {
   id: "matchback-review-queue",
   label: "Review queue",
-  dataMapping: { claim: category, status: category, product: category, store: category, paid: numeric, offer: numeric, reason: category },
+  dataMapping: { claim: category, status: category, product: category, store: category, paid: numeric, offer: numeric, reason: category, orderRefunded: category },
   form: (p: { createDefaults: (o: object) => unknown }) => p.createDefaults({
     dataMappingItems: [
       { key: "claim", label: "Claim ID" }, { key: "status", label: "Status code" }, { key: "product", label: "Product" }, { key: "store", label: "Store" },
-      { key: "paid", label: "Price paid" }, { key: "offer", label: "Competitor price" }, { key: "reason", label: "Reason" },
+      { key: "paid", label: "Price paid" }, { key: "offer", label: "Competitor price" }, { key: "reason", label: "Reason" }, { key: "orderRefunded", label: "Order already refunded" },
     ],
   }),
   comp: ReviewQueue,

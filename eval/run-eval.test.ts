@@ -60,13 +60,25 @@ describe.skipIf(process.env.EVAL !== "1")("evaluation", () => {
     const db = getDb();
     await db.run("CREATE TABLE IF NOT EXISTS llm_cache (key TEXT PRIMARY KEY, body TEXT NOT NULL, status INTEGER NOT NULL)");
     const mode = (process.env.EVAL_CACHE as "frozen" | "ttl" | "off" | undefined) ?? "frozen";
-    const channel3 = cachedChannel3(createChannel3Client(), db, { mode, cacheErrors: true });
+    // The recorded answers need no keys: a reader can reproduce results.md from a clean clone.
+    const noKeys = !process.env.GROQ_API_KEY;
+    const refuseCall: typeof fetch = async () => { throw new Error("This case is not in the recorded cache; it needs CHANNEL3_API_KEY and GROQ_API_KEY."); };
+    const channel3 = cachedChannel3(
+      createChannel3Client({ apiKey: process.env.CHANNEL3_API_KEY || "recorded-answers-only", ...(process.env.CHANNEL3_API_KEY ? {} : { fetch: refuseCall }) }),
+      db,
+      { mode, cacheErrors: !noKeys },
+    );
+    let llmMisses = 0;
 
     // Cache AI answers by request body, so the same prompt always gets the same recorded answer.
     const llmFetch: typeof fetch = async (input, init) => {
       const key = createHash("sha256").update(String(init?.body ?? "")).digest("hex");
       const hit = await db.get("SELECT body, status FROM llm_cache WHERE key = ?", key) as { body: string; status: number } | undefined;
       if (hit) return new Response(hit.body, { status: hit.status });
+      if (noKeys) {
+        llmMisses++;
+        throw new Error("Not in the recorded cache");
+      }
       // Groq's free tier allows 8,000 tokens a minute (about 5 identity checks): wait for the reset it
       // reports and retry, so a rate limit never turns into "AI unavailable" inside the evaluation.
       for (let attempt = 0; ; attempt++) {
@@ -82,8 +94,9 @@ describe.skipIf(process.env.EVAL !== "1")("evaluation", () => {
       }
     };
     // One model for the whole evaluation: Groq only, no fallback to a different model mid-run.
-    const providers = providersFromEnv().filter((p) => p.name === "groq");
-    if (providers.length === 0) throw new Error("GROQ_API_KEY is required for the evaluation");
+    const providers = noKeys
+      ? [{ name: "groq", baseUrl: "https://api.groq.com/openai/v1", apiKey: "recorded-answers-only", model: "openai/gpt-oss-120b" }]
+      : providersFromEnv().filter((p) => p.name === "groq");
 
     const spec = JSON.parse(readFileSync("eval/cases.json", "utf8")) as Spec;
     const settings = settingsFromEnv({} as NodeJS.ProcessEnv); // shipped defaults, not local overrides
@@ -151,6 +164,7 @@ describe.skipIf(process.env.EVAL !== "1")("evaluation", () => {
       }];
     }));
 
+    if (llmMisses > 0) throw new Error(`${llmMisses} AI answers are not in the recorded cache: set GROQ_API_KEY to record them.`);
     writeFileSync(`eval/results-${split}.json`, JSON.stringify({ ranAt: new Date().toISOString(), split, cache: mode, summary, rows }, null, 2));
     console.table(summary);
     expect(rows.length).toBe(cases.length);

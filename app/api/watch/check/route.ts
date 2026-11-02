@@ -1,3 +1,4 @@
+import { readForm } from "@/lib/client";
 import { NextResponse } from "next/server";
 import { publicOrigin } from "@/lib/origin";
 import { toHttp } from "@/lib/paypal/errors";
@@ -8,7 +9,7 @@ export const maxDuration = 120;
 
 // "Check prices now" on the order page. The scheduled watch does the same thing in the background.
 export async function POST(req: Request) {
-  const form = await req.formData();
+  const form = await readForm(req);
   const orderId = String(form.get("orderId") ?? "");
   const origin = publicOrigin(req);
   const back = `${origin}/orders/${encodeURIComponent(orderId)}`;

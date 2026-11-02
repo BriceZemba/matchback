@@ -22,6 +22,8 @@ export type ConsoleClaim = {
   orderId: string; productId: string; product: string; store: string; paid: number; offerPrice: number | null; gap: number | null;
   refunded: number; reason: string; aiRelation: string; decisionSeconds: number | null; reviewNote: string;
   isRefunded: number; isRefused: number; isReview: number; isDecided: number; isAutomatic: number;
+  /** "yes" when the order already had its one price-match refund: this claim can only be refused. */
+  orderRefunded: string;
 };
 export type ConsoleCheck = { id: string; claimId: string; check: string; outcome: string; detail: string; isFail: number; isReview: number };
 export type ConsoleOrder = {
@@ -74,6 +76,7 @@ function claimRow(r: ClaimRecord): ConsoleClaim {
     isReview: r.status === "needs_review" ? 1 : 0,
     isDecided: decided ? 1 : 0,
     isAutomatic: r.decidedBy === "automatic" ? 1 : 0,
+    orderRefunded: "no",
   };
 }
 
@@ -109,6 +112,9 @@ export async function loadConsoleData(): Promise<ConsoleData> {
       claims: Number(o.claims),
     };
   });
+
+  const refundedOrders = new Set(((await db.all("SELECT order_id FROM refunds WHERE kind = 'price_match'")) as { order_id: string }[]).map((r) => r.order_id));
+  for (const claim of claims) if (refundedOrders.has(claim.orderId)) claim.orderRefunded = "yes";
 
   const catalog = await listCatalog();
   const products: ConsoleProduct[] = catalog.map((p) => ({ id: p.product_id, product: p.title, brand: p.title.split(/\s+/)[0] ?? "", price: p.price_cents / 100 }));

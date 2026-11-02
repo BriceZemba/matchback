@@ -87,4 +87,4 @@ EVAL=1 EVAL_SPLIT=heldout2 npm run eval
 node eval/report.mjs
 ```
 
-`eval-cache.db` holds the recorded Channel3 answers (failures included) and AI answers. With it, the runs finish in a few seconds and reproduce `results.md` exactly. Set `EVAL_CACHE=off` to run against live Channel3 instead; that needs `CHANNEL3_API_KEY` and `GROQ_API_KEY` in `.env`. The evaluation always uses its own cache database, never a `DATABASE_URL`.
+`eval-cache.db` holds the recorded Channel3 answers (failures included) and AI answers. With it, the runs finish in a few seconds and reproduce `results.md` exactly, with no API keys. Set `EVAL_CACHE=off` to run against live Channel3 instead; that needs `CHANNEL3_API_KEY` and `GROQ_API_KEY` in `.env`. The evaluation always uses its own cache database, never a `DATABASE_URL`.

@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { getCatalogItem } from "@/lib/catalog";
 import { getDb } from "@/lib/db";
 import { fromCents } from "@/lib/money";
@@ -30,13 +31,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
   const { locale, t: tt } = await requestPrefs();
   const t = tt.order;
   const order = await getOrderRow(id);
-  if (!order) {
-    return (
-      <main className="shell">
-        <div className="page-head"><a className="back" href="/">{t.back}</a><h1>{t.notFound}</h1></div>
-      </main>
-    );
-  }
+  if (!order) notFound();
   const product = await getCatalogItem(order.product_id);
   const refunds = await getDb().all("SELECT claim_id, refund_id, amount_cents, status FROM refunds WHERE order_id = ?", id) as {
     claim_id: string; refund_id: string | null; amount_cents: number; status: string;

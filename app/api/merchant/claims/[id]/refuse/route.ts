@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { readForm } from "@/lib/client";
 import { publicOrigin } from "@/lib/origin";
 import { isMerchantRequest } from "@/lib/merchant";
 import { toHttp } from "@/lib/paypal/errors";
@@ -13,7 +14,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   // The console's review widget asks for JSON; the store desk's form gets a redirect back.
   const wantsJson = req.headers.get("accept")?.includes("application/json") ?? false;
   try {
-    const claim = await refuseReviewedClaim(id, String((await req.formData()).get("note") ?? ""));
+    const claim = await refuseReviewedClaim(id, String((await readForm(req)).get("note") ?? ""));
     if (wantsJson) return NextResponse.json({ id: claim.id, status: claim.status, ...(claim.error ? { error: claim.error } : {}) });
     return NextResponse.redirect(`${origin}/merchant?done=${encodeURIComponent(claim.id)}&status=${claim.status}`, 303);
   } catch (err) {

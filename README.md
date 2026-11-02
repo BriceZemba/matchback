@@ -54,7 +54,7 @@ The AI does three jobs: it reads screenshots, it judges whether a listing is the
 6. **Plausible price:** under 60% of the price paid goes to a person.
 7. **Same product:** the AI's verdict, overruled by fixed rules when an edition word or model year differs (refused) or only one listing names a later generation (sent to a person); for screenshots, the image must also show the product that was bought.
 
-Then: one price-match refund per payment (a unique index in the database), every PayPal write recorded before it is sent (its key is also the `PayPal-Request-Id`, so a retry can't pay twice), and every refund read back from PayPal afterwards. Limits of 10 claims per order, 6 per minute per visitor (only a hash of the IP address is kept) and 30 per minute overall keep the demo safe from abuse. A claim left unfinished by a crash or a timeout (still checking, approved but not refunded, refund outcome unknown) is retried after five minutes, from the receipt page or the daily job, under a database lease so only one retry runs; the PayPal write guard means a refund that did go out is found, never sent twice. Uploaded images are checked by their bytes, and every page carries security headers (no framing, no MIME sniffing).
+Then: one price-match refund per payment (a unique index in the database), every PayPal write recorded before it is sent (its key is also the `PayPal-Request-Id`, so a retry can't pay twice), and every refund read back from PayPal afterwards. Limits of 10 claims per order, 6 per minute per visitor (only a hash of the IP address is kept) and 30 per minute overall keep the demo safe from abuse. A claim left unfinished by a crash or a timeout (still checking, approved but not refunded, refund outcome unknown) is retried after five minutes, from the receipt page or the daily job, under a database lease so only one retry runs; the PayPal write guard means a refund that did go out is found, never sent twice. Uploaded images are checked by their bytes and deleted after 60 days, and every page carries security headers (no framing, no MIME sniffing).
 
 ## Evidence
 
@@ -70,7 +70,7 @@ Method, limits and every case: [`eval/README.md`](eval/README.md), [`eval/result
 
 **Live run on the hosted app (2026-10-29).** A GoPro HERO12 bought for $349.99. The price watch found it new and in stock at Best Buy for $295.99. The claim passed all seven checks and PayPal refunded **$54.00** about 6 seconds later (sandbox refund `5WL32001NT6600625`). Read back from PayPal: `COMPLETED`, 54.00 USD, linked to the claim, payment `PARTIALLY_REFUNDED`.
 
-**Tests.** 119 unit tests (`npm test`, no network), plus live tests against Channel3, the AI providers and the hosted database (`LIVE=1`).
+**Tests.** 125 unit tests (`npm test`, no network), plus live tests against Channel3, the AI providers and the hosted database (`LIVE=1`).
 
 ## How it fits together
 

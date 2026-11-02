@@ -1,6 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
-import { reconcileStaleClaims } from "@/lib/verifier/run";
+import { purgeOldScreenshots, reconcileStaleClaims } from "@/lib/verifier/run";
 import { watchAll } from "@/lib/watch";
 
 export const runtime = "nodejs";
@@ -19,6 +19,7 @@ function authorized(header: string | null): boolean {
 export async function GET(req: Request) {
   if (!authorized(req.headers.get("authorization"))) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const retried = await reconcileStaleClaims();
+  const purged = await purgeOldScreenshots();
   const results = await watchAll();
-  return NextResponse.json({ retried: retried.length, checked: results.length, found: results.filter((r) => r.outcome === "found").length });
+  return NextResponse.json({ retried: retried.length, purged, checked: results.length, found: results.filter((r) => r.outcome === "found").length });
 }

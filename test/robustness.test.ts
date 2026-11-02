@@ -5,8 +5,8 @@ import { getDb, resetDbForTests } from "@/lib/db";
 import type { LlmProvider } from "@/lib/llm";
 import { createOrderRow } from "@/lib/paypal/checkout";
 import { OutcomeUnknownError } from "@/lib/paypal/errors";
-import { clientKey } from "@/lib/client";
-import { fileClaim, fileImageClaim, getClaim, imageTypeOf, isStale, reconcileClaim, reconcileStaleClaims, type ClaimEvidence, type VerifyDeps } from "@/lib/verifier/run";
+import { clientKey, overBudget, readForm } from "@/lib/client";
+import { fileClaim, fileImageClaim, getClaim, getClaimImage, imageTypeOf, isStale, purgeOldScreenshots, reconcileClaim, reconcileStaleClaims, type ClaimEvidence, type VerifyDeps } from "@/lib/verifier/run";
 
 const NOW = Date.parse("2026-10-29T12:00:00Z");
 const provider: LlmProvider = { name: "groq", baseUrl: "https://llm.test/v1", apiKey: "k", model: "m" };
@@ -144,5 +144,52 @@ describe("uploaded images", () => {
     // A real JPEG declared as PNG is stored with its true type.
     const claim = await fileImageClaim(orderId, { bytes: jpeg, mime: "image/png" });
     expect(claim.image_mime).toBe("image/jpeg");
+  });
+});
+
+describe("what the audit found", () => {
+  it("gives up on a check that keeps failing: a person takes the claim, and nothing is paid", async () => {
+    const id = await claimIn("verifying", new Date(NOW - 31 * 60_000).toISOString());
+    const refunds: { claimId: string; amountCents: number }[] = [];
+    const claim = await reconcileClaim(id, deps(refunds), NOW);
+    expect(claim?.status).toBe("needs_review");
+    expect(refunds).toHaveLength(0);
+    const ev = JSON.parse(claim!.decision_json!) as ClaimEvidence;
+    expect(ev.decision.refundCents).toBe(0);
+    expect(ev.decision.checks[0]).toMatchObject({ id: "unfinished", outcome: "review" });
+    expect(ev.explanation?.text).toContain("persona"); // the claim was filed in Spanish
+  });
+
+  it("deletes screenshots after 60 days and keeps recent ones", async () => {
+    const orderId = await capturedOrder();
+    const jpeg = new Uint8Array(readFileSync("test/fixtures/bestbuy-t7-screenshot.jpg"));
+    const old = await fileImageClaim(orderId, { bytes: jpeg, mime: "image/jpeg" });
+    const recent = await fileImageClaim(orderId, { bytes: jpeg, mime: "image/jpeg" });
+    await getDb().run("UPDATE claims SET created_at = ? WHERE id = ?", new Date(NOW - 61 * 86_400_000).toISOString(), old.id);
+    await getDb().run("UPDATE claims SET created_at = ? WHERE id = ?", new Date(NOW - 59 * 86_400_000).toISOString(), recent.id);
+    expect(await purgeOldScreenshots(60, NOW)).toBe(1);
+    expect(await getClaimImage(old.id)).toBeUndefined();
+    expect(await getClaimImage(recent.id)).toBeDefined();
+  });
+
+  it("refuses images over the host's limit and absurdly long links with a clear message", async () => {
+    const orderId = await capturedOrder();
+    const big = new Uint8Array(4 * 1024 * 1024 + 1);
+    big.set([0xff, 0xd8, 0xff]);
+    await expect(fileImageClaim(orderId, { bytes: big, mime: "image/jpeg" })).rejects.toMatchObject({ status: 413 });
+    await expect(fileClaim(orderId, `https://www.bestbuy.com/${"a".repeat(2100)}`)).rejects.toMatchObject({ status: 400 });
+  });
+
+  it("reads a body that is not a form as an empty form, instead of failing", async () => {
+    const form = await readForm(new Request("https://m.test/x", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }));
+    expect(form.get("orderId")).toBeNull();
+  });
+
+  it("limits calls per visitor within a window", () => {
+    const key = `test:${Math.random()}`;
+    expect(overBudget(key, 2, 60_000, NOW)).toBe(false);
+    expect(overBudget(key, 2, 60_000, NOW + 1)).toBe(false);
+    expect(overBudget(key, 2, 60_000, NOW + 2)).toBe(true);
+    expect(overBudget(key, 2, 60_000, NOW + 61_000)).toBe(false);
   });
 });

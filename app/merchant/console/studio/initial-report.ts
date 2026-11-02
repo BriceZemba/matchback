@@ -224,7 +224,7 @@ const review: AgPageState = {
       type: "matchback-review-queue",
       dataMapping: {
         claim: [{ id: "claims.id" }], status: [{ id: "claims.status" }], product: [{ id: "claims.product" }], store: [{ id: "claims.store" }],
-        paid: [sum("claims.paid")], offer: [sum("claims.offerPrice")], reason: [{ id: "claims.reason" }],
+        paid: [sum("claims.paid")], offer: [sum("claims.offerPrice")], reason: [{ id: "claims.reason" }], orderRefunded: [{ id: "claims.orderRefunded" }],
       },
       format: title("Waiting for a person", "Approve sends the refund through PayPal; refuse tells the shopper why"),
     }),
@@ -243,7 +243,7 @@ const review: AgPageState = {
 export const PAGE_TITLES: Record<string, string> = { overview: "Overview", review: "Review queue", claims: "Claims", stores: "Stores & products", evaluation: "Evaluation" };
 
 // Bump when the starting report changes, so browsers drop a saved copy of the old one.
-export const REPORT_VERSION = 5;
+export const REPORT_VERSION = 6;
 
 export const consoleReport: AgReportState = {
   selectedPageId: overview.id,

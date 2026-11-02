@@ -67,6 +67,7 @@ export function buildStudioData(data: ConsoleData): AgDataSourcesDefinition {
           ["isReview", "Claims with a person", "integerFormat"],
           ["isDecided", "Decided claims", "integerFormat", true],
           ["isAutomatic", "Decided automatically", "integerFormat", true],
+          ["orderRefunded", "Order already refunded", "textFormat", true],
         ]),
       },
       {

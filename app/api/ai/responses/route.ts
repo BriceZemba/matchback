@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { clientKey } from "@/lib/client";
+import { clientKey, overBudget } from "@/lib/client";
 import { CONSOLE_MODELS } from "@/lib/console-ai";
 import { isMerchantRequest } from "@/lib/merchant";
 
@@ -16,18 +16,8 @@ const MAX_OUTPUT_TOKENS = 4_000;
 // Fields Groq's Responses API does not support (it keeps no server-side state).
 const UNSUPPORTED = ["store", "previous_response_id", "include", "truncation", "prompt_cache_key", "safety_identifier", "prompt", "service_tier", "metadata", "user"];
 
-// A small per-visitor budget on each server instance: the console is behind the merchant key, this
-// only keeps one open tab from spending the free tier's tokens.
-const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 30;
-const recent = new Map<string, number[]>();
-function overBudget(key: string): boolean {
-  const now = Date.now();
-  const times = (recent.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
-  times.push(now);
-  recent.set(key, times);
-  return times.length > MAX_PER_WINDOW;
-}
+// The console is behind the merchant key; this only keeps one open tab from spending the free tier.
+const MAX_PER_MINUTE = 30;
 
 const error = (status: number, message: string) => NextResponse.json({ error: { message } }, { status });
 
@@ -35,7 +25,7 @@ export async function POST(req: Request) {
   if (!isMerchantRequest(req)) return error(401, "Sign in to the store desk first.");
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return error(503, "The assistant is not configured on this server.");
-  if (overBudget(clientKey(req) ?? "anonymous")) return error(429, "Too many requests to the assistant; wait a minute.");
+  if (overBudget(`ai:${clientKey(req) ?? "anonymous"}`, MAX_PER_MINUTE, 60_000)) return error(429, "Too many requests to the assistant; wait a minute.");
 
   let body: Record<string, unknown>;
   try {

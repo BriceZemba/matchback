@@ -172,7 +172,7 @@ describe("screenshot claims end to end (fake vision, Channel3, PayPal)", () => {
   it("rejects an unsupported file type and an empty file", async () => {
     const id = await capturedOrder();
     await expect(fileImageClaim(id, { bytes: new Uint8Array([1, 2]), mime: "application/pdf" })).rejects.toThrow(/PNG, JPEG or WebP/);
-    await expect(fileImageClaim(id, { bytes: new Uint8Array(), mime: "image/png" })).rejects.toThrow(/5 MB/);
+    await expect(fileImageClaim(id, { bytes: new Uint8Array(), mime: "image/png" })).rejects.toThrow(/4 MB/);
   });
 });
 

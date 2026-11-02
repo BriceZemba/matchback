@@ -7,7 +7,7 @@ import type { LlmProvider } from "@/lib/llm";
 import { getOrderRow } from "@/lib/paypal/checkout";
 import { InvariantError, OutcomeUnknownError, PaypalRefusedError, friendlyRefusal } from "@/lib/paypal/errors";
 import { issuePriceMatchRefund, maxRefundShare } from "@/lib/paypal/refunds";
-import { explainDecision, refundDoneText, refundProblemText, reviewText, type Explanation } from "./explain";
+import { checkUnfinishedText, explainDecision, refundDoneText, refundProblemText, reviewText, type Explanation } from "./explain";
 import type { Locale } from "@/lib/i18n";
 import { imageMatchesPurchase, readOfferImage, resolveListing, type Extraction } from "./image-intake";
 import { checkIdentity, type IdentityMode, type IdentityVerdict } from "./identity";
@@ -107,6 +107,7 @@ export async function fileClaim(orderId: string, competitorUrl: string, locale: 
     throw new InvariantError(400, "Paste the full link to the competitor's product page.");
   }
   if (url.protocol !== "https:" && url.protocol !== "http:") throw new InvariantError(400, "Only web links are accepted.");
+  if (url.toString().length > 2048) throw new InvariantError(400, "That link is too long.");
   const id = randomUUID();
   await getDb().run("INSERT INTO claims (id, order_id, competitor_url, status, created_at, locale, client_hash) VALUES (?, ?, ?, 'verifying', ?, ?, ?)", id, orderId, url.toString(), now(), locale, opts.client ?? null);
   return (await getClaim(id))!;
@@ -123,7 +124,8 @@ export async function fileWatchClaim(orderId: string, offerUrl: string, domain: 
 }
 
 export const IMAGE_TYPES: Record<string, string> = { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp" };
-export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+// Vercel rejects request bodies over 4.5 MB before the app sees them; the claim form shrinks larger photos.
+export const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 
 /** PNG, JPEG or WebP, recognised by the file's signature bytes; null for anything else. */
 export function imageTypeOf(b: Uint8Array): "image/png" | "image/jpeg" | "image/webp" | null {
@@ -139,7 +141,7 @@ export async function fileImageClaim(orderId: string, image: { bytes: Uint8Array
   const order = await getOrderRow(orderId);
   if (!order || order.status !== "captured") throw new InvariantError(409, "Price-match claims are for paid orders only.");
   await assertClaimBudget(orderId, opts.client);
-  if (image.bytes.byteLength === 0 || image.bytes.byteLength > MAX_IMAGE_BYTES) throw new InvariantError(413, "The image must be under 5 MB.");
+  if (image.bytes.byteLength === 0 || image.bytes.byteLength > MAX_IMAGE_BYTES) throw new InvariantError(413, "The image must be under 4 MB.");
   // The type comes from the file's own bytes, not from what the browser declared.
   const mime = imageTypeOf(image.bytes);
   if (!mime) throw new InvariantError(415, "Upload a PNG, JPEG or WebP image.");
@@ -505,6 +507,8 @@ export async function refuseReviewedClaim(claimId: string, note: string): Promis
 // refunded with an unknown outcome. The receipt page and the daily job retry them.
 const STALE_MS = 5 * 60_000;
 const UNFINISHED: ClaimStatus[] = ["verifying", "approved", "refund_unknown"];
+// A check still failing after this long will not fix itself: a person takes it, rather than an endless spinner.
+const GIVE_UP_MS = 30 * 60_000;
 
 export function isStale(claim: Pick<ClaimRow, "status" | "created_at" | "decided_at">, nowMs = Date.now()): boolean {
   if (!UNFINISHED.includes(claim.status)) return false;
@@ -522,6 +526,7 @@ export async function reconcileClaim(claimId: string, deps: VerifyDeps = default
     new Date(nowMs).toISOString(), claimId, claim.status, cutoff,
   );
   if (changes !== 1) return claim;
+  if (claim.status === "verifying" && nowMs - Date.parse(claim.created_at) > GIVE_UP_MS) return sendToPerson(claim);
   if (claim.status === "verifying") return verifyClaim(claimId, deps);
   const evidence = JSON.parse(claim.decision_json ?? "null") as ClaimEvidence | null;
   if (!evidence || evidence.decision.refundCents <= 0) return claim;
@@ -533,6 +538,33 @@ export async function reconcileClaim(claimId: string, deps: VerifyDeps = default
     return (await getClaim(claim.id))!;
   }
   return result;
+}
+
+/** The automatic check never finished: nothing was decided or paid, and a person takes the claim. */
+async function sendToPerson(claim: ClaimRow): Promise<ClaimRow> {
+  const order = (await getOrderRow(claim.order_id))!;
+  const product = (await getDb().get("SELECT title FROM catalog WHERE product_id = ?", order.product_id)) as { title: string };
+  const evidence: ClaimEvidence = {
+    decision: {
+      status: "needs_review",
+      refundCents: 0,
+      competitorCents: null,
+      checks: [{ id: "unfinished", label: "Automatic check finished", outcome: "review", detail: "The automatic check could not finish, so a person will look at this claim." }],
+    },
+    identity: null,
+    competitor: null,
+    purchased: { productId: order.product_id, title: product.title },
+    priceContext: null,
+    explanation: { source: "template", text: checkUnfinishedText(claim.locale) },
+  };
+  await saveClaim(claim.id, "needs_review", evidence);
+  return (await getClaim(claim.id))!;
+}
+
+/** Screenshots can show personal details: they are kept for the claim, not for ever (the daily job). */
+export async function purgeOldScreenshots(days = 60, nowMs = Date.now()): Promise<number> {
+  const before = new Date(nowMs - days * 86_400_000).toISOString();
+  return (await getDb().run("UPDATE claims SET image_data = NULL WHERE image_data IS NOT NULL AND created_at < ?", before)).changes;
 }
 
 /** Retry every stale claim (the daily job). */

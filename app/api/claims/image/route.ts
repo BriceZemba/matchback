@@ -2,7 +2,7 @@ import { after, NextResponse } from "next/server";
 import { publicOrigin } from "@/lib/origin";
 import { toHttp } from "@/lib/paypal/errors";
 import { cookieValue, pickLocale } from "@/lib/i18n";
-import { clientKey } from "@/lib/client";
+import { clientKey, readForm } from "@/lib/client";
 import { fileImageClaim, verifyClaim } from "@/lib/verifier/run";
 
 export const runtime = "nodejs";
@@ -10,7 +10,7 @@ export const maxDuration = 120;
 
 // Shopper sends a screenshot or photo of the cheaper offer. Stored, then verified in the background.
 export async function POST(req: Request) {
-  const form = await req.formData();
+  const form = await readForm(req);
   const orderId = String(form.get("orderId") ?? "");
   const file = form.get("image");
   const origin = publicOrigin(req);
