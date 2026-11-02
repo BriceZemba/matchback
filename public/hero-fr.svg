@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 430" role="img" aria-labelledby="t d">
+  <title id="t">Une étiquette de prix et un ticket</title>
+  <desc id="d">Une étiquette jaune montre 274,99 $ barré et 230,01 $ ailleurs ; dessous, un ticket indique 44,98 $ remboursés, tamponné VALIDÉ.</desc>
+  <style>
+    .ink { fill: #161513; }
+    .line { stroke: #161513; stroke-width: 2.5; fill: none; }
+    .mono { font-family: ui-monospace, "IBM Plex Mono", Menlo, Consolas, monospace; fill: #161513; }
+    .serif { font-family: Georgia, "Times New Roman", serif; fill: #161513; }
+    .swing { transform-origin: 392px 28px; animation: swing 4.8s ease-in-out infinite; }
+    .receipt { animation: feed 1.2s steps(10) both 0.3s; }
+    .stamp { transform-origin: 160px 392px; animation: thump 0.5s cubic-bezier(.2,.9,.25,1) both 1.6s; opacity: 0; }
+    .strike { stroke-dasharray: 150; stroke-dashoffset: 150; animation: draw 0.5s ease-out forwards 0.9s; }
+    @keyframes swing { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+    @keyframes feed { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+    @keyframes thump { 0% { opacity: 0; transform: scale(2.2) rotate(-18deg); } 60% { opacity: 1; transform: scale(.94) rotate(-9deg); } 100% { opacity: .92; transform: scale(1) rotate(-9deg); } }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @media (prefers-reduced-motion: reduce) { .swing, .receipt, .stamp, .strike { animation: none; opacity: 1; stroke-dashoffset: 0; } .stamp { transform: rotate(-9deg); } }
+  </style>
+
+  <!-- receipt (behind the tag) -->
+  <g class="receipt">
+    <path d="M30 196 H290 V398 l-13 12 -13 -12 -13 12 -13 -12 -13 12 -13 -12 -13 12 -13 -12 -13 12 -13 -12 -13 12 -13 -12 -13 12 -13 -12 -13 12 -13 -12 -13 12 -13 -12 -13 12 -13 -12 -13 12 -13 -12 -13 12 Z" fill="#fbf9f4" stroke="#161513" stroke-width="2.5" stroke-linejoin="round"/>
+    <text class="serif" x="160" y="232" text-anchor="middle" font-size="22" font-weight="700">Matchback</text>
+    <text class="mono" x="160" y="252" text-anchor="middle" font-size="10" letter-spacing="2">TICKET DE GARANTIE PRIX</text>
+    <line x1="52" y1="266" x2="268" y2="266" stroke="#161513" stroke-width="1.5" stroke-dasharray="4 4"/>
+    <text class="mono" x="52" y="290" font-size="13">PAYÉ</text>
+    <text class="mono" x="268" y="290" font-size="13" text-anchor="end">$274.99</text>
+    <text class="mono" x="52" y="312" font-size="13">AILLEURS, NEUF</text>
+    <text class="mono" x="268" y="312" font-size="13" text-anchor="end">$230.01</text>
+    <line x1="52" y1="326" x2="268" y2="326" stroke="#161513" stroke-width="1.5" stroke-dasharray="4 4"/>
+    <text class="mono" x="52" y="352" font-size="14" font-weight="700">REMBOURSÉ</text>
+    <text class="mono" x="268" y="352" font-size="18" font-weight="700" text-anchor="end">$44.98</text>
+    <text class="mono" x="52" y="378" font-size="10" fill="#8a857b">VIA PAYPAL · OFFRE VÉRIFIÉE</text>
+  </g>
+
+  <!-- string + pin -->
+  <circle cx="392" cy="28" r="6" class="ink"/>
+
+  <!-- swinging price tag -->
+  <g class="swing">
+    <path d="M392 28 L392 70" class="line"/>
+    <g transform="translate(392 70) rotate(9)">
+      <path d="M-22 0 L22 0 L60 38 L60 196 Q60 204 52 204 L-52 204 Q-60 204 -60 196 L-60 38 Z" fill="#ffd23f" stroke="#161513" stroke-width="2.5" stroke-linejoin="round"/>
+      <circle cx="0" cy="22" r="8" fill="#f3efe6" stroke="#161513" stroke-width="2.5"/>
+      <text class="mono" x="0" y="64" text-anchor="middle" font-size="11" letter-spacing="2">PAYÉ</text>
+      <text class="mono" x="0" y="92" text-anchor="middle" font-size="22" font-weight="700">$274.99</text>
+      <line class="strike" x1="-46" y1="85" x2="46" y2="85" stroke="#c8321e" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="-44" y1="110" x2="44" y2="110" stroke="#161513" stroke-width="1.5" stroke-dasharray="3 4"/>
+      <text class="mono" x="0" y="134" text-anchor="middle" font-size="11" letter-spacing="2">AILLEURS</text>
+      <text class="serif" x="0" y="172" text-anchor="middle" font-size="36" font-weight="700">$230</text>
+      <text class="mono" x="0" y="190" text-anchor="middle" font-size="11">.01</text>
+    </g>
+  </g>
+
+  <!-- stamp -->
+  <g class="stamp">
+    <rect x="96" y="370" width="128" height="44" rx="4" fill="none" stroke="#c8321e" stroke-width="3"/>
+    <rect x="101" y="375" width="118" height="34" rx="2" fill="none" stroke="#c8321e" stroke-width="1.5"/>
+    <text x="160" y="399" text-anchor="middle" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="800" letter-spacing="3" fill="#c8321e">VALIDÉ</text>
+  </g>
+</svg>

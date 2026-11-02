@@ -107,3 +107,22 @@ describe("console evaluation table", () => {
     expect(Math.round(total("naiveWronglyRefunded") * 100) / 100).toBe(2592.25);
   });
 });
+
+describe("console report", () => {
+  it("gives every widget a place, with no two overlapping (Studio drops one that overlaps)", async () => {
+    const { consoleReport } = await import("@/app/merchant/console/studio/initial-report");
+    for (const page of consoleReport.pages) {
+      const layout = page.widgetLayout as Record<string, { xTrack: number; yTrack: number; xSpan: number; ySpan: number }>;
+      expect(Object.keys(layout).sort(), page.id).toEqual(Object.keys(page.widgets ?? {}).sort());
+      const ids = Object.keys(layout);
+      for (const a of ids) {
+        for (const b of ids) {
+          if (a >= b) continue;
+          const [p, q] = [layout[a]!, layout[b]!];
+          const apart = p.xTrack + p.xSpan <= q.xTrack || q.xTrack + q.xSpan <= p.xTrack || p.yTrack + p.ySpan <= q.yTrack || q.yTrack + q.ySpan <= p.yTrack;
+          expect(apart, `${page.id}: ${a} overlaps ${b}`).toBe(true);
+        }
+      }
+    }
+  });
+});

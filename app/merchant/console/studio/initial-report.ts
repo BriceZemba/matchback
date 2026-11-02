@@ -84,7 +84,7 @@ const overview: AgPageState = {
     "kept-vs-refunded": at(0, 24, 12, 18),
     outcomes: at(12, 24, 6, 18),
     "claimed-with": at(18, 24, 6, 18),
-    "claim-date": at(0, 41, 8, 6),
+    "claim-date": at(0, 42, 8, 6),
   },
 };
 
@@ -250,7 +250,7 @@ const review: AgPageState = {
 export const PAGE_TITLES: Record<string, string> = { overview: "Overview", review: "Review queue", claims: "Claims", stores: "Stores & products", evaluation: "Evaluation" };
 
 // Bump when the starting report changes, so browsers drop a saved copy of the old one.
-export const REPORT_VERSION = 7;
+export const REPORT_VERSION = 8;
 
 export const consoleReport: AgReportState = {
   selectedPageId: overview.id,

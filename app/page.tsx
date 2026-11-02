@@ -27,7 +27,7 @@ export default async function Store({ searchParams }: { searchParams: Promise<{ 
           <div className="hero-copy">
             <span className="eyebrow rise" style={{ ["--i" as string]: 0 }}>{t.eyebrow(windowDays)}</span>
             <h1 className="rise" style={{ ["--i" as string]: 1 }}>
-              {t.h1a} <em>{t.h1b}</em>
+              {t.h1a}<br /><em>{t.h1b}</em>
             </h1>
             <p className="rise" style={{ ["--i" as string]: 2 }}>
               {t.lede}
@@ -38,11 +38,12 @@ export default async function Store({ searchParams }: { searchParams: Promise<{ 
               <span>{t.g3}</span>
             </div>
             <p className="hero-links rise" style={{ ["--i" as string]: 4 }}>
+              <a href="#shop">{t.seeProducts} ↓</a>
               <a href="/how-to-use">{nav.howToUse} →</a>
               <a href="/how-it-works">{nav.howItWorks} →</a>
             </p>
           </div>
-          <img className="hero-art rise" style={{ ["--i" as string]: 2 }} src="/hero.svg" alt={t.heroAlt} />
+          <img className="hero-art rise" style={{ ["--i" as string]: 2 }} src={t.heroSrc} alt={t.heroAlt} />
         </section>
       </div>
 

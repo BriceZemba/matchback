@@ -38,7 +38,7 @@ export function ProductSearch({ title, items, initialQuery, counts, labels }: {
 
   return (
     <>
-      <div className="section-head">
+      <div className="section-head" id="shop">
         <h2>{title}</h2>
         <span className="subtle mono" role="status">{counts[shown.length]}</span>
       </div>

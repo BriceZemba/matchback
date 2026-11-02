@@ -21,6 +21,18 @@ const SEED = [
   { product_id: "D9iEwzZ", title: "JBL Flip 6 Portable Bluetooth Speaker", price_cents: 13999 },
 ];
 
+/** Photos chosen by hand, over Channel3's main image: the Fitbit's is cropped, the other two are in a scene. */
+const CHOSEN_PHOTOS: Record<string, { url: string; alt: string }> = {
+  F5Smbri: { url: "https://cdn.trychannel3.com/03c4fe4a-05f3-4869-8d64-b2840336c2dd?aid=01M6EQQ3C9E4C10TYVYHVJ83A6&mid=p1PB", alt: "Coral Fitbit Charge 6 band with its display, shown from above." },
+  puD6dGn: { url: "https://cdn.trychannel3.com/cleaned/v1/521a66d5-9c6e-47e9-b2a8-8e2351eae1e4?aid=01M6ER59CQ7NTVWX5YJYZ7HF7E&mid=VEoQ", alt: "Black Vitamix Explorian blender, on its own." },
+  "12pv9iN": { url: "https://cdn.trychannel3.com/cleaned/v1/3418c660-7635-458f-8edf-d7da4804a768?aid=01M6EQQ3XC351RX2YWG1MMJRKK&mid=T9Fg", alt: "White Sonos Era 100 speaker, viewed from the front." },
+};
+
+function withChosenPhoto(item: CatalogItem): CatalogItem {
+  const photo = CHOSEN_PHOTOS[item.product_id];
+  return photo ? { ...item, image_url: photo.url, image_alt: photo.alt } : item;
+}
+
 export type CatalogItem = { product_id: string; title: string; price_cents: number; currency: string; image_url: string | null; image_alt: string | null };
 
 /** Product photos come from Channel3 (background-removed version when it has one), fetched once. */
@@ -63,9 +75,10 @@ export async function listCatalog(): Promise<CatalogItem[]> {
   await ensureCatalog();
   const items = await db.all("SELECT product_id, title, price_cents, currency, image_url, image_alt FROM catalog ORDER BY price_cents") as CatalogItem[];
   await fillImages(items);
-  return items;
+  return items.map(withChosenPhoto);
 }
 
 export async function getCatalogItem(productId: string): Promise<CatalogItem | undefined> {
-  return await getDb().get("SELECT product_id, title, price_cents, currency, image_url, image_alt FROM catalog WHERE product_id = ?", productId) as CatalogItem | undefined;
+  const item = await getDb().get("SELECT product_id, title, price_cents, currency, image_url, image_alt FROM catalog WHERE product_id = ?", productId) as CatalogItem | undefined;
+  return item && withChosenPhoto(item);
 }

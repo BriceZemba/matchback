@@ -4,6 +4,7 @@ import { claimRecords, isMerchantSession, merchantKey, MERCHANT_COOKIE, summariz
 import { judgeMode } from "@/lib/judge";
 import { requestPrefs } from "@/lib/locale-server";
 import { maxRefundShare } from "@/lib/paypal/refunds";
+import { checkDetail } from "@/lib/verifier/check-text";
 import { getClaim, orderRefunded, suggestedRefundCents, type ClaimEvidence } from "@/lib/verifier/run";
 import { SubmitButton } from "../submit-button";
 
@@ -125,7 +126,7 @@ export default async function MerchantPage({ searchParams }: { searchParams: Pro
                   <ul>
                     {(evidence?.decision.checks ?? []).filter((c) => c.outcome !== "pass").map((c) => (
                       <li key={c.id} className={c.outcome}>
-                        <strong>{t.claim.checkLabels[c.id] ?? c.label}</strong> {c.detail}
+                        <strong>{t.claim.checkLabels[c.id] ?? c.label}</strong> {checkDetail(c.detail, locale)}
                       </li>
                     ))}
                   </ul>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { ClaimDict, Locale } from "@/lib/i18n";
+import { checkDetail, translatedDetail } from "@/lib/verifier/check-text";
 
 type Check = { id: string; label: string; outcome: "pass" | "fail" | "review"; detail: string };
 type ClaimJson = {
@@ -141,7 +142,7 @@ export function ClaimView({ id, locale, t }: { id: string; locale: Locale; t: Cl
             <p>{ev.explanation.text}</p>
           </div>
         ) : (
-          (status === "refused" || status === "needs_review") && firstProblem && <p className="muted" style={{ margin: "10px 0 0", fontSize: 16 }}>{firstProblem.detail}</p>
+          (status === "refused" || status === "needs_review") && firstProblem && <p className="muted" style={{ margin: "10px 0 0", fontSize: 16 }}>{checkDetail(firstProblem.detail, locale)}</p>
         )}
         {status === "needs_review" && <p className="subtle" style={{ margin: "8px 0 0" }}>{t.reviewHint}</p>}
         {claim?.error && <p className="muted" style={{ margin: "10px 0 0" }}>{claim.error}</p>}
@@ -154,13 +155,13 @@ export function ClaimView({ id, locale, t }: { id: string; locale: Locale; t: Cl
       </section>
 
       <h2 className="section-title">{t.checked}</h2>
-      {locale !== "en" && checks.length > 0 && <p className="subtle" style={{ margin: "-6px 0 12px" }}>{t.detailsNote}</p>}
+      {checks.some((c) => translatedDetail(c.detail, locale) === null) && <p className="subtle" style={{ margin: "-6px 0 12px" }}>{t.detailsNote}</p>}
       <ol className="checks">
         {checks.length > 0
           ? checks.map((c, i) => (
               <li key={c.id} className={`check ${c.outcome}`} style={{ ["--i" as string]: i }}>
                 <span className="check-mark" aria-label={c.outcome}>{MARK[c.outcome]}</span>
-                <span><div className="check-label">{t.checkLabels[c.id] ?? c.label}</div><div className="check-detail">{c.detail}</div></span>
+                <span><div className="check-label">{t.checkLabels[c.id] ?? c.label}</div><div className="check-detail">{checkDetail(c.detail, locale)}</div></span>
               </li>
             ))
           : status === "verifying" && claim && (isImage ? [t.imageStep, ...t.pending] : t.pending).map((s, i) => (
