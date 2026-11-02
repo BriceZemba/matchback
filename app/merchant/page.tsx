@@ -10,7 +10,7 @@ import { SubmitButton } from "../submit-button";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Matchback · store desk" };
 
-const money = (n: number) => `$${n.toFixed(2)}`;
+const money = (n: number) => `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 // The store's side: claims sent to a person (approve with a refund, or refuse), every decision, the totals.
 export default async function MerchantPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
