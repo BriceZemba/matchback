@@ -23,6 +23,13 @@ export class OutcomeUnknownError extends Error {
   }
 }
 
+/** The shopper never finished on PayPal, so there is nothing to capture and nothing was charged. */
+export class PaymentNotFinishedError extends Error {
+  constructor(readonly state: "pending" | "expired") {
+    super(`PayPal order is ${state}`);
+  }
+}
+
 /** Configuration or code defect: nothing was sent (AuthError, EncodeError). */
 export class PaypalIntegrationError extends Error {}
 
@@ -65,6 +72,12 @@ const FRIENDLY: Record<string, string> = {
 export function friendlyRefusal(issue: string | undefined): string {
   const sentence = (issue && FRIENDLY[issue]) ?? "PayPal declined the request.";
   return issue ? `${sentence} (${issue})` : sentence;
+}
+
+/** The state the order page explains in the shopper's language, when this failure is an unfinished payment. */
+export function unfinishedPayment(err: unknown): "pending" | "expired" | undefined {
+  if (err instanceof PaymentNotFinishedError) return err.state;
+  return err instanceof PaypalRefusedError && err.issue === "ORDER_NOT_APPROVED" ? "pending" : undefined;
 }
 
 /** Failures that mean nothing reached PayPal. */

@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { orderSchema, refundSchema, type Order, type Refund } from "paypal";
 import { getDb, resetDbForTests } from "@/lib/db";
 import { buildPaypalClient, setPaypalClientForTests } from "@/lib/paypal/client";
-import { captureCheckoutOrder, createCheckoutOrder, createOrderRow } from "@/lib/paypal/checkout";
-import { InvariantError, OutcomeUnknownError, PaypalIntegrationError, PaypalRefusedError, toHttp } from "@/lib/paypal/errors";
+import { approveUrlOf, captureCheckoutOrder, checkCheckoutOrder, createCheckoutOrder, createOrderRow } from "@/lib/paypal/checkout";
+import { InvariantError, OutcomeUnknownError, PaymentNotFinishedError, PaypalIntegrationError, PaypalRefusedError, toHttp, unfinishedPayment } from "@/lib/paypal/errors";
 import { issuePriceMatchRefund } from "@/lib/paypal/refunds";
 
 // ---- fake fetch (no network) ----
@@ -155,6 +155,58 @@ describe("captureCheckoutOrder", () => {
     // PayPal answers 415 when the capture carries no Content-Type, so an empty JSON body is sent.
     expect(stub.ops()[0]!.request.headers.get("content-type")).toContain("application/json");
     expect(stub.ops()[0]!.body).toBe("{}");
+  });
+
+  it("Check payment sends no capture while the buyer has not approved", async () => {
+    const stub = client([() => json(200, orderWire({ id: "PO1", status: "PAYER_ACTION_REQUIRED" }))]);
+    const id = await awaitingOrder();
+
+    const err = await checkCheckoutOrder(id).catch((e) => e);
+
+    expect(err).toBeInstanceOf(PaymentNotFinishedError);
+    expect(unfinishedPayment(err)).toBe("pending");
+    expect(stub.ops().map((c) => c.request.method)).toEqual(["GET"]);
+    expect(await getDb().get("SELECT 1 FROM paypal_writes WHERE claim_key = 'capture:PO1'")).toBeUndefined();
+  });
+
+  it("Check payment says expired for a voided order", async () => {
+    client([() => json(200, orderWire({ id: "PO1", status: "VOIDED" }))]);
+    const id = await awaitingOrder();
+
+    expect(unfinishedPayment(await checkCheckoutOrder(id).catch((e) => e))).toBe("expired");
+  });
+
+  it("Check payment captures an approved order", async () => {
+    const stub = client([() => json(200, orderWire({ id: "PO1", status: "APPROVED" })), () => json(201, orderWire(captured))]);
+    const id = await awaitingOrder();
+
+    expect((await checkCheckoutOrder(id)).captureId).toBe("CAP1");
+    expect(stub.ops().map((c) => c.request.method)).toEqual(["GET", "POST"]);
+  });
+
+  it("Check payment still captures when PayPal could not be read first", async () => {
+    const stub = client([() => json(500, paypalError("INTERNAL_SERVER_ERROR", "down")), () => json(201, orderWire(captured))]);
+    const id = await awaitingOrder();
+
+    expect((await checkCheckoutOrder(id)).captureId).toBe("CAP1");
+    expect(stub.ops().map((c) => c.request.method)).toEqual(["GET", "POST"]);
+  });
+
+  it("treats PayPal refusing a capture as not approved as an unfinished payment, and lets a later try through", async () => {
+    client([() => json(422, paypalError("UNPROCESSABLE_ENTITY", "not approved", "ORDER_NOT_APPROVED"))]);
+    const id = await awaitingOrder();
+
+    expect(unfinishedPayment(await captureCheckoutOrder(id).catch((e) => e))).toBe("pending");
+    expect(await getDb().get("SELECT 1 FROM paypal_writes WHERE claim_key = 'capture:PO1'")).toBeUndefined();
+  });
+
+  it("finds the PayPal link of an unpaid order again", async () => {
+    const id = await awaitingOrder();
+    expect(await approveUrlOf(id)).toBeUndefined();
+
+    await getDb().run("INSERT INTO paypal_writes (claim_key, op, state, result_json, created_at) VALUES (?, 'createOrder', 'done', ?, 'now')", `create:${id}`, JSON.stringify({ paypalOrderId: "PO1", approveUrl: "https://paypal.test/pay" }));
+
+    expect(await approveUrlOf(id)).toBe("https://paypal.test/pay");
   });
 
   it("settles a timeout by re-reading the order with getOrder", async () => {

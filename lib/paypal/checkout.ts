@@ -8,6 +8,7 @@ import { finishClaim, markUnknown, releaseClaim, takeClaim } from "./claims";
 import {
   InvariantError,
   OutcomeUnknownError,
+  PaymentNotFinishedError,
   PaypalIntegrationError,
   PaypalRefusedError,
   isUnknownOutcome,
@@ -129,7 +130,28 @@ export async function createCheckoutOrder(orderId: string, appBaseUrl: string): 
   }
 }
 
+/** Where to send a shopper who left PayPal before paying: the link from the order's creation. */
+export async function approveUrlOf(orderId: string): Promise<string | undefined> {
+  const row = await getDb().get("SELECT result_json FROM paypal_writes WHERE claim_key = ? AND state = 'done'", `create:${orderId}`) as { result_json: string } | undefined;
+  return row ? (JSON.parse(row.result_json) as CreatedCheckout).approveUrl : undefined;
+}
+
 export type CaptureResult = { orderId: string; captureId: string; capturedCents: number; currency: string; status: string };
+
+/**
+ * The Check payment button, which can be pressed before the buyer approved: ask PayPal first and capture
+ * only what is ready, so that a capture PayPal would refuse never spends the capture's PayPal-Request-Id.
+ * If the read fails, the capture still runs and reports what PayPal says.
+ */
+export async function checkCheckoutOrder(orderId: string): Promise<CaptureResult> {
+  const order = await getOrderRow(orderId);
+  if (order?.paypal_order_id && order.status === "awaiting_approval") {
+    const status = await getPaypalClient().orders.getOrder({ id: order.paypal_order_id }).then((o) => o.status as string | undefined, () => undefined);
+    if (status === "CREATED" || status === "PAYER_ACTION_REQUIRED") throw new PaymentNotFinishedError("pending");
+    if (status === "VOIDED") throw new PaymentNotFinishedError("expired");
+  }
+  return captureCheckoutOrder(orderId);
+}
 
 /** captureOrder after the buyer approved, guarded by the claim "capture:<paypalOrderId>". */
 export async function captureCheckoutOrder(orderId: string): Promise<CaptureResult> {

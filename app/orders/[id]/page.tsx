@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getCatalogItem } from "@/lib/catalog";
 import { getDb } from "@/lib/db";
 import { fromCents } from "@/lib/money";
-import { getOrderRow } from "@/lib/paypal/checkout";
+import { approveUrlOf, getOrderRow } from "@/lib/paypal/checkout";
 import { claimsForOrder } from "@/lib/verifier/run";
 import { settingsFromEnv } from "@/lib/verifier/policy";
 import { activeFinding, lastWatched } from "@/lib/watch";
@@ -25,9 +25,9 @@ function Check() {
   );
 }
 
-export default async function OrderPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ notice?: string }> }) {
+export default async function OrderPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ notice?: string; payment?: string }> }) {
   const { id } = await params;
-  const { notice } = await searchParams;
+  const { notice, payment } = await searchParams;
   const { locale, t: tt } = await requestPrefs();
   const t = tt.order;
   const order = await getOrderRow(id);
@@ -38,6 +38,9 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
   }[];
   const claims = await claimsForOrder(id);
   const paid = order.status === "captured";
+  const expired = !paid && payment === "expired";
+  const paymentNote = expired ? t.paymentExpired : !paid && payment === "pending" ? t.paymentPending : undefined;
+  const approveUrl = order.status === "awaiting_approval" && !expired ? await approveUrlOf(id) : undefined;
   const refunded = refunds.find((r) => r.status === "completed");
 
   const steps = [
@@ -62,7 +65,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
         <a className="back" href="/">{t.back}</a>
         <h1 className="rise">{t.title}</h1>
       </div>
-      {notice && <p className="notice notice-warn" role="status" style={{ marginTop: 0, marginBottom: 18 }}>{notice}</p>}
+      {(paymentNote ?? notice) && <p className="notice notice-warn" role="status" style={{ marginTop: 0, marginBottom: 18 }}>{paymentNote ?? notice}</p>}
 
       <div className="two-col">
         <section className="card card-pad rise" style={{ ["--i" as string]: 1 }}>
@@ -95,10 +98,18 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
             <section className="card card-pad rise" style={{ ["--i" as string]: 2 }}>
               <h2 style={{ fontSize: 22 }}>{t.finishedTitle}</h2>
               <p className="muted" style={{ margin: "8px 0 0", fontSize: 15 }}>{t.finishedBody}</p>
-              <form action="/checkout/return" method="get" style={{ marginTop: 14 }}>
-                <input type="hidden" name="order" value={order.id} />
-                <SubmitButton pendingLabel={t.checking} className="btn btn-ghost">{t.checkPayment}</SubmitButton>
-              </form>
+              <div className="pay-actions">
+                {approveUrl && <a className="btn btn-primary" href={approveUrl}>{t.continuePaypal}</a>}
+                {expired ? (
+                  <a className="btn btn-primary" href="/">{tt.myOrders.shop}</a>
+                ) : (
+                  <form action="/checkout/return" method="get">
+                    <input type="hidden" name="order" value={order.id} />
+                    <input type="hidden" name="check" value="1" />
+                    <SubmitButton pendingLabel={t.checking} className="btn btn-ghost">{t.checkPayment}</SubmitButton>
+                  </form>
+                )}
+              </div>
             </section>
           )}
 
