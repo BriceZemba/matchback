@@ -68,7 +68,6 @@ export default async function MyOrders() {
           })}
         </ul>
       )}
-      <p className="subtle" style={{ marginTop: 18 }}>{m.note}</p>
     </main>
   );
 }

@@ -33,7 +33,6 @@ const en = {
   htmlLang: "en",
   sandbox: "Sandbox · test money",
   sandboxTitle: "PayPal sandbox: no real money moves",
-  footerLeft: "Demo store on the PayPal sandbox. No real money moves.",
   footerRight: "Offers checked with Channel3 · Payments and refunds by PayPal",
   toDark: "Switch to dark mode",
   toLight: "Switch to light mode",
@@ -145,7 +144,6 @@ const en = {
     refunded: (amt: string) => `${amt} refunded`,
     unpaid: "Not paid",
     paid: "Paid",
-    note: "Kept in a cookie on this device only; nothing is tied to an account.",
   },
   merchant: {
     meta: "Matchback · store desk",
@@ -178,8 +176,6 @@ const en = {
     noClaims: "No claims yet.",
     stores: "Most-claimed stores",
     storeLine: (claims: number, refused: number) => `${claims} claim${claims === 1 ? "" : "s"} · ${refused} refused`,
-    api: "Data for the merchant console",
-    apiHint: "JSON feeds, read with the merchant key as a Bearer token:",
   },
   claim: {
     reviewed: "Checked by a person at the store",
@@ -253,7 +249,6 @@ const fr: Dict = {
   htmlLang: "fr",
   sandbox: "Sandbox · argent fictif",
   sandboxTitle: "Sandbox PayPal : aucun argent réel ne circule",
-  footerLeft: "Boutique de démonstration sur le sandbox PayPal. Aucun argent réel ne circule.",
   footerRight: "Offres vérifiées avec Channel3 · Paiements et remboursements par PayPal",
   toDark: "Passer en mode sombre",
   toLight: "Passer en mode clair",
@@ -367,7 +362,6 @@ const fr: Dict = {
     refunded: (amt: string) => `${amt} remboursés`,
     unpaid: "Non payée",
     paid: "Payée",
-    note: "Gardé dans un cookie sur cet appareil uniquement ; rien n'est lié à un compte.",
   },
   merchant: {
     meta: "Matchback · espace magasin",
@@ -400,8 +394,6 @@ const fr: Dict = {
     noClaims: "Aucune demande pour l'instant.",
     stores: "Magasins les plus cités",
     storeLine: (claims: number, refused: number) => `${claims} demande${claims === 1 ? "" : "s"} · ${refused} refusée${refused === 1 ? "" : "s"}`,
-    api: "Données pour la console marchand",
-    apiHint: "Flux JSON, à lire avec la clé marchand en jeton Bearer :",
   },
   claim: {
     ...en.claim,
@@ -474,7 +466,6 @@ const es: Dict = {
   htmlLang: "es",
   sandbox: "Sandbox · dinero de prueba",
   sandboxTitle: "Sandbox de PayPal: no se mueve dinero real",
-  footerLeft: "Tienda de demostración en el sandbox de PayPal. No se mueve dinero real.",
   footerRight: "Ofertas verificadas con Channel3 · Pagos y reembolsos con PayPal",
   toDark: "Cambiar a modo oscuro",
   toLight: "Cambiar a modo claro",
@@ -588,7 +579,6 @@ const es: Dict = {
     refunded: (amt: string) => `${amt} reembolsados`,
     unpaid: "Sin pagar",
     paid: "Pagado",
-    note: "Se guarda en una cookie solo en este dispositivo; nada está vinculado a una cuenta.",
   },
   merchant: {
     meta: "Matchback · panel de la tienda",
@@ -621,8 +611,6 @@ const es: Dict = {
     noClaims: "Aún no hay solicitudes.",
     stores: "Tiendas más citadas",
     storeLine: (claims: number, refused: number) => `${claims} solicitud${claims === 1 ? "" : "es"} · ${refused} rechazada${refused === 1 ? "" : "s"}`,
-    api: "Datos para la consola del comerciante",
-    apiHint: "Flujos JSON, con la clave de comerciante como token Bearer:",
   },
   claim: {
     ...en.claim,

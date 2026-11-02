@@ -201,10 +201,6 @@ export default async function MerchantPage({ searchParams }: { searchParams: Pro
         )}
       </section>
 
-      <section className="api-note">
-        <p className="eyebrow">{m.api}</p>
-        <p className="subtle">{m.apiHint} <code>GET /api/merchant/claims</code> · <code>GET /api/merchant/claims?status=needs_review</code> · <code>GET /api/merchant/summary</code></p>
-      </section>
     </main>
   );
 }

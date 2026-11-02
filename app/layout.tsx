@@ -63,7 +63,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         {children}
         <footer className="site-footer">
           <div className="shell">
-            <span>{t.footerLeft}</span>
             <span>{t.footerRight}</span>
             <span className="footer-links">
               {links.slice(1).map((l) => <a key={l.href} href={l.href}>{l.label}</a>)}

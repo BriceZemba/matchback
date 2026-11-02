@@ -313,8 +313,6 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.02e
 .decisions th { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); font-weight: 500; }
 .decisions .num { text-align: right; }
 .decisions tbody tr:last-child td { border-bottom: 0; }
-.api-note { margin-top: 32px; }
-.api-note code { font-family: var(--mono); font-size: 12.5px; background: var(--paper-2); padding: 1px 5px; }
 .decisions td:first-child, .decisions .status { white-space: nowrap; }
 
 /* ---------- main menu ---------- */
