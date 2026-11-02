@@ -148,13 +148,18 @@ export type Summary = {
   refundedTotal: number;
   /** Sales kept: what was paid on refunded orders minus the refunds, instead of a full return. */
   salesKept: number;
+  /** Refunded orders: each is a return the shopper had reason to make, and did not need to. */
+  returnsAvoided: number;
+  /** An estimate: the order values of those returns times the store's assumed cost of a return. */
+  returnCostAvoided: number;
+  returnCostShare: number;
   refusedClaims: number;
   medianDecisionSeconds: number | null;
   stores: { store: string; claims: number; refunded: number; refused: number }[];
   products: { product: string; claims: number; refunded: number }[];
 };
 
-export function summarize(records: ClaimRecord[]): Summary {
+export function summarize(records: ClaimRecord[], returnCostShare: number): Summary {
   const byStatus: Record<string, number> = {};
   for (const r of records) byStatus[r.status] = (byStatus[r.status] ?? 0) + 1;
   const decided = records.filter((r) => r.decidedBy !== "pending");
@@ -178,6 +183,10 @@ export function summarize(records: ClaimRecord[]): Summary {
     automaticShare: decided.length ? Math.round((automatic.length / decided.length) * 1000) / 10 : null,
     refundedTotal: refundedRecords.reduce((s, r) => s + cents(r.refunded), 0) / 100,
     salesKept: refundedRecords.reduce((s, r) => s + cents(r.paid) - cents(r.refunded), 0) / 100,
+    returnsAvoided: refundedRecords.length,
+    // Rounded per order, as the console does, so both show the same total.
+    returnCostAvoided: refundedRecords.reduce((s, r) => s + Math.round(cents(r.paid) * returnCostShare), 0) / 100,
+    returnCostShare,
     refusedClaims: byStatus.refused ?? 0,
     medianDecisionSeconds: times.length ? times[Math.floor(times.length / 2)]! : null,
     stores: group((r) => r.store).slice(0, 10).map(([store, rs]) => ({

@@ -98,6 +98,8 @@ export function buildStudioData(data: ConsoleData): AgDataSourcesDefinition {
           ["claimedSale", "Claimed sales", "currencyFormat"],
           ["keptSale", "Sales kept", "currencyFormat"],
           ["fullReturn", "Full-return cost", "currencyFormat"],
+          ["returnAvoided", "Returns avoided", "integerFormat"],
+          ["returnCostAvoided", "Return costs avoided (estimate)", "currencyFormat"],
           ["claims", "Claims on order", "integerFormat"],
         ]),
       },

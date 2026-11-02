@@ -14,6 +14,7 @@ export const SETTING_LIMITS = {
   autoLimitDollars: { min: 1, max: 1000 },
   floorPct: { min: 10, max: 95 },
   capPct: { min: 5, max: 90 },
+  returnCostPct: { min: 1, max: 100 },
   stores: { max: 30 },
 };
 
@@ -40,7 +41,7 @@ export async function resetStoreSettings(): Promise<void> {
   await getDb().run("DELETE FROM store_settings WHERE id = 'store'");
 }
 
-export type SettingsProblem = { error: "window" | "minDiff" | "autoLimit" | "floor" | "cap" | "stores"; store?: string };
+export type SettingsProblem = { error: "window" | "minDiff" | "autoLimit" | "floor" | "cap" | "returnCost" | "stores"; store?: string };
 
 const whole = (v: string, { min, max }: { min: number; max: number }) => (/^\d+$/.test(v) && Number(v) >= min && Number(v) <= max ? Number(v) : null);
 const cents = (v: string, { min, max }: { min: number; max: number }) => {
@@ -65,6 +66,8 @@ export function parseSettingsForm(form: FormData): { settings: StoreSettings } |
   if (floorPct === null) return { error: "floor" };
   const capPct = whole(text("capPct"), L.capPct);
   if (capPct === null) return { error: "cap" };
+  const returnCostPct = whole(text("returnCostPct"), L.returnCostPct);
+  if (returnCostPct === null) return { error: "returnCost" };
 
   const stores = text("stores").split(/[\s,]+/).filter(Boolean).map((s) => s.toLowerCase().replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/\/.*$/, ""));
   const bad = stores.find((d) => !/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(d) || isResaleDomain(d));
@@ -80,6 +83,7 @@ export function parseSettingsForm(form: FormData): { settings: StoreSettings } |
       maxRefundShare: capPct / 100,
       autoRefundLimitCents,
       extraRetailers: [...new Set(stores)],
+      returnCostShare: returnCostPct / 100,
     },
   };
 }

@@ -46,6 +46,16 @@ describe("rejectExplanation", () => {
   });
 });
 
+describe("templateExplanation", () => {
+  it("does not word the store's own limit as a doubt about the claim", () => {
+    const decision = { status: "needs_review" as const, refundCents: 5000, competitorCents: 14999, checks: [{ id: "limit", label: "Within the store's limits", outcome: "review" as const, detail: "This store pays up to $10.00 automatically; a person decides on a $50.00 refund." }] };
+    const input = { decision, identity: null, purchasedTitle: "Kindle", paidCents: 19999, competitor: null };
+    expect(templateExplanation({ ...input, locale: "fr" } as ExplainInput)).toBe("Ce remboursement dépasse ce que le magasin paie automatiquement : une personne du magasin va examiner votre demande.");
+    expect(templateExplanation({ ...input, locale: "en" } as ExplainInput)).toContain("more than the store pays automatically");
+    expect(templateExplanation({ ...input, locale: "es" } as ExplainInput)).toContain("una persona de la tienda");
+  });
+});
+
 describe("explainDecision", () => {
   it("uses the AI text when it passes the guard", async () => {
     const text = "That Target link is the Signature Edition, with 32 GB and wireless charging, not the 16 GB Paperwhite you bought, so it doesn't qualify.";

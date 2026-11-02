@@ -30,6 +30,8 @@ export type ConsoleCheck = { id: string; claimId: string; check: string; outcome
 export type ConsoleOrder = {
   id: string; productId: string; status: string; paidAt: string | null; paid: number; refunded: number;
   claimedSale: number; keptSale: number; fullReturn: number; claims: number;
+  /** 1 on a refunded order: a return avoided. Beside it, the estimate of what that return would have cost. */
+  returnAvoided: number; returnCostAvoided: number;
 };
 export type ConsoleProduct = { id: string; product: string; brand: string; price: number };
 export type ConsoleStore = { id: string; storeType: string; claims: number };
@@ -101,6 +103,7 @@ export async function loadConsoleData(): Promise<ConsoleData> {
             (SELECT COUNT(*) FROM claims c WHERE c.order_id = o.id) AS claims
      FROM orders o WHERE o.status = 'captured' ORDER BY o.created_at DESC LIMIT 1000`,
   )) as { id: string; product_id: string; status: string; captured_at: string | null; captured_cents: number | string | null; amount_cents: number | string; refunded: number | string | null; claims: number | string }[];
+  const { extraRetailers, returnCostShare } = await loadStoreSettings();
   const orders: ConsoleOrder[] = orderRows.map((o) => {
     const paid = cents(o.captured_cents ?? o.amount_cents);
     const refunded = cents(o.refunded);
@@ -110,6 +113,8 @@ export async function loadConsoleData(): Promise<ConsoleData> {
       claimedSale: claimed ? paid : 0,
       keptSale: claimed ? Math.round((paid - refunded) * 100) / 100 : 0,
       fullReturn: claimed ? paid : 0,
+      returnAvoided: claimed ? 1 : 0,
+      returnCostAvoided: claimed ? Math.round(paid * returnCostShare * 100) / 100 : 0,
       claims: Number(o.claims),
     };
   });
@@ -120,7 +125,6 @@ export async function loadConsoleData(): Promise<ConsoleData> {
   const catalog = await listCatalog();
   const products: ConsoleProduct[] = catalog.map((p) => ({ id: p.product_id, product: p.title, brand: p.title.split(/\s+/)[0] ?? "", price: p.price_cents / 100 }));
 
-  const { extraRetailers } = await loadStoreSettings();
   // Every store the rules know, not only those seen in a claim, so the types show the whole policy.
   const storeIds = [...new Set([...claims.map((c) => c.store), ...extraRetailers, ...KNOWN_RETAILERS, ...RESALE_DOMAINS])];
   const stores: ConsoleStore[] = storeIds.map((id) => ({

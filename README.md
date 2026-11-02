@@ -16,11 +16,11 @@ A shopper who finds the same item cheaper elsewhere sends the offer: a link, a s
 
 A shopper who finds the same product cheaper a few days after buying has two options: ask for a price match, or return the item and buy it again elsewhere.
 
-- **Returns are expensive.** US retailers expected **$849.9 billion** of merchandise to come back in 2025, **15.8%** of sales and **19.3%** of online sales ([NRF and Happy Returns, Oct 2025](https://nrf.com/media-center/press-releases/consumers-expected-to-return-nearly-850-billion-in-merchandise-in-2025)). A return refunds the whole price, pays shipping twice and brings back an opened box.
+- **Returns are expensive.** US retailers expected **$849.9 billion** of merchandise to come back in 2025, **15.8%** of sales and **19.3%** of online sales ([NRF and Happy Returns, Oct 2025](https://nrf.com/media-center/press-releases/consumers-expected-to-return-nearly-850-billion-in-merchandise-in-2025)). A return refunds the whole price, pays shipping twice and brings back an opened box. Online returns cost retailers an average **21%** of order value ([Pitney Bowes survey of 168 US online retailers, 2022](https://www.businesswire.com/news/home/20220414005151/en/Pitney-Bowes-Survey-Returns-Cost-US-Online-Retailers-21-of-Order-Value)).
 - **Claims get gamed.** NRF counts **9%** of returns as fraudulent. Appriss Retail puts return and claims fraud and abuse at **$103 billion** in 2024 ([Appriss Retail, Dec 2024](https://apprissretail.com/news/appriss-retail-annual-research-fraudulent-returns-and-claims-cost-retailers-103b-in-2024/)). A price-match claim is easy to fake: a different model, a bundle, a refurbished listing, a marketplace seller, an item out of stock.
 - **Checking each claim by hand doesn't scale.** Large chains staff price-match desks, and even they narrow their policies: Target stopped matching Amazon and Walmart prices in July 2025 ([CBS News](https://www.cbsnews.com/news/target-price-matching-policy-july-2025)). A small store selling branded goods has no desk at all.
 
-For the store, paying the difference is usually cheaper than a return: on the GoPro in the demo, a $54.00 refund keeps a $295.99 sale, where a return would refund $349.99 and bring the camera back. The difficulty is paying only the claims that are true.
+For the store, paying the difference is usually cheaper than a return: on the GoPro in the demo, a $54.00 refund keeps a $295.99 sale, where a return would refund $349.99, bring the camera back and cost about $73.50 at that 21%. The console and the store desk show this for every refunded order, as an estimate the store can change in its settings. The difficulty is paying only the claims that are true.
 
 ## What it does
 

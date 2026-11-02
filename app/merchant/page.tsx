@@ -4,6 +4,7 @@ import { claimRecords, isMerchantSession, merchantKey, MERCHANT_COOKIE, summariz
 import { judgeMode } from "@/lib/judge";
 import { requestPrefs } from "@/lib/locale-server";
 import { maxRefundShare } from "@/lib/paypal/refunds";
+import { loadStoreSettings } from "@/lib/store-settings";
 import { checkDetail } from "@/lib/verifier/check-text";
 import { getClaim, orderRefunded, suggestedRefundCents, type ClaimEvidence } from "@/lib/verifier/run";
 import { SubmitButton } from "../submit-button";
@@ -45,7 +46,8 @@ export default async function MerchantPage({ searchParams }: { searchParams: Pro
   }
 
   const records = await claimRecords({ limit: 500 });
-  const summary = summarize(records);
+  const { returnCostShare } = await loadStoreSettings();
+  const summary = summarize(records, returnCostShare);
   const share = await maxRefundShare();
   const queue = await Promise.all(
     records.filter((r) => r.status === "needs_review").map(async (r) => {
@@ -89,6 +91,12 @@ export default async function MerchantPage({ searchParams }: { searchParams: Pro
         <Stat label={m.stats.kept} value={money(summary.salesKept)} hint={m.keptHint} />
       </section>
       <p className="subtle" style={{ margin: "10px 0 0" }}>{m.stats.kept}: {m.keptHint}</p>
+      {summary.returnsAvoided > 0 && (
+        <p className="subtle" style={{ margin: "6px 0 0" }}>
+          {m.returnsLine(summary.returnsAvoided, money(summary.returnCostAvoided), Math.round(returnCostShare * 100))}{" "}
+          <a href="/merchant/settings">{m.settings.link}</a>
+        </p>
+      )}
 
       <section>
         <div className="section-head"><h2>{m.queue}</h2></div>

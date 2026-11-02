@@ -12,7 +12,7 @@ afterEach(() => { delete process.env.MATCHBACK_JUDGE_MODE; });
 
 function form(fields: Record<string, string> = {}) {
   const f = new FormData();
-  const all = { windowDays: "30", minDiff: "2.50", autoLimit: "25", floorPct: "70", capPct: "40", stores: "", colorVariants: "on", ...fields };
+  const all = { windowDays: "30", minDiff: "2.50", autoLimit: "25", floorPct: "70", capPct: "40", returnCostPct: "25", stores: "", colorVariants: "on", ...fields };
   for (const [k, v] of Object.entries(all)) if (v !== "absent") f.set(k, v);
   return f;
 }
@@ -63,12 +63,15 @@ describe("store settings", () => {
     expect(parseSettingsForm(form({ floorPct: "5" }))).toEqual({ error: "floor" });
     expect(parseSettingsForm(form({ capPct: "100" }))).toEqual({ error: "cap" });
     expect(parseSettingsForm(form({ capPct: "absent" }))).toEqual({ error: "cap" });
+    expect(parseSettingsForm(form({ returnCostPct: "0" }))).toEqual({ error: "returnCost" });
+    expect(parseSettingsForm(form({ returnCostPct: "101" }))).toEqual({ error: "returnCost" });
   });
 
   it("reads the optional fields", () => {
     const { settings } = parseSettingsForm(form({ autoLimit: "", colorVariants: "absent" })) as { settings: StoreSettings };
     expect(settings.autoRefundLimitCents).toBeNull();
     expect(settings.allowColorVariants).toBe(false);
+    expect(settings.returnCostShare).toBe(0.25);
   });
 
   it("cleans the store list and refuses resale sites and non-domains", () => {

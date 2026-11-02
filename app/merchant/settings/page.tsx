@@ -41,6 +41,8 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
         <Field name="capPct" label={s.cap} hint={s.capHint} unit="%" value={Math.round(current.maxRefundShare * 100)} min={L.capPct.min} max={L.capPct.max} step={1} />
         <Field name="floorPct" label={s.floor} hint={s.floorHint} unit="%" value={Math.round(current.floorShare * 100)} min={L.floorPct.min} max={L.floorPct.max} step={1} />
 
+        <Field name="returnCostPct" label={s.returnCost} hint={s.returnCostHint} unit="%" value={Math.round(current.returnCostShare * 100)} min={L.returnCostPct.min} max={L.returnCostPct.max} step={1} />
+
         <label className="settings-check">
           <input type="checkbox" name="colorVariants" defaultChecked={current.allowColorVariants} />
           <span><strong>{s.colorVariants}</strong><br /><span className="subtle">{s.colorVariantsHint}</span></span>

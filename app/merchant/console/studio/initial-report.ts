@@ -59,7 +59,7 @@ const overview: AgPageState = {
     },
     "money-kept": custom({
       type: "matchback-money-kept",
-      dataMapping: { claimed: [sum("orders.claimedSale")], refunded: [sum("orders.refunded")], kept: [sum("orders.keptSale")] },
+      dataMapping: { claimed: [sum("orders.claimedSale")], refunded: [sum("orders.refunded")], kept: [sum("orders.keptSale")], returns: [sum("orders.returnAvoided")], returnCost: [sum("orders.returnCostAvoided")] },
       format: title("Money kept", "Refund the difference, keep the sale"),
     }),
     "kept-vs-refunded": {
@@ -79,12 +79,12 @@ const overview: AgPageState = {
     "kpi-kept": at(9, 0, 5, 7),
     "kpi-auto": at(14, 0, 5, 7),
     "kpi-review": at(19, 0, 5, 7),
-    "outcomes-by-day": at(0, 7, 15, 17),
-    "money-kept": at(15, 7, 9, 17),
-    "kept-vs-refunded": at(0, 24, 12, 18),
-    outcomes: at(12, 24, 6, 18),
-    "claimed-with": at(18, 24, 6, 18),
-    "claim-date": at(0, 42, 8, 6),
+    "outcomes-by-day": at(0, 7, 15, 22),
+    "money-kept": at(15, 7, 9, 22),
+    "kept-vs-refunded": at(0, 29, 12, 18),
+    outcomes: at(12, 29, 6, 18),
+    "claimed-with": at(18, 29, 6, 18),
+    "claim-date": at(0, 47, 8, 6),
   },
 };
 
@@ -250,7 +250,7 @@ const review: AgPageState = {
 export const PAGE_TITLES: Record<string, string> = { overview: "Overview", review: "Review queue", claims: "Claims", stores: "Stores & products", evaluation: "Evaluation" };
 
 // Bump when the starting report changes, so browsers drop a saved copy of the old one.
-export const REPORT_VERSION = 8;
+export const REPORT_VERSION = 9;
 
 export const consoleReport: AgReportState = {
   selectedPageId: overview.id,

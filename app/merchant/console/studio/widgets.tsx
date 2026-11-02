@@ -60,11 +60,13 @@ const usd = (n: number) => `$${n.toLocaleString("en-US", { minimumFractionDigits
 // --- Money kept --------------------------------------------------------------------
 
 function MoneyKept(params: AgWidgetParams) {
-  const { rows, fields } = useWidgetRows(params, ["claimed", "refunded", "kept"]);
+  const { rows, fields } = useWidgetRows(params, ["claimed", "refunded", "kept", "returns", "returnCost"]);
   const row = rows?.[0];
   const claimed = num(value(row, fields.claimed));
   const refunded = num(value(row, fields.refunded));
   const kept = num(value(row, fields.kept));
+  const returns = num(value(row, fields.returns));
+  const returnCost = num(value(row, fields.returnCost));
   const share = claimed > 0 ? Math.round((kept / claimed) * 100) : 0;
   return (
     <div className="cw cw-receipt">
@@ -73,8 +75,13 @@ function MoneyKept(params: AgWidgetParams) {
         <dt>Claimed sales</dt><dd>{usd(claimed)}</dd>
         <dt>Refunded (the difference)</dt><dd>−{usd(refunded)}</dd>
         <dt className="cw-total">Sales kept</dt><dd className="cw-total">{usd(kept)}</dd>
+        <dt>Returns avoided</dt><dd>{returns}</dd>
+        <dt>Return costs avoided (estimate)</dt><dd>{usd(returnCost)}</dd>
       </dl>
-      <p className="cw-note">A full return on the same orders would have refunded {usd(claimed)} and brought the products back.</p>
+      <p className="cw-note">
+        A full return on the same orders would have refunded {usd(claimed)} and brought the products back.
+        {claimed > 0 && <> The estimate takes a return at {Math.round((returnCost / claimed) * 100)}% of order value; change it in Settings.</>}
+      </p>
       {claimed > 0 && <span className="cw-stamp ok">Kept {share}%</span>}
     </div>
   );
@@ -224,12 +231,12 @@ const category = { type: "field" as const, supportedRoles: ["category" as const]
 const moneyKept = {
   id: "matchback-money-kept",
   label: "Money kept",
-  dataMapping: { claimed: numeric, refunded: numeric, kept: numeric },
-  form: (p: { createDefaults: (o: object) => unknown }) => p.createDefaults({ dataMappingItems: [{ key: "claimed", label: "Claimed sales" }, { key: "refunded", label: "Refunded" }, { key: "kept", label: "Sales kept" }] }),
+  dataMapping: { claimed: numeric, refunded: numeric, kept: numeric, returns: numeric, returnCost: numeric },
+  form: (p: { createDefaults: (o: object) => unknown }) => p.createDefaults({ dataMappingItems: [{ key: "claimed", label: "Claimed sales" }, { key: "refunded", label: "Refunded" }, { key: "kept", label: "Sales kept" }, { key: "returns", label: "Returns avoided" }, { key: "returnCost", label: "Return costs avoided" }] }),
   comp: MoneyKept,
   defaultSize: { width: 380, height: 300 },
   minSize: { width: 260, height: 220 },
-  ai: { description: "The price-match guarantee's P&L as a receipt: claimed sales, refunds, sales kept, compared with full returns." },
+  ai: { description: "The price-match guarantee's P&L as a receipt: claimed sales, refunds, sales kept, returns avoided and the estimated cost of those returns, compared with full returns." },
 };
 
 const decisionTrail = {

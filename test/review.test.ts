@@ -134,8 +134,9 @@ describe("merchant data", () => {
     expect(rows.find((r) => r.id === done)).toMatchObject({ status: "refunded", decidedBy: "reviewer", reasonId: "review_approved", refunded: 20 });
     expect(await claimRecords({ status: "needs_review" })).toHaveLength(1);
 
-    const s = summarize(rows);
+    const s = summarize(rows, 0.21);
     expect(s).toMatchObject({ claims: 2, waitingForReview: 1, refundedTotal: 20, salesKept: 99.99, decidedAutomatically: 0, automaticShare: 0 });
+    expect(s).toMatchObject({ returnsAvoided: 1, returnCostAvoided: 25.2, returnCostShare: 0.21 });
     expect(s.stores[0]).toMatchObject({ store: "bestbuy.com", claims: 2, refunded: 20 });
   });
 });

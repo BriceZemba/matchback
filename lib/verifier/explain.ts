@@ -96,6 +96,12 @@ export function templateExplanation(input: ExplainInput): string {
   const locale = input.locale ?? "en";
   const fail = d.checks.find((c) => c.outcome === "fail");
   const review = d.checks.find((c) => c.outcome === "review");
+  // The store's own limit is not a doubt about the claim, so it is not worded as one.
+  if (d.status === "needs_review" && review?.id === "limit") {
+    return locale === "fr" ? "Ce remboursement dépasse ce que le magasin paie automatiquement : une personne du magasin va examiner votre demande."
+      : locale === "es" ? "Este reembolso supera lo que la tienda paga automáticamente: una persona de la tienda revisará tu solicitud."
+      : "This refund is more than the store pays automatically, so a person at the store will look at your claim.";
+  }
   if (locale === "en") {
     const where = input.competitor?.domain ?? "the other store";
     if (d.status === "approved") {

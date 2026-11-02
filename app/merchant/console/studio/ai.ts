@@ -83,7 +83,7 @@ function claimsTools(api: AgStudioApi): AgAiTool[] {
     }),
     api.defineAiTool({
       name: "claims_summary",
-      description: "Totals for the guarantee: claims by status, share decided automatically, money refunded, sales kept, refused claims, most-claimed stores and products.",
+      description: "Totals for the guarantee: claims by status, share decided automatically, money refunded, sales kept, returns avoided and their estimated cost, refused claims, most-claimed stores and products.",
       params: (s) => s.object({}),
       execute: async (_args, ctx) => {
         const s = await getJson<Summary>("/api/merchant/summary", ctx.signal);
@@ -92,6 +92,7 @@ function claimsTools(api: AgStudioApi): AgAiTool[] {
             `Claims: ${s.claims} (${Object.entries(s.byStatus).map(([k, v]) => `${k} ${v}`).join(", ")}).`,
             `Decided automatically: ${s.automaticShare ?? "n/a"}%. Waiting for a person: ${s.waitingForReview}.`,
             `Refunded: ${usd(s.refundedTotal)}. Sales kept: ${usd(s.salesKept)}.`,
+            `Returns avoided: ${s.returnsAvoided}, an estimated ${usd(s.returnCostAvoided)} in return costs (the store assumes a return costs ${Math.round(s.returnCostShare * 100)}% of order value).`,
             `Stores: ${s.stores.map((x) => `${x.store} ${x.claims} (${x.refused} refused, ${usd(x.refunded)} refunded)`).join("; ")}.`,
           ].join("\n"),
           s,

@@ -40,6 +40,9 @@ export function settingsFromEnv(env: NodeJS.ProcessEnv = process.env) {
     maxRefundShare: num(env.MATCHBACK_MAX_REFUND_SHARE, 0.5),
     autoRefundLimitCents: null as number | null,
     extraRetailers: extraRetailersFromEnv(env),
+    // Not a rule of the guarantee: the estimate of what a return would have cost, shown to the store.
+    // Default: Pitney Bowes BOXpoll, 168 US online retailers, Feb 2022: returns cost 21% of order value.
+    returnCostShare: num(env.MATCHBACK_RETURN_COST_SHARE, 0.21),
   };
 }
 
