@@ -1,12 +1,14 @@
 import { listCatalog } from "@/lib/catalog";
 import { fromCents } from "@/lib/money";
+import { searchTextOf } from "@/lib/product-search";
+import { ProductSearch } from "./product-search";
 import { SubmitButton } from "./submit-button";
 import { requestPrefs } from "@/lib/locale-server";
 import { judgeMode } from "@/lib/judge";
 
 export const dynamic = "force-dynamic";
 
-export default async function Store({ searchParams }: { searchParams: Promise<{ cancelled?: string; error?: string }> }) {
+export default async function Store({ searchParams }: { searchParams: Promise<{ cancelled?: string; error?: string; q?: string | string[] }> }) {
   const params = await searchParams;
   const items = await listCatalog();
   const { t: { store: t, nav } } = await requestPrefs();
@@ -53,30 +55,34 @@ export default async function Store({ searchParams }: { searchParams: Promise<{ 
         {params.cancelled && <p className="notice" role="status">{t.cancelled}</p>}
         {params.error && <p className="notice notice-warn" role="alert">{params.error}</p>}
 
-        <div className="section-head">
-          <h2>{t.inShop}</h2>
-          <span className="subtle mono">{t.count(items.length)}</span>
-        </div>
-        <section className="grid" aria-label="Products">
-          {items.map((p, i) => (
-            <article key={p.product_id} className="card product rise" style={{ ["--i" as string]: i + 3 }}>
-              <div className="product-media">
-                <span className="tag-corner">{t.tag}</span>
-                {p.image_url ? <img src={p.image_url} alt={p.image_alt ?? p.title} loading="lazy" /> : <span className="subtle">{t.noPhoto}</span>}
-              </div>
-              <div className="product-body">
-                <h3 className="product-title">{p.title}</h3>
-                <div className="product-foot">
-                  <span className="price">${fromCents(p.price_cents)}</span>
-                  <form action="/api/checkout" method="post">
-                    <input type="hidden" name="productId" value={p.product_id} />
-                    <SubmitButton pendingLabel={t.opening} className="btn btn-primary">{t.pay}</SubmitButton>
-                  </form>
+        <ProductSearch
+          title={t.inShop}
+          initialQuery={typeof params.q === "string" ? params.q.slice(0, 80) : ""}
+          counts={Array.from({ length: items.length + 1 }, (_, n) => t.count(n))}
+          labels={{ search: t.search, placeholder: t.searchHint, clear: t.searchClear, none: t.searchNone, showAll: t.searchAll, products: t.products }}
+          items={items.map((p, i) => ({
+            id: p.product_id,
+            text: searchTextOf(p),
+            card: (
+              <article className="card product rise" style={{ ["--i" as string]: i + 3 }}>
+                <div className="product-media">
+                  <span className="tag-corner">{t.tag}</span>
+                  {p.image_url ? <img src={p.image_url} alt={p.image_alt ?? p.title} loading="lazy" /> : <span className="subtle">{t.noPhoto}</span>}
                 </div>
-              </div>
-            </article>
-          ))}
-        </section>
+                <div className="product-body">
+                  <h3 className="product-title">{p.title}</h3>
+                  <div className="product-foot">
+                    <span className="price">${fromCents(p.price_cents)}</span>
+                    <form action="/api/checkout" method="post">
+                      <input type="hidden" name="productId" value={p.product_id} />
+                      <SubmitButton pendingLabel={t.opening} className="btn btn-primary">{t.pay}</SubmitButton>
+                    </form>
+                  </div>
+                </div>
+              </article>
+            ),
+          }))}
+        />
       </div>
     </main>
   );

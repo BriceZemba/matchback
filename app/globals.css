@@ -108,6 +108,19 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.02e
 .section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin: 34px 0 16px; }
 .section-head h2 { font-size: 30px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+.shop-cell { display: grid; }
+.shop-cell[hidden] { display: none; }
+.shop-typed .rise { animation: none; }
+.shop-search { position: relative; max-width: 460px; margin: 0 0 20px; }
+.shop-search svg { position: absolute; left: 14px; top: 15px; color: var(--ink-2); pointer-events: none; }
+/* 16px: below that, iPhones zoom the page when the field takes focus. */
+.shop-search .input { padding: 0 44px; font-size: 16px; }
+.shop-search .input::-webkit-search-cancel-button { display: none; }
+.shop-search-clear { position: absolute; right: 2px; top: 2px; width: 44px; height: 44px; border: 0; background: none; color: var(--ink-2); font-size: 22px; line-height: 1; cursor: pointer; }
+.shop-search-clear:hover { color: var(--ink); }
+.shop-search-none { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.shop-search-none p { margin: 0; }
+@media (max-width: 520px) { .shop-search { max-width: none; } }
 .product { display: flex; flex-direction: column; transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease); }
 .product:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--rule); }
 .product-media { position: relative; aspect-ratio: 1 / 1; background: var(--media-bg); display: grid; place-items: center; padding: 26px; border-bottom: 1.5px solid var(--rule); overflow: hidden; }
