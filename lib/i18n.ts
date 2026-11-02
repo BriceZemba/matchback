@@ -126,6 +126,7 @@ const en = {
   },
   nav: {
     label: "Main", menu: "Menu",
+    demoNote: "This is a demo store running Matchback, a price-match agent for online stores. Pay with a PayPal sandbox account: no real money moves.", judgesCta: "Guide for judges →",
     shop: "Shop", orders: "My orders", howToUse: "How to use", howItWorks: "How it works", desk: "Store desk", judges: "For judges",
   },
   myOrders: {
@@ -149,6 +150,7 @@ const en = {
     lede: "The claims Matchback sent to a person, and every decision it made on its own.",
     keyLabel: "Merchant key",
     signInLede: "This page is for the store. Sign in with the merchant key.",
+    judgeKeyHint: "Judges: the merchant key is in the Devpost testing instructions.",
     signIn: "Sign in", signingIn: "Signing in…", wrongKey: "That key is not right.", signOut: "Sign out", console: "Open the console",
     stats: { claims: "Claims", automatic: "Decided on its own", refunded: "Refunded", kept: "Sales kept", waiting: "Waiting for you", median: "Typical decision" },
     keptHint: "Paid on refunded orders minus the refunds: sales a return would have undone.",
@@ -342,6 +344,7 @@ const fr: Dict = {
   },
   nav: {
     label: "Principal", menu: "Menu",
+    demoNote: "Ceci est une boutique de démonstration qui utilise Matchback, un agent d'alignement de prix pour les boutiques en ligne. Payez avec un compte PayPal sandbox : aucun argent réel ne circule.", judgesCta: "Guide pour le jury →",
     shop: "Boutique", orders: "Mes commandes", howToUse: "Mode d'emploi", howItWorks: "Comment ça marche", desk: "Espace magasin", judges: "Pour le jury",
   },
   myOrders: {
@@ -365,6 +368,7 @@ const fr: Dict = {
     lede: "Les demandes que Matchback a confiées à une personne, et toutes les décisions prises seul.",
     keyLabel: "Clé marchand",
     signInLede: "Cette page est réservée au magasin. Connectez-vous avec la clé marchand.",
+    judgeKeyHint: "Jury : la clé marchand est dans les instructions de test Devpost.",
     signIn: "Se connecter", signingIn: "Connexion…", wrongKey: "Cette clé n'est pas la bonne.", signOut: "Se déconnecter", console: "Ouvrir la console",
     stats: { claims: "Demandes", automatic: "Décidées seul", refunded: "Remboursé", kept: "Ventes conservées", waiting: "À traiter", median: "Décision type" },
     keptHint: "Payé sur les commandes remboursées, moins les remboursements : des ventes qu'un retour aurait annulées.",
@@ -557,6 +561,7 @@ const es: Dict = {
   },
   nav: {
     label: "Principal", menu: "Menú",
+    demoNote: "Esta es una tienda de demostración con Matchback, un agente de igualación de precios para tiendas en línea. Paga con una cuenta sandbox de PayPal: no se mueve dinero real.", judgesCta: "Guía para el jurado →",
     shop: "Tienda", orders: "Mis pedidos", howToUse: "Cómo usarlo", howItWorks: "Cómo funciona", desk: "Panel de la tienda", judges: "Para el jurado",
   },
   myOrders: {
@@ -580,6 +585,7 @@ const es: Dict = {
     lede: "Las solicitudes que Matchback pasó a una persona, y todas las decisiones que tomó por sí solo.",
     keyLabel: "Clave de comerciante",
     signInLede: "Esta página es para la tienda. Entra con la clave de comerciante.",
+    judgeKeyHint: "Jurado: la clave de comerciante está en las instrucciones de prueba de Devpost.",
     signIn: "Entrar", signingIn: "Entrando…", wrongKey: "Esa clave no es correcta.", signOut: "Salir", console: "Abrir la consola",
     stats: { claims: "Solicitudes", automatic: "Decididas solas", refunded: "Reembolsado", kept: "Ventas conservadas", waiting: "Pendientes", median: "Decisión típica" },
     keptHint: "Lo pagado en pedidos reembolsados menos los reembolsos: ventas que una devolución habría anulado.",

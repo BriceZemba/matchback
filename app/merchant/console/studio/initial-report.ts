@@ -175,6 +175,48 @@ const stores: AgPageState = {
   },
 };
 
+// The evaluation set: real listings on frozen data, kept apart from the live numbers on the other pages.
+const evaluation: AgPageState = {
+  id: "evaluation",
+  widgets: {
+    "kpi-traps": kpi("Traps tested", sum("evaluation.isTrap")),
+    "kpi-mb-paid": kpi("Paid by Matchback", sum("evaluation.matchbackPaidTrap")),
+    "kpi-naive-paid": kpi("Paid by a naive bot", sum("evaluation.naivePaidTrap")),
+    "kpi-mb-money": kpi("Matchback loss", sum("evaluation.matchbackWronglyRefunded")),
+    "kpi-naive-money": kpi("Naive bot loss", sum("evaluation.naiveWronglyRefunded")),
+    "traps-by-kind": {
+      type: "bar-chart-grouped",
+      dataMapping: { categoryKey: [{ id: "evaluation.kind" }], valueKey: [sum("evaluation.naivePaidTrap"), sum("evaluation.matchbackPaidTrap")] },
+      format: { ...title("Traps paid, by what the listing really was", "75 claims from real product pages, on frozen data; no money moved"), style: { theme: { common: { legend: { enabled: true } } } } },
+    },
+    "mb-decisions": {
+      type: "donut-chart",
+      dataMapping: { categoryKey: [{ id: "evaluation.matchback" }], valueKey: [countd("evaluation.id")] },
+      format: title("What Matchback decided"),
+    },
+    cases: {
+      type: "grid",
+      dataMapping: {
+        cols: [
+          { id: "evaluation.id" }, { id: "evaluation.claim" }, { id: "evaluation.why" }, { id: "evaluation.store" }, sum("evaluation.paid"), sum("evaluation.offer"),
+          { id: "evaluation.aiVerdict" }, { id: "evaluation.matchback" }, { id: "evaluation.naive" }, { id: "evaluation.set" },
+        ],
+      },
+      format: title("Every case"),
+    },
+  },
+  widgetLayout: {
+    "kpi-traps": at(0, 0, 4, 7),
+    "kpi-mb-paid": at(4, 0, 5, 7),
+    "kpi-naive-paid": at(9, 0, 5, 7),
+    "kpi-mb-money": at(14, 0, 5, 7),
+    "kpi-naive-money": at(19, 0, 5, 7),
+    "traps-by-kind": at(0, 7, 16, 18),
+    "mb-decisions": at(16, 7, 8, 18),
+    cases: at(0, 25, 24, 26),
+  },
+};
+
 const review: AgPageState = {
   id: "review",
   widgets: {
@@ -198,13 +240,13 @@ const review: AgPageState = {
   },
 };
 
-export const PAGE_TITLES: Record<string, string> = { overview: "Overview", review: "Review queue", claims: "Claims", stores: "Stores & products" };
+export const PAGE_TITLES: Record<string, string> = { overview: "Overview", review: "Review queue", claims: "Claims", stores: "Stores & products", evaluation: "Evaluation" };
 
 // Bump when the starting report changes, so browsers drop a saved copy of the old one.
-export const REPORT_VERSION = 3;
+export const REPORT_VERSION = 5;
 
 export const consoleReport: AgReportState = {
   selectedPageId: overview.id,
-  pages: [overview, review, claims, stores],
+  pages: [overview, review, claims, stores, evaluation],
   panels: { filters: { collapsed: true } },
 };

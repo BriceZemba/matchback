@@ -48,7 +48,7 @@ export default async function Judges() {
                 )}
               </tbody>
             </table>
-            <p className="subtle">Expected outcomes are from 2026-10-29; live prices and stock can change them. One refund per order: buy again to try another approved claim.</p>
+            <p className="subtle">Expected outcomes were re-checked on 2026-11-02; live prices and stock can change them. One refund per order: buy again to try another approved claim.</p>
           </div>
         </li>
         <li className="card card-pad rise" style={{ ["--i" as string]: 3 }}>
@@ -62,14 +62,14 @@ export default async function Judges() {
           <span className="n">4</span>
           <div>
             <h2>Let the price watch find it</h2>
-            <p>On a paid order, press <em>Check prices now</em>. Matchback looks at the other stores selling the same product; when one is cheaper and passes the same checks, it appears as a one-click claim. The Garmin, GoPro and Bose usually have one.</p>
+            <p>On a paid order, press <em>Check prices now</em>. Matchback looks at the other stores selling the same product; when one is cheaper and passes the same checks, it appears as a one-click claim. On 2026-11-02, 11 of the 12 products had one (all but the Vitamix); prices move, so this can change.</p>
           </div>
         </li>
         <li className="card card-pad rise" style={{ ["--i" as string]: 5 }}>
           <span className="n">5</span>
           <div>
             <h2>Be the store</h2>
-            <p>Open the <a href="/merchant">store desk</a> with the <strong>merchant key</strong> from the Devpost testing instructions. Claims Matchback could not settle alone wait there with their evidence: approve one with a refund amount (it goes through the same guarded PayPal refund) or refuse it, and the shopper&apos;s receipt updates. The desk also shows every decision, money refunded and sales kept. <strong>Open the console</strong> for the same data in AG Studio: Matchback&apos;s own widgets (money kept, decision trail, a review queue you can approve from) and an assistant that reads the queue, explains a claim and proposes a decision, which only your click confirms.</p>
+            <p>Open the <a href="/merchant">store desk</a> with the <strong>merchant key</strong> from the Devpost testing instructions. Claims Matchback could not settle alone wait there with their evidence: approve one with a refund amount (it goes through the same guarded PayPal refund) or refuse it, and the shopper&apos;s receipt updates. The desk also shows every decision, money refunded and sales kept. <strong>Open the console</strong> for the same data in AG Studio: Matchback&apos;s own widgets (money kept, decision trail, a review queue you can approve from), the evaluation on 75 real listings, and an assistant (<em>Ask AI</em>) that reads the queue, explains a claim and proposes a decision, which only your click confirms.</p>
           </div>
         </li>
         <li className="card card-pad rise" style={{ ["--i" as string]: 6 }}>

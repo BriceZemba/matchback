@@ -130,3 +130,24 @@ for (const [data, title] of sections) {
 }
 writeFileSync("eval/results.md", out.join("\n"));
 console.log("wrote eval/results.md");
+
+// The same final-version rows as a flat table for the merchant console's Evaluation page.
+const spec = JSON.parse(readFileSync("eval/cases.json", "utf8"));
+const KIND = { same: "Same product", color: "Other colour", different_model: "Another model", bundle: "Bundle", accessory: "Accessory", refurbished: "Refurbished" };
+const SET = [[dev, "Development"], [ho1, "Held-out 1"], [ho2, "Held-out 2"]];
+const OUTCOME = { approved: "Paid", refused: "Refused", needs_review: "Sent to a person" };
+const hostOf = (u) => new URL(u).hostname.replace(/^www\./, "");
+const table = SET.flatMap(([d, set]) => (d?.rows ?? []).map((r) => {
+  const paidTrap = (s) => (!r.case.legit && r.results[s].decision === "approved" ? 1 : 0);
+  return {
+    id: r.case.id, set, product: spec.products[r.case.product].title, kind: KIND[r.case.kind] ?? r.case.kind,
+    claim: r.case.legit ? "Legitimate" : "Trap", why: r.case.why, store: hostOf(r.case.url),
+    paid: r.paidCents / 100, offer: r.competitorCents === null ? null : r.competitorCents / 100, aiVerdict: (r.relation ?? "").replaceAll("_", " "),
+    matchback: OUTCOME[r.results.matchback.decision], naive: OUTCOME[r.results.naive.decision],
+    isTrap: r.case.legit ? 0 : 1, matchbackPaidTrap: paidTrap("matchback"), naivePaidTrap: paidTrap("naive"),
+    matchbackWronglyRefunded: paidTrap("matchback") * r.results.matchback.refundCents / 100,
+    naiveWronglyRefunded: paidTrap("naive") * r.results.naive.refundCents / 100,
+  };
+}));
+writeFileSync("lib/eval-table.json", JSON.stringify(table, null, 1) + "\n");
+console.log(`wrote lib/eval-table.json (${table.length} rows)`);

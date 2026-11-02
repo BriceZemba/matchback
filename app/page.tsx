@@ -2,6 +2,7 @@ import { listCatalog } from "@/lib/catalog";
 import { fromCents } from "@/lib/money";
 import { SubmitButton } from "./submit-button";
 import { requestPrefs } from "@/lib/locale-server";
+import { judgeMode } from "@/lib/judge";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +12,12 @@ export default async function Store({ searchParams }: { searchParams: Promise<{ 
   const { t: { store: t, nav } } = await requestPrefs();
   return (
     <main>
+      {judgeMode() && (
+        <p className="demo-strip">
+          <span>{nav.demoNote}</span>
+          <a href="/judges">{nav.judgesCta}</a>
+        </p>
+      )}
       <div className="shell">
         <section className="hero">
           <div className="hero-copy">

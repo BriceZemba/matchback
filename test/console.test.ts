@@ -90,3 +90,16 @@ describe("console data", () => {
     expect(data.refunds).toEqual([expect.objectContaining({ amount: 20, refundId: "RF1" })]);
   });
 });
+
+describe("console evaluation table", () => {
+  it("matches the published evaluation totals", async () => {
+    const { default: rows } = await import("@/lib/eval-table.json");
+    const total = (k: keyof (typeof rows)[number]) => rows.reduce((s, r) => s + Number(r[k]), 0);
+    expect(rows).toHaveLength(75);
+    expect(total("isTrap")).toBe(52);
+    expect(total("matchbackPaidTrap")).toBe(0);
+    expect(total("matchbackWronglyRefunded")).toBe(0);
+    expect(total("naivePaidTrap")).toBe(22);
+    expect(Math.round(total("naiveWronglyRefunded") * 100) / 100).toBe(2592.25);
+  });
+});

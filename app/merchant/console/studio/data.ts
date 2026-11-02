@@ -3,6 +3,7 @@
 
 import type { AgDataSourcesDefinition, AgExpressionFieldDefinition, AgFieldDefinition, AgFormat, AgRelationDefinition } from "ag-studio";
 import type { ConsoleData } from "@/lib/console-data";
+import evalTable from "@/lib/eval-table.json";
 
 const CALENDAR_ID = "calendar";
 
@@ -144,6 +145,30 @@ export function buildStudioData(data: ConsoleData): AgDataSourcesDefinition {
           ["refund", "Refund offered", "currencyFormat"],
           ["status", "Finding status", "textFormat"],
           ["day", "Found on", "dateFormat"],
+        ]),
+      },
+      {
+        id: "evaluation",
+        description: "The evaluation set, not live claims: 75 claims built from real product pages, 52 of them traps, decided by Matchback and by a naive approve-if-cheaper bot on frozen Channel3 answers. No money moved. Keep separate from the live tables.",
+        data: evalTable,
+        fields: fields([
+          ["id", "Case", "textFormat"],
+          ["set", "Evaluation set", "textFormat"],
+          ["product", "Product bought", "textFormat"],
+          ["kind", "Listing is", "textFormat"],
+          ["claim", "Claim type", "textFormat"],
+          ["why", "What the listing is", "textFormat"],
+          ["store", "Listing store", "textFormat"],
+          ["paid", "Paid", "currencyFormat"],
+          ["offer", "Listing price", "currencyFormat"],
+          ["aiVerdict", "AI verdict", "textFormat"],
+          ["matchback", "Matchback decided", "textFormat"],
+          ["naive", "Naive bot decided", "textFormat"],
+          ["isTrap", "Traps tested", "integerFormat"],
+          ["matchbackPaidTrap", "Traps paid by Matchback", "integerFormat"],
+          ["naivePaidTrap", "Traps paid by the naive bot", "integerFormat"],
+          ["matchbackWronglyRefunded", "Wrongly refunded by Matchback", "currencyFormat"],
+          ["naiveWronglyRefunded", "Wrongly refunded by the naive bot", "currencyFormat"],
         ]),
       },
     ],

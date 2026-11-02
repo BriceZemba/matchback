@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { claimRecords, isMerchantSession, merchantKey, MERCHANT_COOKIE, summarize, type ClaimRecord } from "@/lib/merchant";
+import { judgeMode } from "@/lib/judge";
 import { requestPrefs } from "@/lib/locale-server";
 import { maxRefundShare } from "@/lib/paypal/refunds";
 import { getClaim, orderRefunded, suggestedRefundCents, type ClaimEvidence } from "@/lib/verifier/run";
@@ -26,6 +27,7 @@ export default async function MerchantPage({ searchParams }: { searchParams: Pro
           <p className="eyebrow">{m.eyebrow}</p>
           <h1 className="rise">{m.title}</h1>
           <p className="muted">{m.signInLede}</p>
+          {judgeMode() && <p className="subtle" style={{ margin: 0 }}>{m.judgeKeyHint}</p>}
         </div>
         <form className="card card-pad merchant-login" method="post" action="/api/merchant/login">
           <div className="field">

@@ -1,6 +1,6 @@
 // Judge mode (MATCHBACK_JUDGE_MODE=1): a guide page and one-click sample links on the order page.
 // The links are real product pages from the evaluation set (eval/cases.json). The expected outcome is
-// what Matchback decided on 2026-10-29; live prices and stock can move it.
+// what Matchback decided, re-checked on 2026-11-02; live prices and stock can move it.
 
 export function judgeMode(): boolean {
   return process.env.MATCHBACK_JUDGE_MODE === "1";

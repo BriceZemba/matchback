@@ -11,9 +11,14 @@ const serif = Fraunces({ subsets: ["latin"], variable: "--font-fraunces", axes: 
 const sans = IBM_Plex_Sans({ subsets: ["latin"], variable: "--font-plex-sans", weight: ["400", "500", "600"] });
 const mono = IBM_Plex_Mono({ subsets: ["latin"], variable: "--font-plex-mono", weight: ["400", "500", "700"] });
 
+const description = "A price-match guarantee run by an AI agent: it checks the cheaper offer with Channel3, fixed rules decide, and PayPal refunds the difference. A partial refund instead of a return.";
+
 export const metadata = {
+  metadataBase: new URL(process.env.APP_BASE_URL || "https://matchback-tau.vercel.app"),
   title: "Matchback · price match, verified",
-  description: "Found it cheaper? Matchback checks the offer and refunds the difference through PayPal.",
+  description,
+  openGraph: { title: "Matchback: a partial refund instead of a return", description, type: "website" },
+  twitter: { card: "summary_large_image", title: "Matchback: a partial refund instead of a return", description },
 };
 
 function TagMark() {
