@@ -332,12 +332,22 @@ async function evaluateImageClaim(
   // that product too, or a screenshot of anything at that store would qualify.
   const shows = imageMatchesPurchase(ex, claimInput.purchasedTitle);
   if (!shows.ok) {
-    evidence.decision.checks.push({
-      id: "image_product",
-      label: "Same product in your image",
-      outcome: "review",
-      detail: `Your image shows "${shows.shown || "an unreadable product"}", which does not look like the ${claimInput.purchasedTitle} you bought. A person will check it.`,
-    });
+    // The listing found is not what the image shows, so its price and stock say nothing about this
+    // offer: drop those checks instead of refusing on them (found live 2026-11-02: an SSD screenshot on
+    // a Kindle order was refused because the Kindle's own Best Buy price was not lower).
+    evidence.decision.checks = [
+      ...imageChecks(ex, null),
+      {
+        id: "image_product",
+        label: "Same product in your image",
+        outcome: "review",
+        detail: `Your image shows "${shows.shown || "an unreadable product"}", which does not look like the ${claimInput.purchasedTitle} you bought. A person will check it.`,
+      },
+    ];
+    evidence.decision.competitorCents = null;
+    evidence.competitor = null;
+    evidence.identity = null;
+    evidence.priceContext = null;
   }
   evidence.decision.status = statusFrom(evidence.decision.checks);
   if (evidence.decision.status !== "approved") evidence.decision.refundCents = 0;

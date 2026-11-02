@@ -222,4 +222,31 @@ describe("screenshot of another product at a store that sells ours cheaper", () 
     expect(ev.decision.refundCents).toBe(0);
     expect(ev.decision.checks.find((c: { id: string }) => c.id === "image_product").outcome).toBe("review");
   });
+
+  it("goes to a person, not a refusal, when our own listing at that store is not cheaper (live case 2026-11-02)", async () => {
+    const o = await createOrderRow("m7BdhGq");
+    await getDb().run("UPDATE orders SET paypal_order_id='PO8', capture_id='CAP8', captured_cents=34999, captured_at='2026-10-29T00:00:00Z', status='captured' WHERE id=?", o.id);
+    const claim = await fileImageClaim(o.id, { bytes: new Uint8Array(readFileSync("test/fixtures/bestbuy-t7-screenshot.jpg")), mime: "image/jpeg" });
+    const llm: typeof fetch = async (_u, init) => {
+      const tool = JSON.parse(String(init?.body)).tools[0].function.name as string;
+      const args = tool === "report_offer"
+        ? { product: "Samsung External SSD", brand: "Samsung", store: "Best Buy", store_domain: "bestbuy.com", price: 259.99, condition_words: [], confidence: "high" }
+        : { text: "A person will look at this claim." };
+      return new Response(JSON.stringify({ choices: [{ message: { tool_calls: [{ function: { name: tool, arguments: JSON.stringify(args) } }] } }] }), { status: 200 });
+    };
+    const done = await verifyClaim(claim.id, {
+      channel3: fakeChannel3({ byId: { m7BdhGq: { ...GOPRO, offers: [offer("bestbuy.com", 399.99)] } } }),
+      settings: { windowDays: 14, minDiffCents: 100, floorShare: 0.6, allowColorVariants: true },
+      identityMode: "ai",
+      providers: [{ name: "groq", baseUrl: "https://llm.test/v1", apiKey: "k", model: "m" }],
+      llmFetch: llm,
+      refund: async () => { throw new Error("no refund expected"); },
+      now: () => new Date("2026-10-29T12:00:00Z"),
+    });
+    expect(done.status).toBe("needs_review");
+    const ev = JSON.parse(done.decision_json!);
+    expect(ev.decision.checks.map((c: { id: string }) => c.id)).toEqual(["image_read", "image_product"]);
+    expect(ev.decision.competitorCents).toBeNull();
+    expect(ev.competitor).toBeNull();
+  });
 });
