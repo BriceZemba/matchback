@@ -12,7 +12,8 @@ import type { Locale } from "@/lib/i18n";
 import { imageMatchesPurchase, readOfferImage, resolveListing, type Extraction } from "./image-intake";
 import { checkIdentity, type IdentityMode, type IdentityVerdict } from "./identity";
 import { isKnownRetailer } from "./retailers";
-import { decide, isResaleDomain, settingsFromEnv, type Check, type ConditionSource, type Decision, type PolicySettings } from "./policy";
+import { loadStoreSettings } from "@/lib/store-settings";
+import { decide, isResaleDomain, type Check, type ConditionSource, type Decision, type PolicySettings } from "./policy";
 
 export type ClaimStatus = "verifying" | "approved" | "refused" | "needs_review" | "refunded" | "refund_unknown" | "refund_failed";
 
@@ -185,10 +186,10 @@ export type VerifyDeps = {
   now: () => Date;
 };
 
-export function defaultDeps(): VerifyDeps {
+export async function defaultDeps(): Promise<VerifyDeps> {
   return {
     channel3: cachedChannel3(createChannel3Client(), getDb(), { mode: cacheModeFromEnv() }),
-    settings: settingsFromEnv(),
+    settings: await loadStoreSettings(),
     identityMode: process.env.MATCHBACK_IDENTITY_MODE === "id_only" ? "id_only" : "ai",
     refund: issuePriceMatchRefund,
     now: () => new Date(),
@@ -207,10 +208,11 @@ export async function evaluateClaim(
   const domain = input.resolved?.domain ?? domainOf(input.competitorUrl);
   const purchased = { productId: input.purchasedProductId, title: input.purchasedTitle };
   // The brand's own store counts as a competitor; the brand comes from our side, never the listing.
-  let knownRetailer = isKnownRetailer(domain, input.purchasedTitle);
+  const extra = deps.settings.extraRetailers;
+  let knownRetailer = isKnownRetailer(domain, input.purchasedTitle, [], extra);
   if (!knownRetailer && !isResaleDomain(domain)) {
     try {
-      knownRetailer = isKnownRetailer(domain, input.purchasedTitle, ((await deps.channel3.product(input.purchasedProductId)).brands ?? []).map((b) => b.name));
+      knownRetailer = isKnownRetailer(domain, input.purchasedTitle, ((await deps.channel3.product(input.purchasedProductId)).brands ?? []).map((b) => b.name), extra);
     } catch {
       // keep false: the claim goes to a person
     }
@@ -358,7 +360,8 @@ async function evaluateImageClaim(
 }
 
 /** Verify a filed claim and, when approved, refund the difference on the PayPal capture. */
-export async function verifyClaim(claimId: string, deps: VerifyDeps = defaultDeps()): Promise<ClaimRow> {
+export async function verifyClaim(claimId: string, given?: VerifyDeps): Promise<ClaimRow> {
+  const deps = given ?? await defaultDeps();
   const db = getDb();
   const claim = await getClaim(claimId);
   if (!claim) throw new InvariantError(404, "Unknown claim.");
@@ -480,8 +483,9 @@ export async function approveReviewedClaim(claimId: string, amountCents: number,
   // The refund re-checks every limit; checking the cap first keeps a typo from closing the review.
   const pending = await getClaim(claimId);
   const order = pending ? await getOrderRow(pending.order_id) : undefined;
-  if (order?.captured_cents && amountCents > Math.floor(order.captured_cents * maxRefundShare())) {
-    throw new InvariantError(400, `The most this store refunds on one order is ${Math.round(maxRefundShare() * 100)}% of the price paid.`);
+  const share = await maxRefundShare();
+  if (order?.captured_cents && amountCents > Math.floor(order.captured_cents * share)) {
+    throw new InvariantError(400, `The most this store refunds on one order is ${Math.round(share * 100)}% of the price paid.`);
   }
   if (pending && (await orderRefunded(pending.order_id))) throw new InvariantError(409, "This order already received its price-match refund.");
   const { claim, evidence } = await takeForReview(claimId, "approved");
@@ -517,7 +521,7 @@ export function isStale(claim: Pick<ClaimRow, "status" | "created_at" | "decided
 }
 
 /** Retry one stale claim. A lease in the database keeps two server instances from retrying it at once. */
-export async function reconcileClaim(claimId: string, deps: VerifyDeps = defaultDeps(), nowMs = Date.now()): Promise<ClaimRow | undefined> {
+export async function reconcileClaim(claimId: string, given?: VerifyDeps, nowMs = Date.now()): Promise<ClaimRow | undefined> {
   const claim = await getClaim(claimId);
   if (!claim || !isStale(claim, nowMs)) return claim;
   const cutoff = new Date(nowMs - STALE_MS).toISOString();
@@ -526,6 +530,7 @@ export async function reconcileClaim(claimId: string, deps: VerifyDeps = default
     new Date(nowMs).toISOString(), claimId, claim.status, cutoff,
   );
   if (changes !== 1) return claim;
+  const deps = given ?? await defaultDeps();
   if (claim.status === "verifying" && nowMs - Date.parse(claim.created_at) > GIVE_UP_MS) return sendToPerson(claim);
   if (claim.status === "verifying") return verifyClaim(claimId, deps);
   const evidence = JSON.parse(claim.decision_json ?? "null") as ClaimEvidence | null;
@@ -568,7 +573,7 @@ export async function purgeOldScreenshots(days = 60, nowMs = Date.now()): Promis
 }
 
 /** Retry every stale claim (the daily job). */
-export async function reconcileStaleClaims(deps: VerifyDeps = defaultDeps(), nowMs = Date.now()): Promise<{ id: string; status: ClaimStatus | undefined }[]> {
+export async function reconcileStaleClaims(deps?: VerifyDeps, nowMs = Date.now()): Promise<{ id: string; status: ClaimStatus | undefined }[]> {
   const rows = (await getDb().all(`SELECT ${CLAIM_COLUMNS} FROM claims WHERE status IN ('verifying', 'approved', 'refund_unknown')`)) as ClaimRow[];
   const out: { id: string; status: ClaimStatus | undefined }[] = [];
   for (const row of rows.filter((r) => isStale(r, nowMs))) {

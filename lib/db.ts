@@ -193,6 +193,13 @@ function schema(): string {
     );
     CREATE INDEX IF NOT EXISTS watch_findings_by_order ON watch_findings(order_id);
 
+    -- The rules a store owner set on /merchant/settings. One row; none means the defaults.
+    CREATE TABLE IF NOT EXISTS store_settings (
+      id          TEXT PRIMARY KEY,
+      json        TEXT NOT NULL,
+      updated_at  TEXT NOT NULL
+    );
+
     -- Channel3 answers, so a claim re-check, the evaluation and the filmed demo read the same data.
     CREATE TABLE IF NOT EXISTS channel3_cache (
       key         TEXT PRIMARY KEY,   -- lookup:<url> | product:<id> | stats:<id>
@@ -222,7 +229,7 @@ function addedColumns(blob: "BLOB" | "BYTEA"): [table: string, definition: strin
   ];
 }
 
-const TABLES = ["catalog", "orders", "paypal_writes", "refunds", "claims", "watch_findings", "channel3_cache"];
+const TABLES = ["catalog", "orders", "paypal_writes", "refunds", "claims", "watch_findings", "channel3_cache", "store_settings"];
 
 function migrateSqlite(d: DatabaseSync) {
   d.exec("PRAGMA journal_mode = WAL;");

@@ -45,14 +45,17 @@ export default async function MerchantPage({ searchParams }: { searchParams: Pro
 
   const records = await claimRecords({ limit: 500 });
   const summary = summarize(records);
+  const share = await maxRefundShare();
   const queue = await Promise.all(
     records.filter((r) => r.status === "needs_review").map(async (r) => {
       const row = await getClaim(r.id);
       const evidence = row?.decision_json ? (JSON.parse(row.decision_json) as ClaimEvidence) : null;
-      return { r, evidence, suggested: suggestedRefundCents(evidence, Math.round(r.paid * 100)), refunded: await orderRefunded(r.orderId) };
+      const paidCents = Math.round(r.paid * 100);
+      const gap = suggestedRefundCents(evidence, paidCents);
+      return { r, evidence, suggested: gap === null ? null : Math.min(gap, Math.floor(paidCents * share)), refunded: await orderRefunded(r.orderId) };
     }),
   );
-  const pct = Math.round(maxRefundShare() * 100);
+  const pct = Math.round(share * 100);
   const when = (iso: string) => new Date(iso).toLocaleString(locale, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "UTC" }) + " UTC";
   const tone = (s: string) => (s === "refunded" ? "ok" : s === "refused" || s === "refund_failed" ? "no" : "wait");
 
@@ -66,6 +69,7 @@ export default async function MerchantPage({ searchParams }: { searchParams: Pro
         </div>
         <div className="merchant-head-actions">
           <a className="btn btn-accent" href="/merchant/console">{m.console}</a>
+          <a className="btn btn-ghost" href="/merchant/settings">{m.settings.link}</a>
           <form method="post" action="/api/merchant/logout">
             <button className="btn btn-ghost" type="submit">{m.signOut}</button>
           </form>

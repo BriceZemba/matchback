@@ -1,4 +1,5 @@
-import { howItWorks } from "@/lib/guides";
+import { howItWorks, withStoreRules } from "@/lib/guides";
+import { loadStoreSettings } from "@/lib/store-settings";
 import { requestPrefs } from "@/lib/locale-server";
 
 export const dynamic = "force-dynamic";
@@ -11,7 +12,7 @@ export async function generateMetadata() {
 // The agent explained: the claim pipeline, the checks, where the AI is, how money is protected, the evidence.
 export default async function HowItWorksPage() {
   const { locale } = await requestPrefs();
-  const g = howItWorks(locale);
+  const g = withStoreRules(howItWorks(locale), locale, await loadStoreSettings());
   return (
     <main className="shell guide">
       <div className="page-head">

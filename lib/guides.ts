@@ -30,7 +30,7 @@ const useEn: HowToUse = {
   meta: "How to use Matchback",
   eyebrow: "How to use",
   title: "Found it cheaper? Here is what to do.",
-  lede: "Buy with PayPal. If the same product is cheaper at another store within 14 days, tell Matchback, or let it find the drop for you. When the offer checks out, PayPal refunds the difference. You keep the product.",
+  lede: "Buy with PayPal. If the same product is cheaper at another store within {days} days, tell Matchback, or let it find the drop for you. When the offer checks out, PayPal refunds the difference. You keep the product.",
   shopperTitle: "For shoppers",
   shopper: [
     { title: "Buy with PayPal", body: "Pick a product in the shop and pay with PayPal. This demo runs on the PayPal sandbox: use a sandbox buyer account, no real money moves. PayPal brings you back to your order page." },
@@ -53,8 +53,8 @@ const useEn: HowToUse = {
     "The same model as the one you bought. Another colour is fine; another edition, size, generation, a bundle or an accessory is not.",
     "Sold new and in stock.",
     "At a store on the shop's list of competitors, or the brand's own store. Resale and refurbished marketplaces are excluded.",
-    "At least $1.00 cheaper than what you paid, in the same currency.",
-    "Within 14 days of your payment.",
+    "At least {minDiff} cheaper than what you paid, in the same currency.",
+    "Within {days} days of your payment.",
     "One price-match refund per order, up to half the price paid. The refund always uses the store's live price, never the price in a screenshot.",
   ],
   storeTitle: "For the store",
@@ -79,7 +79,7 @@ const useFr: HowToUse = {
   meta: "Utiliser Matchback",
   eyebrow: "Mode d'emploi",
   title: "Vu moins cher ? Voici comment faire.",
-  lede: "Payez avec PayPal. Si le même produit est moins cher dans un autre magasin dans les 14 jours, dites-le à Matchback, ou laissez-le trouver la baisse pour vous. Si l'offre est vérifiée, PayPal vous rembourse la différence. Vous gardez le produit.",
+  lede: "Payez avec PayPal. Si le même produit est moins cher dans un autre magasin dans les {days} jours, dites-le à Matchback, ou laissez-le trouver la baisse pour vous. Si l'offre est vérifiée, PayPal vous rembourse la différence. Vous gardez le produit.",
   shopperTitle: "Pour les clients",
   shopper: [
     { title: "Payez avec PayPal", body: "Choisissez un produit et payez avec PayPal. Cette démo tourne sur le sandbox PayPal : utilisez un compte acheteur sandbox, aucun argent réel ne circule. PayPal vous ramène à la page de votre commande." },
@@ -102,8 +102,8 @@ const useFr: HowToUse = {
     "Le même modèle que celui acheté. Une autre couleur est acceptée ; une autre édition, taille, génération, un lot ou un accessoire ne l'est pas.",
     "Vendu neuf et en stock.",
     "Dans un magasin de la liste des concurrents de la boutique, ou le magasin officiel de la marque. Les places de marché d'occasion et de reconditionné sont exclues.",
-    "Au moins 1,00 $ moins cher que le prix payé, dans la même devise.",
-    "Dans les 14 jours suivant le paiement.",
+    "Au moins {minDiff} moins cher que le prix payé, dans la même devise.",
+    "Dans les {days} jours suivant le paiement.",
     "Un seul remboursement par commande, jusqu'à la moitié du prix payé. Le remboursement utilise toujours le prix en ligne du magasin, jamais celui d'une capture.",
   ],
   storeTitle: "Pour le magasin",
@@ -128,7 +128,7 @@ const useEs: HowToUse = {
   meta: "Cómo usar Matchback",
   eyebrow: "Cómo usarlo",
   title: "¿Lo viste más barato? Esto es lo que hay que hacer.",
-  lede: "Paga con PayPal. Si el mismo producto está más barato en otra tienda en los 14 días siguientes, díselo a Matchback, o deja que encuentre la bajada por ti. Si la oferta se verifica, PayPal te reembolsa la diferencia. Te quedas con el producto.",
+  lede: "Paga con PayPal. Si el mismo producto está más barato en otra tienda en los {days} días siguientes, díselo a Matchback, o deja que encuentre la bajada por ti. Si la oferta se verifica, PayPal te reembolsa la diferencia. Te quedas con el producto.",
   shopperTitle: "Para clientes",
   shopper: [
     { title: "Compra con PayPal", body: "Elige un producto y paga con PayPal. Esta demo funciona en el sandbox de PayPal: usa una cuenta de comprador sandbox, no se mueve dinero real. PayPal te devuelve a la página de tu pedido." },
@@ -151,8 +151,8 @@ const useEs: HowToUse = {
     "El mismo modelo que compraste. Otro color vale; otra edición, tamaño, generación, un pack o un accesorio no.",
     "Vendido nuevo y en stock.",
     "En una tienda de la lista de competidores de la tienda, o en la tienda oficial de la marca. Se excluyen los mercados de segunda mano y reacondicionados.",
-    "Al menos 1,00 $ más barato que lo que pagaste, en la misma moneda.",
-    "En los 14 días siguientes a tu pago.",
+    "Al menos {minDiff} más barato que lo que pagaste, en la misma moneda.",
+    "En los {days} días siguientes a tu pago.",
     "Un reembolso por pedido, hasta la mitad del precio pagado. El reembolso usa siempre el precio en línea de la tienda, nunca el de una captura.",
   ],
   storeTitle: "Para la tienda",
@@ -189,12 +189,12 @@ const worksEn: HowItWorks = {
   checksTitle: "The seven checks",
   checksLede: "Fail = refused. Doubt = sent to a person. Only a claim that passes all seven is paid.",
   checks: [
-    { name: "Claim window", rule: "Within 14 days of payment." },
+    { name: "Claim window", rule: "Within {days} days of payment." },
     { name: "Known store", rule: "On the list of competitors, or the brand's own store. Resale marketplaces fail; unknown shops go to a person." },
     { name: "Sold new", rule: "Condition stated as new; a missing condition is checked against a second Channel3 source first." },
     { name: "In stock", rule: "The offer is available now." },
-    { name: "Lower price", rule: "At least $1.00 cheaper, same currency." },
-    { name: "Plausible price", rule: "Under 60% of the price paid goes to a person: likely an error or a trap." },
+    { name: "Lower price", rule: "At least {minDiff} cheaper, same currency." },
+    { name: "Plausible price", rule: "Under {floor}% of the price paid goes to a person: likely an error or a trap." },
     { name: "Same product", rule: "AI verdict, overruled by fixed rules on editions, generations and model years." },
   ],
   aiTitle: "Where the AI is, and where it is not",
@@ -252,12 +252,12 @@ const worksFr: HowItWorks = {
   checksTitle: "Les sept contrôles",
   checksLede: "Échec = refusé. Doute = envoyé à une personne. Seule une demande qui passe les sept est payée.",
   checks: [
-    { name: "Délai", rule: "Dans les 14 jours suivant le paiement." },
+    { name: "Délai", rule: "Dans les {days} jours suivant le paiement." },
     { name: "Magasin connu", rule: "Dans la liste des concurrents, ou le magasin officiel de la marque. Les places de marché d'occasion échouent ; les boutiques inconnues vont à une personne." },
     { name: "Vendu neuf", rule: "État indiqué neuf ; un état manquant est d'abord vérifié dans une seconde source Channel3." },
     { name: "En stock", rule: "L'offre est disponible maintenant." },
-    { name: "Prix plus bas", rule: "Au moins 1,00 $ moins cher, même devise." },
-    { name: "Prix plausible", rule: "Moins de 60 % du prix payé part chez une personne : sans doute une erreur ou un piège." },
+    { name: "Prix plus bas", rule: "Au moins {minDiff} moins cher, même devise." },
+    { name: "Prix plausible", rule: "Moins de {floor} % du prix payé part chez une personne : sans doute une erreur ou un piège." },
     { name: "Même produit", rule: "Verdict de l'IA, contredit par des règles fixes sur les éditions, générations et années de modèle." },
   ],
   aiTitle: "Où est l'IA, et où elle n'est pas",
@@ -315,12 +315,12 @@ const worksEs: HowItWorks = {
   checksTitle: "Las siete comprobaciones",
   checksLede: "Falla = rechazada. Duda = pasa a una persona. Solo se paga una solicitud que supera las siete.",
   checks: [
-    { name: "Plazo", rule: "En los 14 días siguientes al pago." },
+    { name: "Plazo", rule: "En los {days} días siguientes al pago." },
     { name: "Tienda conocida", rule: "En la lista de competidores, o la tienda oficial de la marca. Los mercados de segunda mano fallan; las tiendas desconocidas pasan a una persona." },
     { name: "Vendido nuevo", rule: "Estado indicado como nuevo; un estado ausente se comprueba antes en una segunda fuente de Channel3." },
     { name: "En stock", rule: "La oferta está disponible ahora." },
-    { name: "Precio más bajo", rule: "Al menos 1,00 $ más barato, misma moneda." },
-    { name: "Precio plausible", rule: "Por debajo del 60 % del precio pagado pasa a una persona: probablemente un error o una trampa." },
+    { name: "Precio más bajo", rule: "Al menos {minDiff} más barato, misma moneda." },
+    { name: "Precio plausible", rule: "Por debajo del {floor} % del precio pagado pasa a una persona: probablemente un error o una trampa." },
     { name: "Mismo producto", rule: "Veredicto de la IA, corregido por reglas fijas sobre ediciones, generaciones y años de modelo." },
   ],
   aiTitle: "Dónde está la IA, y dónde no",
@@ -361,6 +361,17 @@ const worksEs: HowItWorks = {
   cta: "Probar en la tienda",
   ctaUse: "Cómo usarlo",
 };
+
+/** The guides state the store's own rules: fills {days}, {floor} and {minDiff} from its settings. */
+export function withStoreRules<T>(guide: T, locale: Locale, rules: { windowDays: number; floorShare: number; minDiffCents: number }): T {
+  const amount = (rules.minDiffCents / 100).toFixed(2);
+  const values: Record<string, string> = {
+    "{days}": String(rules.windowDays),
+    "{floor}": String(Math.round(rules.floorShare * 100)),
+    "{minDiff}": locale === "en" ? `$${amount}` : `${amount.replace(".", ",")} $`,
+  };
+  return JSON.parse(JSON.stringify(guide).replace(/\{(days|floor|minDiff)\}/g, (m) => values[m]!)) as T;
+}
 
 export function howToUse(locale: Locale): HowToUse {
   return locale === "fr" ? useFr : locale === "es" ? useEs : useEn;

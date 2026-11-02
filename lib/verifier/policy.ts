@@ -1,5 +1,5 @@
 import type { C3Offer } from "@/lib/channel3";
-import { isKnownRetailer } from "./retailers";
+import { extraRetailersFromEnv, isKnownRetailer } from "./retailers";
 import type { IdentityVerdict } from "./identity";
 
 // The price-match policy, as a pure function: every check is deterministic and explained. The AI never
@@ -25,15 +25,21 @@ export type PolicySettings = {
   minDiffCents: number; // ignore differences smaller than this
   floorShare: number; // a competitor price under this share of ours goes to a human
   allowColorVariants: boolean; // same model in another colour qualifies
+  maxRefundShare?: number; // largest share of the price paid one refund may return
+  autoRefundLimitCents?: number | null; // a larger refund goes to a person; null: no such limit
+  extraRetailers?: string[]; // stores this merchant added to the list
 };
 
-export function settingsFromEnv(env: NodeJS.ProcessEnv = process.env): PolicySettings {
+export function settingsFromEnv(env: NodeJS.ProcessEnv = process.env) {
   const num = (v: string | undefined, d: number) => (v !== undefined && Number.isFinite(Number(v)) ? Number(v) : d);
   return {
     windowDays: num(env.MATCHBACK_WINDOW_DAYS, 14),
     minDiffCents: num(env.MATCHBACK_MIN_DIFF_CENTS, 100),
     floorShare: num(env.MATCHBACK_PRICE_FLOOR_SHARE, 0.6),
     allowColorVariants: env.MATCHBACK_ALLOW_COLOR_VARIANTS !== "0",
+    maxRefundShare: num(env.MATCHBACK_MAX_REFUND_SHARE, 0.5),
+    autoRefundLimitCents: null as number | null,
+    extraRetailers: extraRetailersFromEnv(env),
   };
 }
 
@@ -76,7 +82,7 @@ export function decide(input: PolicyInput): Decision {
 
   if (isResaleDomain(input.competitorDomain)) {
     add("retailer", "Qualifying retailer", "fail", `${input.competitorDomain} is a resale or refurbished marketplace.`);
-  } else if (input.knownRetailer ?? isKnownRetailer(input.competitorDomain)) {
+  } else if (input.knownRetailer ?? isKnownRetailer(input.competitorDomain, "", [], s.extraRetailers)) {
     add("retailer", "Qualifying retailer", "pass", `${input.competitorDomain} is on this store's list of price-match competitors.`);
   } else {
     add("retailer", "Qualifying retailer", "review", `${input.competitorDomain} is not on this store's list of price-match competitors; a person checks that it is a genuine store.`);
@@ -107,6 +113,13 @@ export function decide(input: PolicyInput): Decision {
     const floor = Math.ceil(paidCents * s.floorShare);
     add("floor", "Plausible price", competitorCents >= floor ? "pass" : "review",
       competitorCents >= floor ? `Above the ${Math.round(s.floorShare * 100)}% plausibility floor.` : `Below ${dollars(floor)} (${Math.round(s.floorShare * 100)}% of the price paid); a person should look.`);
+    // A refund over the merchant's limits is never paid on its own, and PayPal is never asked for it.
+    const capCents = s.maxRefundShare === undefined ? null : Math.floor(paidCents * s.maxRefundShare);
+    if (capCents !== null && diff > capCents) {
+      add("limit", "Within the store's limits", "review", `The ${dollars(diff)} difference is over this store's cap of ${Math.round(s.maxRefundShare! * 100)}% of the price paid; a person decides.`);
+    } else if (s.autoRefundLimitCents != null && diff > s.autoRefundLimitCents) {
+      add("limit", "Within the store's limits", "review", `This store pays up to ${dollars(s.autoRefundLimitCents)} automatically; a person decides on a ${dollars(diff)} refund.`);
+    }
   }
 
   const id = input.identity;

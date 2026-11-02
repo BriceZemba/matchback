@@ -95,6 +95,7 @@ export function Console({ data, licenseKey, aiModels }: { data: ConsoleData; lic
             {mode === "view" ? "Edit layout" : "Done"}
           </button>
           <button type="button" className="btn btn-ghost btn-sm" onClick={reset}>Reset</button>
+          <a className="btn btn-ghost btn-sm" href="/merchant/settings">Settings</a>
           <a className="btn btn-ghost btn-sm" href="/merchant">Store desk</a>
         </div>
       </div>

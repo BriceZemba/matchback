@@ -60,7 +60,8 @@ export type WatchResult =
   | { order: string; outcome: "found"; finding: FindingRow; claim?: ClaimRow };
 
 /** Look for a cheaper qualifying offer for one order and verify it. */
-export async function watchOrder(orderId: string, deps: VerifyDeps = defaultDeps(), mode: WatchMode = watchModeFromEnv()): Promise<WatchResult> {
+export async function watchOrder(orderId: string, given?: VerifyDeps, mode: WatchMode = watchModeFromEnv()): Promise<WatchResult> {
+  const deps = given ?? await defaultDeps();
   const db = getDb();
   const order = await getOrderRow(orderId);
   const skip = await notWatchable(order, deps);
@@ -122,7 +123,8 @@ export async function fileFromFinding(findingId: string, locale: Locale, opts: {
 }
 
 /** Watch every paid order still inside the claim window, one at a time. */
-export async function watchAll(deps: VerifyDeps = defaultDeps(), mode: WatchMode = watchModeFromEnv()): Promise<WatchResult[]> {
+export async function watchAll(given?: VerifyDeps, mode: WatchMode = watchModeFromEnv()): Promise<WatchResult[]> {
+  const deps = given ?? await defaultDeps();
   const ids = (await getDb().all("SELECT id FROM orders WHERE status = 'captured' ORDER BY created_at") as { id: string }[]).map((r) => r.id);
   const out: WatchResult[] = [];
   for (const id of ids) {

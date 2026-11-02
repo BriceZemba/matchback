@@ -2,7 +2,7 @@
 // local or online competitor": named retailers only), because "any website" invites a claim against a
 // shop set up for the purpose. A store not on the list is not refused: the claim goes to a person.
 //
-// MATCHBACK_EXTRA_RETAILERS (comma-separated domains) adds to the list.
+// The store's settings add to the list; MATCHBACK_EXTRA_RETAILERS (comma-separated domains) is their default.
 
 const KNOWN_RETAILERS = [
   // general and big-box
@@ -19,8 +19,8 @@ const KNOWN_RETAILERS = [
   "dickssportinggoods.com", "academy.com", "rei.com", "backcountry.com", "competitivecyclist.com",
 ];
 
-function extraRetailers(): string[] {
-  return (process.env.MATCHBACK_EXTRA_RETAILERS ?? "").split(",").map((d) => d.trim().toLowerCase().replace(/^www\./, "")).filter(Boolean);
+export function extraRetailersFromEnv(env: NodeJS.ProcessEnv = process.env): string[] {
+  return (env.MATCHBACK_EXTRA_RETAILERS ?? "").split(",").map((d) => d.trim().toLowerCase().replace(/^www\./, "")).filter(Boolean);
 }
 
 const letters = (s: string) => s.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]/g, "");
@@ -38,8 +38,8 @@ export function brandStore(domain: string, storeTitle: string, brands: string[] 
   return candidates.includes(label);
 }
 
-export function isKnownRetailer(domain: string, storeTitle = "", brands: string[] = []): boolean {
+export function isKnownRetailer(domain: string, storeTitle = "", brands: string[] = [], extra: string[] = extraRetailersFromEnv()): boolean {
   const d = domain.toLowerCase().replace(/^www\./, "");
-  const listed = [...KNOWN_RETAILERS, ...extraRetailers()].some((r) => d === r || d.endsWith(`.${r}`));
+  const listed = [...KNOWN_RETAILERS, ...extra].some((r) => d === r || d.endsWith(`.${r}`));
   return listed || brandStore(d, storeTitle, brands);
 }

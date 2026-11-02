@@ -1,6 +1,7 @@
 import type { Refund } from "paypal";
 import { getDb, isDuplicateKey, now } from "@/lib/db";
 import { fromCents, toCents } from "@/lib/money";
+import { loadStoreSettings } from "@/lib/store-settings";
 import { getPaypalClient } from "./client";
 import { getOrderRow } from "./checkout";
 import { finishClaim, markUnknown, releaseClaim, takeClaim } from "./claims";
@@ -17,8 +18,8 @@ import {
 } from "./errors";
 
 /** Largest share of the captured amount a single price-match refund may return. Merchant setting. */
-export function maxRefundShare(): number {
-  const v = Number(process.env.MATCHBACK_MAX_REFUND_SHARE ?? "0.5");
+export async function maxRefundShare(): Promise<number> {
+  const v = (await loadStoreSettings()).maxRefundShare;
   return Number.isFinite(v) && v > 0 && v <= 1 ? v : 0.5;
 }
 
@@ -45,7 +46,7 @@ export async function issuePriceMatchRefund(input: RefundRequestInput): Promise<
   if (!Number.isInteger(amountCents) || amountCents <= 0) throw new InvariantError(400, "Refund amount must be positive.");
   const remaining = order.captured_cents - (await refundedSoFar(order.capture_id));
   if (amountCents > remaining) throw new InvariantError(400, "Refund exceeds what is left on this payment.");
-  if (amountCents > Math.floor(order.captured_cents * maxRefundShare())) {
+  if (amountCents > Math.floor(order.captured_cents * (await maxRefundShare()))) {
     throw new InvariantError(400, "Refund exceeds the merchant's price-match cap.");
   }
 

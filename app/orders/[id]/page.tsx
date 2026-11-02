@@ -4,7 +4,7 @@ import { getDb } from "@/lib/db";
 import { fromCents } from "@/lib/money";
 import { approveUrlOf, getOrderRow } from "@/lib/paypal/checkout";
 import { claimsForOrder } from "@/lib/verifier/run";
-import { settingsFromEnv } from "@/lib/verifier/policy";
+import { loadStoreSettings } from "@/lib/store-settings";
 import { activeFinding, lastWatched } from "@/lib/watch";
 import { judgeMode, SAMPLE_LINKS } from "@/lib/judge";
 import { SubmitButton } from "../../submit-button";
@@ -139,7 +139,7 @@ export default async function OrderPage({ params, searchParams }: { params: Prom
               ) : (
                 <>
                   <h2>{w.idleTitle}</h2>
-                  <p className="muted" style={{ margin: "8px 0 0", fontSize: 15 }}>{w.idleBody(settingsFromEnv().windowDays)}</p>
+                  <p className="muted" style={{ margin: "8px 0 0", fontSize: 15 }}>{w.idleBody((await loadStoreSettings()).windowDays)}</p>
                 </>
               )}
               <form action="/api/watch/check" method="post" className="watch-foot">

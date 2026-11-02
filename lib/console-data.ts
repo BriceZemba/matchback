@@ -1,6 +1,7 @@
 import { listCatalog } from "@/lib/catalog";
 import { getDb } from "@/lib/db";
 import { claimRecords, type ClaimRecord } from "@/lib/merchant";
+import { loadStoreSettings } from "@/lib/store-settings";
 import { isResaleDomain } from "@/lib/verifier/policy";
 import { brandStore, isKnownRetailer } from "@/lib/verifier/retailers";
 import type { ClaimEvidence } from "@/lib/verifier/run";
@@ -119,12 +120,13 @@ export async function loadConsoleData(): Promise<ConsoleData> {
   const catalog = await listCatalog();
   const products: ConsoleProduct[] = catalog.map((p) => ({ id: p.product_id, product: p.title, brand: p.title.split(/\s+/)[0] ?? "", price: p.price_cents / 100 }));
 
+  const { extraRetailers } = await loadStoreSettings();
   const storeIds = [...new Set(claims.map((c) => c.store))];
   const stores: ConsoleStore[] = storeIds.map((id) => ({
     id,
     storeType: id === "unknown" ? "Unknown"
       : isResaleDomain(id) ? "Resale marketplace"
-      : isKnownRetailer(id) ? "Listed competitor"
+      : isKnownRetailer(id, "", [], extraRetailers) ? "Listed competitor"
       : catalog.some((p) => brandStore(id, p.title)) ? "Brand store"
       : "Not on the list",
   }));

@@ -1,4 +1,5 @@
-import { howToUse } from "@/lib/guides";
+import { howToUse, withStoreRules } from "@/lib/guides";
+import { loadStoreSettings } from "@/lib/store-settings";
 import { requestPrefs } from "@/lib/locale-server";
 
 export const dynamic = "force-dynamic";
@@ -11,7 +12,7 @@ export async function generateMetadata() {
 // Step-by-step use, for shoppers and for the store.
 export default async function HowToUsePage() {
   const { locale } = await requestPrefs();
-  const g = howToUse(locale);
+  const g = withStoreRules(howToUse(locale), locale, await loadStoreSettings());
   return (
     <main className="shell guide">
       <div className="page-head">

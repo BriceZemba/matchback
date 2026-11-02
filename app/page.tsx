@@ -5,12 +5,14 @@ import { ProductSearch } from "./product-search";
 import { SubmitButton } from "./submit-button";
 import { requestPrefs } from "@/lib/locale-server";
 import { judgeMode } from "@/lib/judge";
+import { loadStoreSettings } from "@/lib/store-settings";
 
 export const dynamic = "force-dynamic";
 
 export default async function Store({ searchParams }: { searchParams: Promise<{ cancelled?: string; error?: string; q?: string | string[] }> }) {
   const params = await searchParams;
   const items = await listCatalog();
+  const { windowDays } = await loadStoreSettings();
   const { t: { store: t, nav } } = await requestPrefs();
   return (
     <main>
@@ -23,7 +25,7 @@ export default async function Store({ searchParams }: { searchParams: Promise<{ 
       <div className="shell">
         <section className="hero">
           <div className="hero-copy">
-            <span className="eyebrow rise" style={{ ["--i" as string]: 0 }}>{t.eyebrow}</span>
+            <span className="eyebrow rise" style={{ ["--i" as string]: 0 }}>{t.eyebrow(windowDays)}</span>
             <h1 className="rise" style={{ ["--i" as string]: 1 }}>
               {t.h1a} <em>{t.h1b}</em>
             </h1>
