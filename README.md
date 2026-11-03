@@ -22,6 +22,12 @@ A shopper who finds the same product cheaper a few days after buying has two opt
 
 For the store, paying the difference is usually cheaper than a return: on the GoPro in the demo, a $54.00 refund keeps a $295.99 sale, where a return would refund $349.99, bring the camera back and cost about $73.50 at that 21%. The console and the store desk show this for every refunded order, as an estimate the store can change in its settings. The difficulty is paying only the claims that are true.
 
+**What a store owner told us.** We showed the demo to Mikalia Yahya, owner of Boutique Consumer Electronics & Audio Accessories. They estimate that 10% to 15% of their return requests come from a customer finding a lower price elsewhere.
+
+> "Yes, but only in a 'human-in-the-loop' pilot phase where the agent drafts the refund and rationale, leaving the final click to a human team member."
+
+Mikalia Yahya watched the demo and has not used Matchback in their store.
+
 ## What it does
 
 | The shopper... | Matchback... |
