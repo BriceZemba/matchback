@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { checkDetail, translatedDetail } from "@/lib/verifier/check-text";
-import { decide, settingsFromEnv, type PolicyInput } from "@/lib/verifier/policy";
+import { dailyLimitCheck, decide, settingsFromEnv, type PolicyInput } from "@/lib/verifier/policy";
 
 const base = settingsFromEnv({} as NodeJS.ProcessEnv);
 const offer = (over: object = {}) => ({ price: { price: 80, currency: "USD" }, availability: "InStock", condition: "new", ...over }) as never;
@@ -40,6 +40,10 @@ describe("check texts", () => {
         expect(translatedDetail(c.detail, locale)).not.toMatch(/\$\d(?![\d.,])/);
       }
     }
+  });
+
+  it.each(["fr", "es"] as const)("the daily limit has its %s translation", (locale) => {
+    expect(translatedDetail(dailyLimitCheck(10000, 2500).detail, locale)).toContain("$100.00");
   });
 
   it("carries the values across", () => {

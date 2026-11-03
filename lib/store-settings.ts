@@ -12,6 +12,7 @@ export const SETTING_LIMITS = {
   windowDays: { min: 1, max: 90 },
   minDiffDollars: { min: 0.01, max: 100 },
   autoLimitDollars: { min: 1, max: 1000 },
+  dailyLimitDollars: { min: 1, max: 100_000 },
   floorPct: { min: 10, max: 95 },
   capPct: { min: 5, max: 90 },
   returnCostPct: { min: 1, max: 100 },
@@ -41,7 +42,32 @@ export async function resetStoreSettings(): Promise<void> {
   await getDb().run("DELETE FROM store_settings WHERE id = 'store'");
 }
 
-export type SettingsProblem = { error: "window" | "minDiff" | "autoLimit" | "floor" | "cap" | "returnCost" | "stores"; store?: string };
+// Refunds paid without a person, counted per UTC day. The check and the addition are one statement, so
+// claims verified at the same moment on different server instances cannot pass the limit together.
+
+export const utcDay = (at: Date) => at.toISOString().slice(0, 10);
+
+/** Count an automatic refund against the day. False: it would pass the limit, and nothing was counted. */
+export async function reserveAutoRefund(day: string, cents: number, limitCents: number | null): Promise<boolean> {
+  if (limitCents !== null && cents > limitCents) return false;
+  const add = "INSERT INTO auto_refund_days (day, cents) VALUES (?, ?) ON CONFLICT (day) DO UPDATE SET cents = auto_refund_days.cents + excluded.cents";
+  const { changes } = limitCents === null
+    ? await getDb().run(add, day, cents)
+    : await getDb().run(`${add} WHERE auto_refund_days.cents + excluded.cents <= ?`, day, cents, limitCents);
+  return changes === 1;
+}
+
+/** Give back what a refund that never went out had counted. */
+export async function releaseAutoRefund(day: string, cents: number): Promise<void> {
+  await getDb().run("UPDATE auto_refund_days SET cents = cents - ? WHERE day = ? AND cents >= ?", cents, day, cents);
+}
+
+export async function autoRefundedOn(day: string): Promise<number> {
+  const row = await getDb().get("SELECT cents FROM auto_refund_days WHERE day = ?", day) as { cents: number | string } | undefined;
+  return Number(row?.cents ?? 0);
+}
+
+export type SettingsProblem = { error: "window" | "minDiff" | "autoLimit" | "dailyLimit" | "floor" | "cap" | "returnCost" | "stores"; store?: string };
 
 const whole = (v: string, { min, max }: { min: number; max: number }) => (/^\d+$/.test(v) && Number(v) >= min && Number(v) <= max ? Number(v) : null);
 const cents = (v: string, { min, max }: { min: number; max: number }) => {
@@ -62,6 +88,9 @@ export function parseSettingsForm(form: FormData): { settings: StoreSettings } |
   const autoLimit = text("autoLimit");
   const autoRefundLimitCents = autoLimit === "" ? null : cents(autoLimit, L.autoLimitDollars);
   if (autoLimit !== "" && autoRefundLimitCents === null) return { error: "autoLimit" };
+  const dailyLimit = text("dailyLimit");
+  const dailyAutoLimitCents = dailyLimit === "" ? null : cents(dailyLimit, L.dailyLimitDollars);
+  if (dailyLimit !== "" && dailyAutoLimitCents === null) return { error: "dailyLimit" };
   const floorPct = whole(text("floorPct"), L.floorPct);
   if (floorPct === null) return { error: "floor" };
   const capPct = whole(text("capPct"), L.capPct);
@@ -82,6 +111,7 @@ export function parseSettingsForm(form: FormData): { settings: StoreSettings } |
       allowColorVariants: form.get("colorVariants") !== null,
       maxRefundShare: capPct / 100,
       autoRefundLimitCents,
+      dailyAutoLimitCents,
       extraRetailers: [...new Set(stores)],
       returnCostShare: returnCostPct / 100,
     },

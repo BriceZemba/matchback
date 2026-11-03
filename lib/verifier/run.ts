@@ -12,8 +12,8 @@ import type { Locale } from "@/lib/i18n";
 import { imageMatchesPurchase, readOfferImage, resolveListing, type Extraction } from "./image-intake";
 import { checkIdentity, type IdentityMode, type IdentityVerdict } from "./identity";
 import { isKnownRetailer } from "./retailers";
-import { loadStoreSettings } from "@/lib/store-settings";
-import { decide, isResaleDomain, type Check, type ConditionSource, type Decision, type PolicySettings } from "./policy";
+import { loadStoreSettings, releaseAutoRefund, reserveAutoRefund, utcDay } from "@/lib/store-settings";
+import { dailyLimitCheck, decide, isResaleDomain, type Check, type ConditionSource, type Decision, type PolicySettings } from "./policy";
 
 export type ClaimStatus = "verifying" | "approved" | "refused" | "needs_review" | "refunded" | "refund_unknown" | "refund_failed";
 
@@ -389,6 +389,16 @@ export async function verifyClaim(claimId: string, given?: VerifyDeps): Promise<
     evidence = await evaluateClaim(claimInput, deps);
   }
 
+  // The store's daily limit, counted before anything is paid. A run that crashes after this line and is
+  // retried counts its refund twice: the limit is then reached early, and a person decides, never the reverse.
+  const refundCents = evidence.decision.refundCents;
+  const day = utcDay(deps.now());
+  const limit = deps.settings.dailyAutoLimitCents ?? null;
+  if (evidence.decision.status === "approved" && !(await reserveAutoRefund(day, refundCents, limit))) {
+    evidence.decision.checks.push(dailyLimitCheck(limit!, refundCents));
+    evidence.decision.status = "needs_review";
+  }
+
   // Plain-language explanation for the shopper, written from the checks; it never changes the decision.
   evidence.explanation = await explainDecision(
     {
@@ -406,7 +416,9 @@ export async function verifyClaim(claimId: string, given?: VerifyDeps): Promise<
     await saveClaim(claimId, evidence.decision.status, evidence);
     return (await getClaim(claimId))!;
   }
-  return payClaim(claim, evidence, evidence.decision.refundCents, deps.refund);
+  const paid = await payClaim(claim, evidence, refundCents, deps.refund);
+  if (paid.status === "refund_failed") await releaseAutoRefund(day, refundCents);
+  return paid;
 }
 
 async function saveClaim(claimId: string, status: ClaimStatus, evidence: ClaimEvidence, extra: { refund_id?: string; error?: string } = {}) {

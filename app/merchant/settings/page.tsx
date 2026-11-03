@@ -4,7 +4,7 @@ import { judgeMode } from "@/lib/judge";
 import { requestPrefs } from "@/lib/locale-server";
 import { isMerchantSession, merchantKey, MERCHANT_COOKIE } from "@/lib/merchant";
 import { fromCents } from "@/lib/money";
-import { loadStoreSettings, SETTING_LIMITS as L } from "@/lib/store-settings";
+import { autoRefundedOn, loadStoreSettings, SETTING_LIMITS as L, utcDay } from "@/lib/store-settings";
 import { SubmitButton } from "../../submit-button";
 
 export const dynamic = "force-dynamic";
@@ -19,6 +19,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
   const m = t.merchant;
   const s = m.settings;
   const current = await loadStoreSettings();
+  const paidToday = await autoRefundedOn(utcDay(new Date()));
   const error = q.error === "stores" ? s.errors.stores(q.store ?? "") : q.error ? s.errors[q.error as keyof typeof s.errors] : undefined;
 
   return (
@@ -38,6 +39,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
         <Field name="windowDays" label={s.windowDays} hint={s.windowDaysHint} unit={s.days} value={current.windowDays} min={L.windowDays.min} max={L.windowDays.max} step={1} />
         <Field name="minDiff" label={s.minDiff} hint={s.minDiffHint} unit="$" value={fromCents(current.minDiffCents)} min={L.minDiffDollars.min} max={L.minDiffDollars.max} step={0.01} />
         <Field name="autoLimit" label={s.autoLimit} hint={s.autoLimitHint} unit="$" value={current.autoRefundLimitCents === null ? "" : fromCents(current.autoRefundLimitCents)} min={L.autoLimitDollars.min} max={L.autoLimitDollars.max} step={0.01} optional placeholder={s.noLimit} />
+        <Field name="dailyLimit" label={s.dailyLimit} hint={`${s.dailyLimitHint} ${s.paidToday(fromCents(paidToday))}`} unit="$" value={current.dailyAutoLimitCents === null ? "" : fromCents(current.dailyAutoLimitCents)} min={L.dailyLimitDollars.min} max={L.dailyLimitDollars.max} step={0.01} optional placeholder={s.noLimit} />
         <Field name="capPct" label={s.cap} hint={s.capHint} unit="%" value={Math.round(current.maxRefundShare * 100)} min={L.capPct.min} max={L.capPct.max} step={1} />
         <Field name="floorPct" label={s.floor} hint={s.floorHint} unit="%" value={Math.round(current.floorShare * 100)} min={L.floorPct.min} max={L.floorPct.max} step={1} />
 

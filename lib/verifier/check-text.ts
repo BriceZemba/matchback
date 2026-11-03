@@ -37,6 +37,7 @@ const RULES: Rule[] = [
   // The store's limits
   [/^The (\$[\d.,]+) difference is over this store's cap of (\d+)% of the price paid; a person decides\.$/, "L'écart de $1 dépasse le plafond de ce magasin, $2 % du prix payé : une personne décide.", "La diferencia de $1 supera el tope de esta tienda, el $2 % del precio pagado: decide una persona."],
   [/^This store pays up to (\$[\d.,]+) automatically; a person decides on a (\$[\d.,]+) refund\.$/, "Ce magasin paie automatiquement jusqu'à $1 : une personne décide pour un remboursement de $2.", "Esta tienda paga automáticamente hasta $1: una persona decide sobre un reembolso de $2."],
+  [/^This store pays up to (\$[\d.,]+) automatically per day; a person decides on this (\$[\d.,]+) refund\.$/, "Ce magasin paie automatiquement jusqu'à $1 par jour : une personne décide pour ce remboursement de $2.", "Esta tienda paga automáticamente hasta $1 al día: una persona decide sobre este reembolso de $2."],
   // Same product
   [new RegExp(`^Channel3 catalog id: same product\\.`), "Même fiche produit dans le catalogue Channel3.", "Misma ficha de producto en el catálogo de Channel3."],
   [new RegExp(`^${HOW}: same product\\.`), "L'IA confirme qu'il s'agit du même produit.", "La IA confirma que es el mismo producto."],

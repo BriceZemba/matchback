@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { getDb, resetDbForTests } from "@/lib/db";
 import { maxRefundShare } from "@/lib/paypal/refunds";
-import { loadStoreSettings, parseSettingsForm, resetStoreSettings, saveStoreSettings, type StoreSettings } from "@/lib/store-settings";
+import { autoRefundedOn, loadStoreSettings, parseSettingsForm, releaseAutoRefund, reserveAutoRefund, resetStoreSettings, saveStoreSettings, type StoreSettings } from "@/lib/store-settings";
 import { decide, settingsFromEnv, type PolicySettings } from "@/lib/verifier/policy";
 import { isKnownRetailer } from "@/lib/verifier/retailers";
 import { defaultDeps } from "@/lib/verifier/run";
@@ -60,6 +60,8 @@ describe("store settings", () => {
     expect(parseSettingsForm(form({ minDiff: "0" }))).toEqual({ error: "minDiff" });
     expect(parseSettingsForm(form({ minDiff: "1.234" }))).toEqual({ error: "minDiff" });
     expect(parseSettingsForm(form({ autoLimit: "0.50" }))).toEqual({ error: "autoLimit" });
+    expect(parseSettingsForm(form({ dailyLimit: "0.50" }))).toEqual({ error: "dailyLimit" });
+    expect(parseSettingsForm(form({ dailyLimit: "100000.01" }))).toEqual({ error: "dailyLimit" });
     expect(parseSettingsForm(form({ floorPct: "5" }))).toEqual({ error: "floor" });
     expect(parseSettingsForm(form({ capPct: "100" }))).toEqual({ error: "cap" });
     expect(parseSettingsForm(form({ capPct: "absent" }))).toEqual({ error: "cap" });
@@ -70,6 +72,8 @@ describe("store settings", () => {
   it("reads the optional fields", () => {
     const { settings } = parseSettingsForm(form({ autoLimit: "", colorVariants: "absent" })) as { settings: StoreSettings };
     expect(settings.autoRefundLimitCents).toBeNull();
+    expect(settings.dailyAutoLimitCents).toBeNull();
+    expect((parseSettingsForm(form({ dailyLimit: "250" })) as { settings: StoreSettings }).settings.dailyAutoLimitCents).toBe(25000);
     expect(settings.allowColorVariants).toBe(false);
     expect(settings.returnCostShare).toBe(0.25);
   });
@@ -94,6 +98,43 @@ describe("store settings", () => {
   it("an added store counts as known", () => {
     expect(isKnownRetailer("localcamera.com", "", [], [])).toBe(false);
     expect(isKnownRetailer("www.localcamera.com", "", [], ["localcamera.com"])).toBe(true);
+  });
+});
+
+describe("the daily limit on automatic refunds", () => {
+  const DAY = "2026-11-03";
+
+  it("counts refunds up to the limit, exactly", async () => {
+    expect(await reserveAutoRefund(DAY, 6000, 10000)).toBe(true);
+    expect(await reserveAutoRefund(DAY, 4000, 10000)).toBe(true);
+    expect(await reserveAutoRefund(DAY, 1, 10000)).toBe(false);
+    expect(await autoRefundedOn(DAY)).toBe(10000);
+  });
+
+  it("refuses a first refund over the limit, and starts again the next day", async () => {
+    expect(await reserveAutoRefund(DAY, 10001, 10000)).toBe(false);
+    expect(await autoRefundedOn(DAY)).toBe(0);
+    await reserveAutoRefund(DAY, 10000, 10000);
+    expect(await reserveAutoRefund("2026-11-04", 10000, 10000)).toBe(true);
+  });
+
+  it("never passes the limit when claims arrive together", async () => {
+    const results = await Promise.all(Array.from({ length: 10 }, () => reserveAutoRefund(DAY, 3000, 10000)));
+    expect(results.filter(Boolean)).toHaveLength(3);
+    expect(await autoRefundedOn(DAY)).toBe(9000);
+  });
+
+  it("counts refunds with no limit set, so a limit set later knows the day so far", async () => {
+    await reserveAutoRefund(DAY, 8000, null);
+    expect(await reserveAutoRefund(DAY, 3000, 10000)).toBe(false);
+  });
+
+  it("gives back a refund that never went out", async () => {
+    await reserveAutoRefund(DAY, 8000, 10000);
+    await releaseAutoRefund(DAY, 8000);
+    expect(await autoRefundedOn(DAY)).toBe(0);
+    await releaseAutoRefund(DAY, 8000);
+    expect(await autoRefundedOn(DAY)).toBe(0);
   });
 });
 

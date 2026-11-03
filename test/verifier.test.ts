@@ -5,8 +5,9 @@ import { getDb, resetDbForTests } from "@/lib/db";
 import type { LlmProvider } from "@/lib/llm";
 import { createOrderRow } from "@/lib/paypal/checkout";
 import { decide, type PolicyInput, type PolicySettings } from "@/lib/verifier/policy";
-import { evaluateClaim, fileClaim, verifyClaim, type VerifyDeps } from "@/lib/verifier/run";
-import { InvariantError } from "@/lib/paypal/errors";
+import { approveReviewedClaim, evaluateClaim, fileClaim, verifyClaim, type VerifyDeps } from "@/lib/verifier/run";
+import { InvariantError, OutcomeUnknownError } from "@/lib/paypal/errors";
+import { autoRefundedOn, reserveAutoRefund } from "@/lib/store-settings";
 import { editionConflict, generationUnconfirmed, type IdentityVerdict } from "@/lib/verifier/identity";
 
 // Offers below are the ones Channel3 returned in the 2026-10-28 spike (spikes/channel3/out/*-rest.json).
@@ -330,6 +331,69 @@ describe("verifyClaim", () => {
     expect(done.status).toBe("refund_failed");
     const ev = JSON.parse(done.decision_json!);
     expect(ev.explanation.text).toBe("Your claim was approved for $20.00, but the refund could not be completed: This order already received a price-match refund.");
+  });
+
+  describe("with a daily limit", () => {
+    const DAY = "2026-10-29"; // NOW's day
+    const url = "https://www.officedepot.com/a/products/mx-master-3s";
+    const paying = (refunds: unknown[]) => async (r: { claimId: string; amountCents: number }) => {
+      refunds.push(r);
+      return { claimId: r.claimId, refundId: "RF1", status: "COMPLETED", amountCents: r.amountCents, currency: "USD" };
+    };
+
+    it("pays while the day stays within the limit, and counts it", async () => {
+      await reserveAutoRefund(DAY, 1000, null);
+      const claim = await fileClaim(await capturedOrder(), url);
+      const refunds: unknown[] = [];
+      const done = await verifyClaim(claim.id, deps(fakeChannel3({ [url]: MX }, {}), llmDown, { settings: { ...settings, dailyAutoLimitCents: 3000 }, refund: paying(refunds) as never }));
+      expect(done.status).toBe("refunded");
+      expect(refunds).toHaveLength(1);
+      expect(await autoRefundedOn(DAY)).toBe(3000);
+    });
+
+    it("sends the claim that would pass the limit to a person, and PayPal is never asked", async () => {
+      await reserveAutoRefund(DAY, 1000, null);
+      const claim = await fileClaim(await capturedOrder(), url);
+      const refunds: unknown[] = [];
+      const done = await verifyClaim(claim.id, deps(fakeChannel3({ [url]: MX }, {}), llmDown, { settings: { ...settings, dailyAutoLimitCents: 2999 }, refund: paying(refunds) as never }));
+      expect(done.status).toBe("needs_review");
+      expect(refunds).toHaveLength(0);
+      expect(await autoRefundedOn(DAY)).toBe(1000);
+      const ev = JSON.parse(done.decision_json!);
+      expect(ev.decision.checks.find((c: { id: string }) => c.id === "limit")).toMatchObject({ outcome: "review" });
+      expect(ev.decision.refundCents).toBe(2000); // what the reviewer is offered
+      expect(ev.explanation.text).toBe("This refund is more than the store pays automatically, so a person at the store will look at your claim.");
+    });
+
+    it("gives the amount back when the refund does not go through", async () => {
+      const claim = await fileClaim(await capturedOrder(), url);
+      const done = await verifyClaim(claim.id, deps(fakeChannel3({ [url]: MX }, {}), llmDown, {
+        settings: { ...settings, dailyAutoLimitCents: 3000 },
+        refund: async () => { throw new InvariantError(409, "This order already received a price-match refund."); },
+      }));
+      expect(done.status).toBe("refund_failed");
+      expect(await autoRefundedOn(DAY)).toBe(0);
+    });
+
+    it("counts a refund whose outcome is unknown: it may have been paid", async () => {
+      const claim = await fileClaim(await capturedOrder(), url);
+      const done = await verifyClaim(claim.id, deps(fakeChannel3({ [url]: MX }, {}), llmDown, {
+        settings: { ...settings, dailyAutoLimitCents: 3000 },
+        refund: async () => { throw new OutcomeUnknownError("refund:x"); },
+      }));
+      expect(done.status).toBe("refund_unknown");
+      expect(await autoRefundedOn(DAY)).toBe(2000);
+    });
+
+    it("does not count a person's approval: the limit is on automatic refunds", async () => {
+      const claim = await fileClaim(await capturedOrder(), url);
+      const done = await verifyClaim(claim.id, deps(fakeChannel3({ [url]: MX }, {}), llmDown, { settings: { ...settings, dailyAutoLimitCents: 1000 } }));
+      expect(done.status).toBe("needs_review");
+      const refunds: unknown[] = [];
+      const approved = await approveReviewedClaim(claim.id, 2000, "", paying(refunds) as never);
+      expect(approved.status).toBe("refunded");
+      expect(await autoRefundedOn(DAY)).toBe(0);
+    });
   });
 
   it("never refunds a refused claim", async () => {

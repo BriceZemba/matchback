@@ -200,6 +200,12 @@ function schema(): string {
       updated_at  TEXT NOT NULL
     );
 
+    -- What was refunded without a person, per UTC day, against the store's daily limit.
+    CREATE TABLE IF NOT EXISTS auto_refund_days (
+      day    TEXT PRIMARY KEY,          -- YYYY-MM-DD
+      cents  INTEGER NOT NULL
+    );
+
     -- Channel3 answers, so a claim re-check, the evaluation and the filmed demo read the same data.
     CREATE TABLE IF NOT EXISTS channel3_cache (
       key         TEXT PRIMARY KEY,   -- lookup:<url> | product:<id> | stats:<id>
@@ -229,7 +235,7 @@ function addedColumns(blob: "BLOB" | "BYTEA"): [table: string, definition: strin
   ];
 }
 
-const TABLES = ["catalog", "orders", "paypal_writes", "refunds", "claims", "watch_findings", "channel3_cache", "store_settings"];
+const TABLES = ["catalog", "orders", "paypal_writes", "refunds", "claims", "watch_findings", "channel3_cache", "store_settings", "auto_refund_days"];
 
 function migrateSqlite(d: DatabaseSync) {
   d.exec("PRAGMA journal_mode = WAL;");

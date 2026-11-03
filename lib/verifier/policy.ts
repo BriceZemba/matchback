@@ -27,6 +27,7 @@ export type PolicySettings = {
   allowColorVariants: boolean; // same model in another colour qualifies
   maxRefundShare?: number; // largest share of the price paid one refund may return
   autoRefundLimitCents?: number | null; // a larger refund goes to a person; null: no such limit
+  dailyAutoLimitCents?: number | null; // most refunded without a person in a UTC day; null: no such limit
   extraRetailers?: string[]; // stores this merchant added to the list
 };
 
@@ -39,6 +40,7 @@ export function settingsFromEnv(env: NodeJS.ProcessEnv = process.env) {
     allowColorVariants: env.MATCHBACK_ALLOW_COLOR_VARIANTS !== "0",
     maxRefundShare: num(env.MATCHBACK_MAX_REFUND_SHARE, 0.5),
     autoRefundLimitCents: null as number | null,
+    dailyAutoLimitCents: null as number | null,
     extraRetailers: extraRetailersFromEnv(env),
     // Not a rule of the guarantee: the estimate of what a return would have cost, shown to the store.
     // Default: Pitney Bowes BOXpoll, 168 US online retailers, Feb 2022: returns cost 21% of order value.
@@ -72,6 +74,11 @@ const paidAgo = (days: number) => (days < 1 ? "Paid today" : days === 1 ? "Paid 
 
 export function isResaleDomain(domain: string): boolean {
   return RESALE_DOMAINS.some((d) => domain === d || domain.endsWith(`.${d}`));
+}
+
+/** The check added when an approved refund would go over the store's daily limit. */
+export function dailyLimitCheck(limitCents: number, refundCents: number): Check {
+  return { id: "limit", label: "Within the store's limits", outcome: "review", detail: `This store pays up to ${dollars(limitCents)} automatically per day; a person decides on this ${dollars(refundCents)} refund.` };
 }
 
 export function decide(input: PolicyInput): Decision {
