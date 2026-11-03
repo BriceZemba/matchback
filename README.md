@@ -8,7 +8,7 @@ A shopper who finds the same item cheaper elsewhere sends the offer: a link, a s
 
 **On 75 claims from real product pages (52 traps), a naive "approve if cheaper" bot wrongly refunds $2,592.25. Matchback wrongly refunds $0.00.** Every case: [`eval/results.md`](eval/results.md).
 
-**Live demo: https://matchback-tau.vercel.app** · [guide for judges](https://matchback-tau.vercel.app/judges) · PayPal **sandbox**: no real money moves · built for the PayPal AI Hackathon (2026)
+**Live demo: https://matchback-tau.vercel.app** · [demo video](https://www.youtube.com/watch?v=7CWmgUhcknk) · [guide for judges](https://matchback-tau.vercel.app/judges) · PayPal **sandbox**: no real money moves · built for the PayPal AI Hackathon (2026)
 
 ![The merchant console in AG Studio: claims by outcome and the Money kept receipt](docs/screens/console-overview.jpg)
 
@@ -139,7 +139,7 @@ Set `MERCHANT_KEY` to open the store desk, `MATCHBACK_JUDGE_MODE=1` for the guid
 - Sandbox only. A real store would use its own PayPal live credentials, and the store desk has a single shared merchant key rather than reviewer accounts.
 - Channel3 can't read every page: 11 of the 75 evaluation links failed, and those claims go to a person.
 - The catalog is 12 fixed products, each pinned to its Channel3 record, so lookups are stable for the demo.
-- Prices and stock change: the expected outcomes of the sample links were recorded on 2026-10-29.
+- Prices and stock change: the expected outcomes of the sample links were re-checked on 2026-11-02.
 
 ## License
 
