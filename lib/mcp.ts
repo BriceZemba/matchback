@@ -95,14 +95,31 @@ export const TOOLS = [
   },
 ] as const;
 
+/** Largest batch answered. Batches are an older protocol feature (removed in 2025-06-18), kept for older clients. */
+export const MAX_BATCH = 10;
+
 /** Handle one JSON-RPC message or a batch. Returns null when nothing is to be sent back (notifications only). */
 export async function handleMcp(message: unknown, ctx: McpContext): Promise<RpcResponse | RpcResponse[] | null> {
   if (Array.isArray(message)) {
     if (message.length === 0) return rpcError(null, -32600, "Empty batch.");
-    const replies = (await Promise.all(message.map((m) => handleOne(m, ctx)))).filter((r): r is RpcResponse => r !== null);
+    if (message.length > MAX_BATCH) return rpcError(null, -32600, `At most ${MAX_BATCH} messages in one batch.`);
+    // Claims filed in the same moment would all pass the per-visitor and per-order limits before any of them
+    // is stored, so a batch files one claim; the others are answered with an error and never reach Channel3.
+    let filings = 0;
+    const replies = (await Promise.all(message.map((m) =>
+      filesClaim(m) && ++filings > 1 ? rpcError(idOf(m), -32600, "File one claim per request.") : handleOne(m, ctx),
+    ))).filter((r): r is RpcResponse => r !== null);
     return replies.length ? replies : null;
   }
   return handleOne(message, ctx);
+}
+
+function filesClaim(m: unknown): boolean {
+  return isObject(m) && "id" in m && m.method === "tools/call" && isObject(m.params) && m.params.name === "file_price_match_claim";
+}
+
+function idOf(m: unknown): RpcId {
+  return isObject(m) && isRpcId(m.id) ? m.id : null;
 }
 
 async function handleOne(message: unknown, ctx: McpContext): Promise<RpcResponse | null> {
@@ -173,7 +190,7 @@ async function policy() {
     automaticPaymentLimitPerRefund: money(s.autoRefundLimitCents),
     automaticPaymentLimitPerDay: money(s.dailyAutoLimitCents),
     automaticPaymentNote:
-      s.autoRefundLimitCents === null
+      s.autoRefundLimitCents === null && s.dailyAutoLimitCents === null
         ? "A claim that passes every check is paid automatically."
         : "A claim that passes every check is paid automatically up to these limits; above them a person at the store decides.",
     largestRefund: `${Math.round(s.maxRefundShare * 100)}% of the price paid`,

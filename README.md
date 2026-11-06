@@ -97,7 +97,7 @@ Method, limits and every case: [`eval/README.md`](eval/README.md), [`eval/result
 
 **Live run on the hosted app (2026-10-29).** A GoPro HERO12 bought for $349.99. The price watch found it new and in stock at Best Buy for $295.99. The claim passed all seven checks and PayPal refunded **$54.00** about 6 seconds later (sandbox refund `5WL32001NT6600625`). Read back from PayPal: `COMPLETED`, 54.00 USD, linked to the claim, payment `PARTIALLY_REFUNDED`.
 
-**Tests.** 169 unit tests (`npm test`, no network), plus live tests against Channel3, the AI providers and the hosted database (`LIVE=1`).
+**Tests.** 182 unit tests (`npm test`, no network), plus live tests against Channel3, the AI providers and the hosted database (`LIVE=1`).
 
 ## How it fits together
 

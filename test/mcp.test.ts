@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { GET, POST } from "@/app/api/mcp/route";
 import { getDb, resetDbForTests } from "@/lib/db";
-import { handleMcp, TOOLS, type McpContext } from "@/lib/mcp";
+import { handleMcp, MAX_BATCH, TOOLS, type McpContext } from "@/lib/mcp";
 import { createOrderRow } from "@/lib/paypal/checkout";
+import { saveStoreSettings } from "@/lib/store-settings";
+import { settingsFromEnv } from "@/lib/verifier/policy";
 import { getClaim, type ClaimEvidence, type ClaimRow } from "@/lib/verifier/run";
 
 const ORIGIN = "https://matchback.example";
@@ -75,6 +77,17 @@ describe("MCP server", () => {
     expect(batch).toEqual([{ jsonrpc: "2.0", id: "a", result: {} }]);
   });
 
+  it("refuses a batch over the cap, and files at most one claim per batch", async () => {
+    const pings = Array.from({ length: MAX_BATCH + 1 }, (_, i) => ({ jsonrpc: "2.0", id: i, method: "ping" }));
+    expect(await handleMcp(pings, ctx())).toMatchObject({ error: { code: -32600 } });
+
+    const orderId = await paidOrder();
+    const filing = (id: number) => ({ jsonrpc: "2.0", id, method: "tools/call", params: { name: "file_price_match_claim", arguments: { order_id: orderId, competitor_url: `https://www.bestbuy.com/p/${id}` } } });
+    const replies = await handleMcp([filing(1), filing(2), filing(3), { jsonrpc: "2.0", id: 4, method: "ping" }], ctx({ verify: fakeVerify("needs_review") })) as { id: number; result?: unknown; error?: { code: number } }[];
+    expect(replies.map((r) => [r.id, r.error?.code ?? "ok"])).toEqual([[1, "ok"], [2, -32600], [3, -32600], [4, "ok"]]);
+    expect(await getDb().all("SELECT id FROM claims WHERE order_id = ?", orderId)).toHaveLength(1);
+  });
+
   it("returns JSON-RPC errors for bad requests, unknown methods and unknown tools", async () => {
     expect(await handleMcp({ hello: 1 }, ctx())).toMatchObject({ error: { code: -32600 } });
     expect(await handleMcp({ jsonrpc: "2.0", id: 1, method: "resources/list" }, ctx())).toMatchObject({ id: 1, error: { code: -32601 } });
@@ -86,6 +99,13 @@ describe("MCP server", () => {
     expect(r.isError).toBeUndefined();
     expect(r.structuredContent).toMatchObject({ claimWindowDays: 14, smallestDifference: "$1.00", refunds: expect.stringContaining("One price-match refund per order") });
     expect(r.structuredContent!.storesThatCount).toContain("bestbuy.com");
+    expect(r.structuredContent!.automaticPaymentNote).toBe("A claim that passes every check is paid automatically.");
+  });
+
+  it("mentions the store's limits when only a daily limit is set", async () => {
+    await saveStoreSettings({ ...settingsFromEnv(), dailyAutoLimitCents: 5000 });
+    const r = await call("get_price_match_policy", {});
+    expect(r.structuredContent).toMatchObject({ automaticPaymentLimitPerRefund: null, automaticPaymentLimitPerDay: "$50.00", automaticPaymentNote: expect.stringContaining("up to these limits") });
   });
 
   it("looks up a paid order and refuses ids that are malformed or unknown", async () => {
