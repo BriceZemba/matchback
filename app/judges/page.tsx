@@ -75,6 +75,13 @@ export default async function Judges() {
         <li className="card card-pad rise" style={{ ["--i" as string]: 6 }}>
           <span className="n">6</span>
           <div>
+            <h2>Let an AI agent claim</h2>
+            <p>Shoppers&apos; AI assistants can file the claim themselves: <code>/api/mcp</code> on this site is an MCP server with four tools (read the policy, look up an order, file a claim, follow it). Connect one, for example <code>claude mcp add --transport http matchback https://matchback-tau.vercel.app/api/mcp</code>, then give it your order id (the last part of your order page&apos;s address) and a sample link. The agent goes through the same checks and limits as the order page, and it cannot approve a claim, choose an amount or change the store&apos;s settings.</p>
+          </div>
+        </li>
+        <li className="card card-pad rise" style={{ ["--i" as string]: 7 }}>
+          <span className="n">7</span>
+          <div>
             <h2>Switch language and theme</h2>
             <p>English, French and Spanish from the header, including the AI&apos;s note on new claims; light and dark mode.</p>
           </div>
